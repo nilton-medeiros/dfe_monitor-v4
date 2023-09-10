@@ -1,10 +1,11 @@
 #include <hmg.ch>
 
 /*
-    Dependências:
+    Dependencias:
         Lib: sistrom_comp (libsistrom_comp.a)
             - TDBGrid
             - TComboBox
+			remover estas dependencias, pois invoca muitas funcoes de ouras libs
 */
 
 procedure setup()

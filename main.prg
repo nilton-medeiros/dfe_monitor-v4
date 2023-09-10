@@ -41,7 +41,7 @@ procedure about()
         "Monitoramento de DFes emitidos pelo sistema web TMS.CLOUD " +;
         appData:version + hb_eol() + Chr(169) + ;
         " by Sistrom Sistemas Web, 2010-" + hb_ntos(year(date())) + " | suporte@sistrom.com.br",;
-        loadTryIcon(GetInstance(), "MAIN");
+        loadTryIcon(GetInstance(), "main");
     )
 return
 

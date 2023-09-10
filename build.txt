@@ -32,4 +32,3 @@ hbmk2: Erro: Referenciado, faltando, mas fun��es desconhecida(s):
        MSGDEBUGINFO(), TAPPDATA_SETDATABASE(), ISWINDOWACTIVE(), SELECTCOUNT(),
        DELITEMARRAY(), STRING_HB_TO_MYSQL(), DATETIME_HB_TO_MYSQL(),
        ONLYNUMBERS(), TSQLQUERY(), DATETIME_MYSQL_TO_HB()
-

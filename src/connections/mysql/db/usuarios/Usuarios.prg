@@ -5,7 +5,7 @@ class TDbUsuarios
     data usuarios
     data ok
     method new() constructor
-    method count() setget inline hmg_len(::usuarios)
+    method count() setget
 end class
 
 method new() class TDbUsuarios
@@ -23,17 +23,18 @@ method new() class TDbUsuarios
     ::ok := false
     dbUsers := TQuery():new(sql:value)
 
-    if :executed
-        with object dbUsers
-            do while !:db:Eof()
-               hRow := convertFieldsDb(:db:GetRow())
-               AAdd(::usuarios, TUsuario():new(hRow))
-               :db:Skip()
-            enddo
-        endwith
+    if dbUsers:executed
+        do while !dbUsers:db:Eof()
+            hRow := convertFieldsDb(dbUsers:db:GetRow())
+            AAdd(::usuarios, TUsuario():new(hRow))
+            dbUsers:db:Skip()
+        enddo
     endif
 
     ::ok := !(hmg_len(::usuarios) == 0)
     dbUsers:Destroy()
 
 return self
+
+method count() class TDbUsuarios
+return hmg_len(::usuarios)

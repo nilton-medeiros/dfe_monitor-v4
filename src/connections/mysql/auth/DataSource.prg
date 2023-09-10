@@ -42,7 +42,7 @@ method connect() class TMySQLDataSource
             hMsg["notifyICON"] := "serverOFF"
             hMsg["showMsg"] := {"message" => msgError, "title" => "Servidor indisponível!"}
             msgNotify(hMsg)
-            log(msgError)
+            saveLog(msgError)
             MsgStop(msgError, "Servidor indisponível ou sem conexão com a internet, tente mais tarde!")
             return false
         elseif ::mysql:NetErr()
@@ -59,7 +59,7 @@ method connect() class TMySQLDataSource
             hMsg["notifyTooltip"] := "Sem conexão"
             hMsg["showMsg"] := {"message" => msgError, "title" => "Servidor indisponível!"}
             msgNotify(hMsg)
-            log(msgError)
+            saveLog(msgError)
             msgBoxTimeout := MessageBoxTimeout(msgError, "Falha de Conexão!", MB_ICONERROR + MB_RETRYCANCEL, 300000)
             if (msgBoxTimeout == IDTIMEDOUT) .or. (msgBoxTimeout == IDRETRY)
                 if !::tryToConnect()
@@ -85,7 +85,7 @@ method connect() class TMySQLDataSource
         hMsg["notifyICON"] := "serverOFF"
         hMsg["showMsg"] := {"message" => msgError, "title" => "Servidor indisponível!"}
         msgNotify(hMsg)
-        log(msgError)
+        saveLog(msgError)
     else
         ::iconStatus := "serverON"
         ::connectionStatus := "Conectado"
@@ -104,7 +104,7 @@ method tryToConnect() class TMySQLDataSource
        msgNotify({"notifyTooltip" => "Conectando ao servidor..."})
        ::mysql := TMySQLServer():new(::server, ::user, ::password, ::port)
     else
-       log("Parametros do banco de dados nao definidos!")
+       saveLog("Parametros do banco de dados nao definidos!")
     endif
 return !(::mysql == NIL) .and. !::mysql:NetErr()
 

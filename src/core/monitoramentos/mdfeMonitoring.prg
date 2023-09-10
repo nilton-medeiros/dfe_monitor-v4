@@ -1,3 +1,3 @@
 procedure mdfeMonitoring()
-    log("Entrou em mdfeMonitoring()")
+    saveLog("Entrou em mdfeMonitoring()")
 return

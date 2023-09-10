@@ -68,7 +68,7 @@ procedure main_form_oninit()
     StopTimer()
 
     if (RegistryRead(appData:winRegistryPath + "Monitoring\DontRun") == 1)
-        log("Parada forçada: O parâmetro DontRun está ativo")
+        saveLog("Parada forçada: O parâmetro DontRun está ativo")
         MessageBoxTimeout("O parâmetro DontRun está ativo!", "Parada forçada", MB_ICONEXCLAMATION, 5000)
         turnOFF()
     endif
@@ -96,14 +96,14 @@ procedure main_form_oninit()
     if appDataSource:connect()
         appEmpresas := TDbEmpresas():new()
         if !appEmpresas:ok
-            log("Nenhuma empresa foi retornada do banco de dados")
+            saveLog("Nenhuma empresa foi retornada do banco de dados")
             MessageBoxTimeout('Nenhuma empresa foi retornada do banco de dados' + hb_eol() + 'Avise ao suporte!', 'Parada forçada', MB_ICONEXCLAMATION, 300000)
             turnOFF()
         endif
         appUsuarios := TDbUsuarios():new()
         if !appUsuarios:ok
             // A falta de usuários administradores não interfere no monitoramento de CT-es, apenas o Setup não será liberado
-            log("Nenhum usuario admin foi retornado do banco de dados")
+            saveLog("Nenhum usuario admin foi retornado do banco de dados")
         endif
     else
         turnOFF()
@@ -128,7 +128,7 @@ procedure main_Timer_dfe_action()
     endif
 
     if (RegistryRead(appData:winRegistryPath + "Monitorin\Stop_Execution") == 1)
-        log("Parada forçada para atualização")
+        saveLog("Parada forçada para atualização")
         tornOFF()
     endif
 

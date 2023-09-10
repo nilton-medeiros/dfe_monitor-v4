@@ -104,7 +104,7 @@ procedure setup_button_save_action()
         RegistryWrite(appData:registryPath + "Monitoring\TimerStart", GetProperty('setup', 'Text_das', 'Value'))
         RegistryWrite(appData:registryPath + "Monitoring\TimerEnd", GetProperty('setup', 'Text_as', 'Value'))
         RegistryWrite(appData:registryPath + "Monitoring\frequency", GetProperty('setup', 'Text_seconds', 'Value'))
-        log('Usuario ' + cbxUsers:getDisplay() + ' alterou campos do setup')
+        saveLog('Usuario ' + cbxUsers:getDisplay() + ' alterou campos do setup')
         doMethod('setup', 'RELEASE')
 	else
 		MsgExclamation('Senha Inválida para o usuário ' + cbxUsers:getDisplay() + "!", 'Senha')

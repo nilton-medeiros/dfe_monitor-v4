@@ -5,7 +5,7 @@
 
 procedure testSubmit(cte)
     local msgLog
-    log("Entrou no testSubmit com o parâmetro objeto cte")
+    saveLog("Entrou no testSubmit com o parâmetro objeto cte")
 
     msgLog := '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-SUBMIT",' + hb_eol()
@@ -156,28 +156,28 @@ procedure testSubmit(cte)
     msgLog += space(4) + '"dPrevAereo":"' + cte:dPrevAereo + '",' + hb_eol()
     msgLog += space(4) + '"monitor_action":"' + cte:monitor_action + '",' + hb_eol()
     msgLog += "}"
-    log(msgLog)
+    saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log"+hb_eol()+"O Timer foi desativado", "Teste SUBMIT")
 return
 
 procedure testGetFiles(cte)
     local msgLog
-    log("Entrou no testGetFiles com o parâmetro objeto cte")
+    saveLog("Entrou no testGetFiles com o parâmetro objeto cte")
     msgLog := '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-GETFILES",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
     msgLog += "}"
-    log(msgLog)
+    saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
 return
 
 procedure testCancel(cte)
     local msgLog
-    log("Entrou no testCancel com o parâmetro objeto cte")
+    saveLog("Entrou no testCancel com o parâmetro objeto cte")
     msgLog := '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-CANCEL",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
     msgLog += "}"
-    log(msgLog)
+    saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log", "Teste CANCEL")
 return

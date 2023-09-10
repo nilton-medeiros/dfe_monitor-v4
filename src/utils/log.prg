@@ -1,7 +1,7 @@
 #include <hmg.ch>
 #include <fileio.ch>
 
-procedure log(text, lEncrypt)
+procedure saveLog(text, lEncrypt)
    local path := Memvar->appData:systemPath + 'log\'
    local dateFormat := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
    local logFile := 'dfe_log' + hb_ULeft(DToS(Date()),6) + '.txt'

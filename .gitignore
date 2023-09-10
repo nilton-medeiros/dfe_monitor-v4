@@ -13,3 +13,4 @@ env.json
 .github.txt
 *.ex*
 *.pub
+_*.*

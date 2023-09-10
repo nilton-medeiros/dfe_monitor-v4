@@ -5,7 +5,7 @@ class TDbConhecimentos
     data ctes
     data ok
     method new() constructor
-    method count() setget inline hmg_len(::ctes)
+    method count() setget
 end class
 
 method new() class TDbConhecimentos
@@ -192,16 +192,17 @@ method new() class TDbConhecimentos
     dbCTes := TQuery():new(sql:value)
 
     if dbCTes:executed
-        with object dbCTes
-            do while !:db:Eof()
-                hRow := convertFieldsDb(:db:GetRow())
-                AAdd(::ctes, TConhecimento():new(hRow))
-                :db:Skip()
-            enddo
-        endwith
+        do while !dbCTes:db:Eof()
+            hRow := convertFieldsDb(dbCTes:db:GetRow())
+            AAdd(::ctes, TConhecimento():new(hRow))
+            dbCTes:db:Skip()
+        enddo
     endif
 
     ::ok := !(hmg_len(::ctes) == 0)
     dbCTes:Destroy()
 
 return self
+
+method count() class TDbConhecimentos
+return hmg_len(::ctes)

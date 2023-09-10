@@ -129,14 +129,14 @@ method registerSystem() class TAppData
        RegistryWrite(::winRegistryPath + "Monitoring\Stop_Execution", 0)
     endif
     if ::isRunning()
-       log('O sistema não foi desligado corretamente da última vez')
+       saveLog('O sistema não foi desligado corretamente da última vez')
     else
        RegistryWrite(::winRegistryPath + "Monitoring\Running", 1)
     endif
     AEval(Directory("log\*.*"), {|aFile| iif(aFile[3] <= (Date()-70), hb_FileDelete("log\"+aFile[1]), NIL)})
     AEval(Directory("tmp\*.*"), {|aFile| iif(aFile[3] <= (Date()-10), hb_FileDelete("tmp\"+aFile[1]), NIL)})
     AEval(Directory("ftp-*.log"), {|aFile| iif(aFile[3] <= (Date()-30), hb_FileDelete(aFile[1]), NIL)})
-    log(hb_eol() + hb_eol() + ::displayName + ' - Sistema iniciado (monitorando...)' + hb_eol())
+    saveLog(hb_eol() + hb_eol() + ::displayName + ' - Sistema iniciado (monitorando...)' + hb_eol())
 
 return nil
 

@@ -1,9 +1,9 @@
 main.prg
+setup.prg
 src\connections\ftp\Ftp.prg
-src\connections\mysql\auth\Database.prg
+src\connections\mysql\auth\DataSource.prg
 src\connections\mysql\db\ctes\CTes.prg
 src\connections\mysql\db\empresas\Empresas.prg
-src\connections\mysql\db\mdfes\MDFes.prg
 src\connections\mysql\db\shared\Query.prg
 src\connections\mysql\db\shared\sqlString.prg
 src\connections\mysql\db\usuarios\Usuarios.prg

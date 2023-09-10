@@ -1,7 +1,7 @@
 #include <hmg.ch>
 #include <hbclass.ch>
 
-# define ENCRYPTED true
+#define ENCRYPTED .T.
 
 class TQuery
 
@@ -37,7 +37,7 @@ method runQuery() class TQuery
     if (::db == nil)
         if !appDatabase:connect()
             msgNotify({"notifyTooltip" => "B.D. não conectado!"})
-            log("Banco de Dados não conectado!")
+            saveLog("Banco de Dados não conectado!")
             return false
         endif
         ::db := appDatabase:mysql:Query(::sql)
@@ -47,7 +47,7 @@ method runQuery() class TQuery
             msgLog += ProcName(2) + "(" + hb_ntos(ProcLine(2)) + ")" + hb_eol()
             msgLog += ProcName(1) + "(" + hb_ntos(ProcLine(1)) + ")" + hb_eol()
             msgLog += ProcName(0) + "(" + hb_ntos(ProcLine(0)) + ")" + hb_eol() + hb_eol()
-            log(msgLog)
+            saveLog(msgLog)
             msgDebugInfo({'Erro ao executar ::db, avise ao suporte!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), 'Erro: Query is NIL'})
             return false
         endif
@@ -58,7 +58,7 @@ method runQuery() class TQuery
         msgLog += ProcName(2) + "(" + hb_ntos(ProcLine(2)) + ")" + hb_eol()
         msgLog += ProcName(1) + "(" + hb_ntos(ProcLine(1)) + ")" + hb_eol()
         msgLog += ProcName(0) + "(" + hb_ntos(ProcLine(0)) + ")" + hb_eol() + hb_eol()
-        log(msgLog)
+        saveLog(msgLog)
         msgDebugInfo({'Servidor do Banco de Dados ocupado, tente mais tarde!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), ::db:Error()})
         ::db:Destroy()
         return false
@@ -90,9 +90,9 @@ method runQuery() class TQuery
 
     if ::db:NetErr()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
-            log("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql), ENCRYPTED)
+            saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql), ENCRYPTED)
         else
-            log("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + db:Error() +;
+            saveLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + db:Error() +;
                     hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery), ENCRYPTED)
         endif
         ::db:Destroy()
@@ -106,7 +106,7 @@ method runQuery() class TQuery
            Verifica se houve algum registro afetado ou não
         */
         if (mysql_affected_rows(::db:nSocket) <= 0)
-            log("Não foi possível " + mode + " na tabela de " + table + hb_eol() + "Registros afetados: " +;
+            saveLog("Não foi possível " + mode + " na tabela de " + table + hb_eol() + "Registros afetados: " +;
                 hb_ntos(mysql_affected_rows(::db:nSocket)) + hb_eol() + hb_eol() + mysql_error(::db:nSocket) + hb_eol() + hb_eol() +;
                 ansi_to_unicode(::db:cQuery), ENCRYPTED)
             msgNotify({'notifyTooltip' => "Não foi possível " + mode + " na tabela de " + table + hb_eol() + "Ver Log do sistema"})

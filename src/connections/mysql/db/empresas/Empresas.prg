@@ -5,7 +5,7 @@ class TDbEmpresas
     data empresas
     data ok
     method new() constructor
-    method count() setget inline hmg_len(::empresas)
+    method count() setget
 end class
 
 method new() class TDbEmpresas
@@ -45,17 +45,18 @@ method new() class TDbEmpresas
     ::ok := false
     dbCompanies := TQuery():new(sql:value)
 
-    if :executed
-        with object dbCompanies
-            do while !:db:Eof()
-                hRow := convertFieldsDb(:db:GetRow())
-                AAdd(::empresas, TEmpresa():new(hRow))
-                :db:Skip()
-            enddo
-        endwith
+    if dbCompanies:executed
+        do while !dbCompanies:db:Eof()
+            hRow := convertFieldsDb(dbCompanies:db:GetRow())
+            AAdd(::empresas, TEmpresa():new(hRow))
+            dbCompanies:db:Skip()
+        enddo
     endif
 
     ::ok := !(hmg_len(::empresas) == 0)
     dbCompanies:Destroy()
 
 return self
+
+method count() class TDbEmpresas
+return hmg_len(::empresas)

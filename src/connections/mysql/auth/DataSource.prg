@@ -29,7 +29,7 @@ method new(server, user, password, port, database) class TMySQLDataSource
 return self
 
 method connect() class TMySQLDataSource
-    local msgError, msgBoxTimeout, hMsg
+    local msgError, msgBoxTimeout, hMsg := { => }
 
     // Tenta conectar pelo menos duas vezes
     if !::tryToConnect() .and. !::tryToConnect()
@@ -38,9 +38,9 @@ method connect() class TMySQLDataSource
             PlayAsterisk()
             msgError := "Não foi possível conectar ao servidor do banco de dados"
             ::disconnect()
-            hMsg["notifyTooltip"] := "Servidor indisponível"
-            hMsg["notifyICON"] := "serverOFF"
-            hMsg["showMsg"] := {"message" => msgError, "title" => "Servidor indisponível!"}
+            hb_hSet(hMsg, "notifyTooltip", "Servidor indisponível")
+            hb_hSet(hMsg, "notifyICON", "serverOFF")
+            hb_hSet(hMsg, "showMsg", {"message" => msgError, "title" => "Servidor indisponível!"})
             msgNotify(hMsg)
             saveLog(msgError)
             MsgStop(msgError, "Servidor indisponível ou sem conexão com a internet, tente mais tarde!")

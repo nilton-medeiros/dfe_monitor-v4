@@ -19,7 +19,7 @@ end class
 method new(cSql) class TQuery
     ::sql := cSql
     ::executed := false
-    if appDatabase:connected .or. appDatabase:connect()
+    if appDataSource:connected .or. appDataSource:connect()
         msgNotify({'notifyTooltip' => "Executando query..."})
         if ::runQuery()
             ::db:GoTop()
@@ -32,15 +32,15 @@ method runQuery() class TQuery
     local tenta as numeric
     local msgLog, command, table, mode
 
-    ::db := appDatabase:mysql:Query(::sql)
+    ::db := appDataSource:mysql:Query(::sql)
 
     if (::db == nil)
-        if !appDatabase:connect()
+        if !appDataSource:connect()
             msgNotify({"notifyTooltip" => "B.D. não conectado!"})
             saveLog("Banco de Dados não conectado!")
             return false
         endif
-        ::db := appDatabase:mysql:Query(::sql)
+        ::db := appDataSource:mysql:Query(::sql)
         if (::db == nil)
             msgNotify({'notifyTooltip' => "Erro de SQL!"})
             msgLog := "Erro ao executar Query! [Query is NIL]" + hb_eol() + hb_eol()

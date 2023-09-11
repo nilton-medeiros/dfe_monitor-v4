@@ -1,3 +1,5 @@
+#include <hmg.ch>
+
 procedure msgNotify(msgNtfy)
     local notifyTooltip, showMsg
 

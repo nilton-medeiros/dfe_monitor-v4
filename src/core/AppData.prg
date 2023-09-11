@@ -23,7 +23,6 @@ class TAppData
     method registerSystem()
     method isRunning()
     method registerDatabase()
-    method setDatabase()
     method setUTC(emp_id)
     method setTimer() inline ::timer := Seconds()
 

@@ -56,21 +56,21 @@ procedure setup_text_seconds_onLostFocus()
 	if (GetProperty('setup', 'Text_seconds', 'Value') < 5)
 		SetProperty('setup', 'Text_seconds', 'Value', 5)
 	endif
-	TextBox_onlostfocus("setup", "Text_seconds")
+	TextBox_onLostFocus("setup", "Text_seconds")
 return
 
 procedure setup_text_das_onLostFocus()
 	if (GetProperty('setup', 'Text_das', 'Value') < "00:00") .or. (GetProperty('setup', 'Text_das', 'Value') > "23:59")
 		SetProperty('setup', 'Text_das', 'Value', '  :  ')
 	endif
-	TextBox_onlostfocus("setup", "Text_das")
+	TextBox_onLostFocus("setup", "Text_das")
 return
 
 procedure setup_text_as_onLostFocus()
 	if (GetProperty('setup', 'Text_as', 'Value') < "00:00") .or. (GetProperty('setup', 'Text_as', 'Value') > "23:59")
 		SetProperty('setup', 'Text_as', 'Value', '  :  ')
 	endif
-	TextBox_onlostfocus("setup", "Text_as")
+	TextBox_onLostFocus("setup", "Text_as")
 return
 
 procedure setup_button_save_action()

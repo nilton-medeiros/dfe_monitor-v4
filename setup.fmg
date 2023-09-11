@@ -227,8 +227,8 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 807 HEIGHT 424 VIRTUAL WIDTH Nil VIRTU
         FONTSIZE 9
         TOOLTIP ""
         ONCHANGE Nil
-        ONGOTFOCUS TextBox_ongotfocus("setup", "Text_password")
-        ONLOSTFOCUS TextBox_onlostfocus("setup", "Text_password")
+        ONGOTFOCUS TextBox_onGoToFocus("setup", "Text_password")
+        ONLOSTFOCUS TextBox_onLostFocus("setup", "Text_password")
         FONTBOLD .F.
         FONTITALIC .F.
         FONTUNDERLINE .F.
@@ -346,7 +346,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 807 HEIGHT 424 VIRTUAL WIDTH Nil VIRTU
         FONTSIZE 9
         TOOLTIP "Mínimo de 5 segundos"
         ONCHANGE Nil
-        ONGOTFOCUS TextBox_ongotfocus("setup", "Text_seconds")
+        ONGOTFOCUS TextBox_onGoToFocus("setup", "Text_seconds")
         ONLOSTFOCUS setup_text_seconds_onLostFocus()
         FONTBOLD .F.
         FONTITALIC .F.
@@ -422,7 +422,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 807 HEIGHT 424 VIRTUAL WIDTH Nil VIRTU
         FONTSIZE 9
         TOOLTIP "Entre com horário válido das 00:00 às 23:59"
         ONCHANGE Nil
-        ONGOTFOCUS TextBox_ongotfocus("setup", "Text_das")
+        ONGOTFOCUS TextBox_onGoToFocus("setup", "Text_das")
         ONLOSTFOCUS setup_text_das_onLostFocus()
         FONTBOLD .F.
         FONTITALIC .F.
@@ -476,7 +476,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 807 HEIGHT 424 VIRTUAL WIDTH Nil VIRTU
         FONTSIZE 9
         TOOLTIP "Entre com horário válido das 00:00 às 23:59"
         ONCHANGE Nil
-        ONGOTFOCUS TextBox_ongotfocus("setup", "Text_as")
+        ONGOTFOCUS TextBox_onGoToFocus("setup", "Text_as")
         ONLOSTFOCUS setup_text_as_onLostFocus()
         FONTBOLD .F.
         FONTITALIC .F.

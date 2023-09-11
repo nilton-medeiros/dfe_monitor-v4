@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 
 procedure setup()
 	private cbxUsers AS OBJECT

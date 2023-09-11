@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 
 procedure TextBox_onGoToFocus(form, controler)
     SetProperty(form, controler, "BackColor", {190, 215, 250})

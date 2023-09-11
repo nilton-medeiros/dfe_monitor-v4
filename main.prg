@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 #include <fileio.ch>
 
 REQUEST HB_CODEPAGE_UTF8

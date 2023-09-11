@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 
 function date_as_string(date)
 return Transform(DToS(date), "@R 9999-99-99")

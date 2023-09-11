@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 
 procedure cteMonitoring()
     local cte, ctes := TDbConhecimentos():new()

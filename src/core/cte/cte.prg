@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 #include "hbclass.ch"
 
 // Usado TConhecimento e Não "TCTe" para não conflitir com os objetos da lib xml sefaz CTe, CTes

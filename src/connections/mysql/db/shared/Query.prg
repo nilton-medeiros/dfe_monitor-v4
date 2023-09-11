@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 #include <hbclass.ch>
 
 #define ENCRYPTED .T.

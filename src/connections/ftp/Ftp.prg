@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "hmg.ch"
 #include "hbclass.ch"
 
 // TFtp Class: Apenas uma sacola de dados, classe anêmica funcionando mais como uma interface

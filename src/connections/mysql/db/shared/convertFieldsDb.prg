@@ -9,7 +9,7 @@ function convertFieldsDb(oRow)
         elseif ValType(value) == "N"
             value := hb_ntos(value)
         endif
-        hb_Set(hRow, cKey, value)
+        hb_hSet(hRow, cKey, value)
     next
 
 return hRow

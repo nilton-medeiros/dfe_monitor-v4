@@ -41,7 +41,7 @@ procedure about()
         "Monitoramento de DFes emitidos pelo sistema web TMS.CLOUD " +;
         appData:version + hb_eol() + Chr(169) + ;
         " by Sistrom Sistemas Web, 2010-" + hb_ntos(year(date())) + " | suporte@sistrom.com.br",;
-        loadTryIcon(GetInstance(), "main");
+        LoadTrayIcon(GetInstance(), "main");
     )
 return
 
@@ -129,7 +129,7 @@ procedure main_Timer_dfe_action()
 
     if (RegistryRead(appData:winRegistryPath + "Monitorin\Stop_Execution") == 1)
         saveLog("Parada forçada para atualização")
-        tornOFF()
+        turnOFF()
     endif
 
     // timerStart e timerEnd são período de inatividade

@@ -1,15 +1,6 @@
 #include <hmg.ch>
 
-/*
-    Dependencias:
-        Lib: sistrom_comp (libsistrom_comp.a)
-            - TDBGrid
-            - TComboBox
-			remover estas dependencias, pois invoca muitas funcoes de ouras libs
-*/
-
 procedure setup()
-	private grid AS OBJECT
 	private cbxUsers AS OBJECT
 
 	if isWindowActive(setup)
@@ -30,14 +21,13 @@ procedure setup_form_oninit()
 
     stopTimer()
 
-	grid := TDBGrid():new('setup', 'Grid_1')
-	cbxUsers := TComboBox():new('setup', 'Combo_Users')
+	DoMethod( 'setup', 'Grid_1', "DeleteAllItems" )
 
     for each empresa in appEmpresas:empresas
-        grid:AddItem({empresa:id,;
-                        empresa:xNome,;
-                        iif(empresa:tpAmb == '1','Produção', 'Homologação')})
+		DoMethod('setup', 'Grid_1', "AddItem", {empresa:id, empresa:xNome, iif(empresa:tpAmb == '1','Produção', 'Homologação')})
     next
+
+	cbxUsers := TComboBox():new('setup', 'Combo_Users')
 
     for each usuario in appUsuarios:usuarios
         cbxUsers:AddItem(usuario:login, usuario:password)

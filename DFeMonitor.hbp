@@ -1,5 +1,6 @@
 main.prg
 setup.prg
+src\components\ComboBox.prg
 src\connections\ftp\Ftp.prg
 src\connections\mysql\auth\DataSource.prg
 src\connections\mysql\db\ctes\CTes.prg

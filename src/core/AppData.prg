@@ -166,6 +166,7 @@ method registerDatabase() class TAppData
             RegistryWrite(::winRegistryPath + "Host\ftp_user", CharXor(ftp["user"], "SysWeb2023"))
             RegistryWrite(::winRegistryPath + "Host\ftp_password", CharXor(ftp["password"], "SysWeb2023"))
         endif
+        hb_FileDelete(".env.json", "H")
         hb_FileDelete(".env.json")
     endif
 

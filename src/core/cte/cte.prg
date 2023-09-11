@@ -132,7 +132,7 @@ class TConhecimento
     data vICMS readonly
     data pRedBC readonly
     data vCred readonly
-    data codigo_situacao_tributaria readonly
+    data codigo_sit_tributaria readonly
     data vPIS readonly
     data vCOFINS readonly
     data vTotTrib readonly
@@ -285,7 +285,7 @@ method new(cte) class TConhecimento
     ::vICMS := cte["vICMS"]
     ::pRedBC := cte["pRedBC"]
     ::vCred := cte["vCred"]
-    ::codigo_situacao_tributaria := cte["codigo_situacao_tributaria"]
+    ::codigo_sit_tributaria := cte["codigo_sit_tributaria"]
     ::vPIS := cte["vPIS"]
     ::vCOFINS := cte["vCOFINS"]
     ::vTotTrib := cte["vTotTrib"]
@@ -301,7 +301,7 @@ method new(cte) class TConhecimento
     ::qtde_volumes := cte["qtde_volumes"]
     ::tipo_doc_anexo := cte["tipo_doc_anexo"]
     ::nOCA := cte["nOCA"]
-    ::dPrevAereo := cte["dPrevAereo"]
+    ::dPrevAereo := date_as_string(cte["dPrevAereo"])
     ::monitor_action := cte["monitor_action"]
 
 return self

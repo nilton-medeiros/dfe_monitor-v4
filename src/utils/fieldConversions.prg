@@ -1,7 +1,11 @@
 #include "hmg.ch"
 
 function date_as_string(date)
-return Transform(DToS(date), "@R 9999-99-99")
+    local response := ""
+    if !Empty(date)
+        response := Transform(DToS(date), "@R 9999-99-99")
+    endif
+return response
 
 function string_as_DateTime(stringDate, lTDZ)
     default lTDZ := false

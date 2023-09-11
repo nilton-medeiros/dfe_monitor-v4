@@ -140,7 +140,7 @@ method new() class TDbConhecimentos
     sql:add("cte_valor_icms AS vICMS, ")
     sql:add("cte_perc_reduc_bc AS pRedBC, ")
     sql:add("cte_valor_cred_outorgado AS vCred, ")
-    sql:add("cte_codigo_sit_tributaria AS codigo_situacao_tributaria, ")
+    sql:add("cte_codigo_sit_tributaria AS codigo_sit_tributaria, ")
     sql:add("cte_valor_pis AS vPIS, ")
     sql:add("cte_valor_cofins AS vCOFINS, ")
     sql:add("cte_valor_icms + cte_valor_pis + cte_valor_cofins AS vTotTrib, ")

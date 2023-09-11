@@ -132,7 +132,7 @@ class TConhecimento
     data vICMS readonly
     data pRedBC readonly
     data vCred readonly
-    data codigo_sit_tributaria readonly
+    data codigo_situacao_tributaria readonly
     data vPIS readonly
     data vCOFINS readonly
     data vTotTrib readonly
@@ -207,9 +207,9 @@ method new(cte) class TConhecimento
     ::xPass := cte["xPass"]
     ::xDest := cte["xDest"]
     ::tpPer := cte["tpPer"]
-    ::dProg := string_as_DateTime(cte["dProg"])
-    ::dIni := string_as_DateTime(cte["dIni"])
-    ::dFim := string_as_DateTime(cte["dFim"])
+    ::dProg := date_as_string(cte["dProg"])
+    ::dIni := date_as_string(cte["dIni"])
+    ::dFim := date_as_string(cte["dFim"])
     ::tpHor := cte["tpHor"]
     ::hProg := cte["hProg"]
     ::hIni := cte["hIni"]
@@ -285,7 +285,7 @@ method new(cte) class TConhecimento
     ::vICMS := cte["vICMS"]
     ::pRedBC := cte["pRedBC"]
     ::vCred := cte["vCred"]
-    ::codigo_sit_tributaria := cte["codigo_sit_tributaria"]
+    ::codigo_situacao_tributaria := cte["codigo_situacao_tributaria"]
     ::vPIS := cte["vPIS"]
     ::vCOFINS := cte["vCOFINS"]
     ::vTotTrib := cte["vTotTrib"]

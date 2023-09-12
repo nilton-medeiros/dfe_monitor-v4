@@ -1,6 +1,8 @@
 #include "hmg.ch"
 #include "hbclass.ch"
 
+#define TDZ_TRUE .T.
+
 // Usado TConhecimento e Não "TCTe" para não conflitir com os objetos da lib xml sefaz CTe, CTes
 class TConhecimento
 
@@ -160,7 +162,7 @@ method new(cte) class TConhecimento
     ::id := cte["id"]
     ::emp_id := cte["emp_id"]
     ::versao_xml := cte["versao_xml"]
-    ::dhEmi := string_as_DateTime(cte["dhEmi"], true)
+    ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
     ::modelo := cte["modelo"]
     ::serie := cte["serie"]
     ::nCT := cte["nCT"]
@@ -186,19 +188,19 @@ method new(cte) class TConhecimento
     ::indIEToma := cte["indIEToma"]
     ::tom_ie_isento := cte["tom_ie_isento"]
     ::tomador := cte["tomador"]
-    ::tom_cnpj := cte["tom_cnpj"]
+    ::tom_cnpj := getNumbers(cte["tom_cnpj"])
     ::tom_ie := cte["tom_ie"]
-    ::tom_cpf := cte["tom_cpf"]
+    ::tom_cpf := getNumbers(cte["tom_cpf"])
     ::tom_xFant := cte["tom_xFant"]
     ::tom_xNome := cte["tom_xNome"]
-    ::tom_fone := cte["tom_fone"]
+    ::tom_fone := getNumbers(cte["tom_fone"])
     ::tom_end_logradouro := cte["tom_end_logradouro"]
     ::tom_end_numero := cte["tom_end_numero"]
     ::tom_end_complemento := cte["tom_end_complemento"]
     ::tom_end_bairro := cte["tom_end_bairro"]
     ::tom_cid_codigo_municipio := cte["tom_cid_codigo_municipio"]
     ::tom_cid_municipio := cte["tom_cid_municipio"]
-    ::tom_end_cep := cte["tom_end_cep"]
+    ::tom_end_cep := getNumbers(cte["tom_end_cep"])
     ::tom_cid_uf := cte["tom_cid_uf"]
     ::xCaracAd := cte["xCaracAd"]
     ::xCaracSer := cte["xCaracSer"]
@@ -218,65 +220,65 @@ method new(cte) class TConhecimento
     ::clie_remetente_id := cte["clie_remetente_id"]
     ::rem_razao_social := cte["rem_razao_social"]
     ::rem_nome_fantasia := cte["rem_nome_fantasia"]
-    ::rem_cnpj := cte["rem_cnpj"]
+    ::rem_cnpj := getNumbers(cte["rem_cnpj"])
     ::rem_ie := cte["rem_ie"]
-    ::rem_cpf := cte["rem_cpf"]
-    ::rem_fone := cte["rem_fone"]
+    ::rem_cpf := getNumbers(cte["rem_cpf"])
+    ::rem_fone := getNumbers(cte["rem_fone"])
     ::rem_end_logradouro := cte["rem_end_logradouro"]
     ::rem_end_numero := cte["rem_end_numero"]
     ::rem_end_complemento := cte["rem_end_complemento"]
     ::rem_end_bairro := cte["rem_end_bairro"]
     ::rem_cid_codigo_municipio := cte["rem_cid_codigo_municipio"]
     ::rem_cid_municipio := cte["rem_cid_municipio"]
-    ::rem_end_cep := cte["rem_end_cep"]
+    ::rem_end_cep := getNumbers(cte["rem_end_cep"])
     ::rem_cid_uf := cte["rem_cid_uf"]
     ::rem_icms := cte["rem_icms"]
     ::clie_destinatario_id := cte["clie_destinatario_id"]
     ::des_razao_social := cte["des_razao_social"]
     ::des_nome_fantasia := cte["des_nome_fantasia"]
-    ::des_cnpj := cte["des_cnpj"]
+    ::des_cnpj := getNumbers(cte["des_cnpj"])
     ::des_ie := cte["des_ie"]
-    ::des_cpf := cte["des_cpf"]
-    ::des_fone := cte["des_fone"]
+    ::des_cpf := getNumbers(cte["des_cpf"])
+    ::des_fone := getNumbers(cte["des_fone"])
     ::des_end_logradouro := cte["des_end_logradouro"]
     ::des_end_numero := cte["des_end_numero"]
     ::des_end_complemento := cte["des_end_complemento"]
     ::des_end_bairro := cte["des_end_bairro"]
     ::des_cid_codigo_municipio := cte["des_cid_codigo_municipio"]
     ::des_cid_municipio := cte["des_cid_municipio"]
-    ::des_end_cep := cte["des_end_cep"]
+    ::des_end_cep := getNumbers(cte["des_end_cep"])
     ::des_cid_uf := cte["des_cid_uf"]
     ::des_icms := cte["des_icms"]
     ::clie_expedidor_id := cte["clie_expedidor_id"]
     ::exp_razao_social := cte["exp_razao_social"]
     ::exp_nome_fantasia := cte["exp_nome_fantasia"]
-    ::exp_cnpj := cte["exp_cnpj"]
+    ::exp_cnpj := getNumbers(cte["exp_cnpj"])
     ::exp_ie := cte["exp_ie"]
-    ::exp_cpf := cte["exp_cpf"]
-    ::exp_fone := cte["exp_fone"]
+    ::exp_cpf := getNumbers(cte["exp_cpf"])
+    ::exp_fone := getNumbers(cte["exp_fone"])
     ::exp_end_logradouro := cte["exp_end_logradouro"]
     ::exp_end_numero := cte["exp_end_numero"]
     ::exp_end_complemento := cte["exp_end_complemento"]
     ::exp_end_bairro := cte["exp_end_bairro"]
     ::exp_cid_codigo_municipio := cte["exp_cid_codigo_municipio"]
     ::exp_cid_municipio := cte["exp_cid_municipio"]
-    ::exp_end_cep := cte["exp_end_cep"]
+    ::exp_end_cep := getNumbers(cte["exp_end_cep"])
     ::exp_cid_uf := cte["exp_cid_uf"]
     ::exp_icms := cte["exp_icms"]
     ::clie_recebedor_id := cte["clie_recebedor_id"]
     ::rec_razao_social := cte["rec_razao_social"]
     ::rec_nome_fantasia := cte["rec_nome_fantasia"]
-    ::rec_cnpj := cte["rec_cnpj"]
+    ::rec_cnpj := getNumbers(cte["rec_cnpj"])
     ::rec_ie := cte["rec_ie"]
-    ::rec_cpf := cte["rec_cpf"]
-    ::rec_fone := cte["rec_fone"]
+    ::rec_cpf := getNumbers(cte["rec_cpf"])
+    ::rec_fone := getNumbers(cte["rec_fone"])
     ::rec_end_logradouro := cte["rec_end_logradouro"]
     ::rec_end_numero := cte["rec_end_numero"]
     ::rec_end_complemento := cte["rec_end_complemento"]
     ::rec_end_bairro := cte["rec_end_bairro"]
     ::rec_cid_codigo_municipio := cte["rec_cid_codigo_municipio"]
     ::rec_cid_municipio := cte["rec_cid_municipio"]
-    ::rec_end_cep := cte["rec_end_cep"]
+    ::rec_end_cep := getNumbers(cte["rec_end_cep"])
     ::rec_cid_uf := cte["rec_cid_uf"]
     ::rec_icms := cte["rec_icms"]
     ::vTPrest := cte["vTPrest"]

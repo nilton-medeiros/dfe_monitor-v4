@@ -7,7 +7,9 @@ procedure testSubmit(cte)
     local msgLog
     saveLog("Entrou no testSubmit com o parâmetro objeto cte")
 
-    msgLog := '{' + hb_eol()
+    msgLog := "TESTANDO MONITORAMENTO DE CTEs" + hb_eol() + hb_eol()
+    msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON COM TODAS AS CHAVES E VALORES DO OBJETO cte <<" + hb_eol() + hb_eol()
+    msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-SUBMIT",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
     msgLog += space(4) + '"emp_id":"' + cte:emp_id + '",' + hb_eol()
@@ -154,8 +156,8 @@ procedure testSubmit(cte)
     msgLog += space(4) + '"tipo_doc_anexo":"' + cte:tipo_doc_anexo + '",' + hb_eol()
     msgLog += space(4) + '"nOCA":"' + cte:nOCA + '",' + hb_eol()
     msgLog += space(4) + '"dPrevAereo":"' + cte:dPrevAereo + '",' + hb_eol()
-    msgLog += space(4) + '"monitor_action":"' + cte:monitor_action + '",' + hb_eol()
-    msgLog += "}"
+    msgLog += space(4) + '"monitor_action":"' + cte:monitor_action + '"' + hb_eol()
+    msgLog += "}" + hb_eol() + hb_eol()
     saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log"+hb_eol()+"O Timer foi desativado", "Teste SUBMIT")
 return

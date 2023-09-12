@@ -39,7 +39,7 @@ method new(empresa) class TEmpresa
     ::id := empresa['id']
     ::xNome := empresa['xNome']
     ::xFant := empresa['xFant']
-    ::CNPJ := empresa['CNPJ']
+    ::CNPJ := getNumbers(empresa['CNPJ'])
     ::IE := empresa['IE']
     ::xLgr := empresa['xLgr']
     ::nro := empresa['nro']
@@ -49,8 +49,8 @@ method new(empresa) class TEmpresa
     ::xMunEnv := empresa['xMunEnv']
     ::cMunEnv := empresa['cMunEnv']
     ::UF := empresa['UF']
-    ::CEP := empresa['CEP']
-    ::fone := empresa['fone']
+    ::CEP := getNumbers(empresa['CEP'])
+    ::fone := getNumbers(empresa['fone'])
     ::versao_xml := empresa['versao_xml']
     ::tpAmb := empresa['tpAmb']
     ::modal := empresa['modal']

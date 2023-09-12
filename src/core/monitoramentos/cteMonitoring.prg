@@ -17,9 +17,6 @@ procedure cteMonitoring()
             else
                 testCancel(cte)
             endif
-            if !MsgOkCancel({'testSubmit: OK', hb_eol(), 'testGetFiles: OK', hb_eol(),'testCancel: OK', hb_eol(), "Ver log do sistema."}, "Testes Concluídos")
-                turnOFF(true)
-            endif
         else
             switch cte:monitor_action
                 case "SUBMIT"
@@ -35,5 +32,9 @@ procedure cteMonitoring()
             DO EVENTS
         endif
     next
+
+    PlayOk()
+    MsgInfo({'testSubmit: OK', hb_eol(), 'testGetFiles: OK', hb_eol(),'testCancel: OK', hb_eol(), "Ver log do sistema."}, "Testes Concluídos")
+    turnOFF(true)
 
 return

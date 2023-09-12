@@ -165,9 +165,12 @@ return
 procedure testGetFiles(cte)
     local msgLog
     saveLog("Entrou no testGetFiles com o parâmetro objeto cte")
-    msgLog := '{' + hb_eol()
+    msgLog := "TESTANDO GETFILES DE CTEs" + hb_eol() + hb_eol()
+    msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE PARA OBTER OS ARQUIVOS PDF E XML <<" + hb_eol() + hb_eol()
+    msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-GETFILES",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
+    msgLog += space(4) + '"nuvem_fiscal_id":"fe9eb8df-b2ed-4c31-bff0-e8c7ca99b3cf"'
     msgLog += "}"
     saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
@@ -176,9 +179,12 @@ return
 procedure testCancel(cte)
     local msgLog
     saveLog("Entrou no testCancel com o parâmetro objeto cte")
-    msgLog := '{' + hb_eol()
+    msgLog := "TESTANDO CANCEL DE CTEs" + hb_eol() + hb_eol()
+    msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE A SEREM CANCELADOS <<" + hb_eol() + hb_eol()
+    msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-CANCEL",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
+    msgLog += space(4) + '"nuvem_fiscal_id":"e6aded28-5194-4eb1-882f-f6e7a364c676"'
     msgLog += "}"
     saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log", "Teste CANCEL")

@@ -3,6 +3,9 @@
  Verifica se o objeto cte está com os dados corretos vindo do banco de dados remoto ou do dados-fake
 */
 
+#require "hbwin"
+#include "simpleio.ch"
+
 procedure testSubmit(cte)
     local msgLog
     saveLog("Entrou no testSubmit com o parâmetro objeto cte")
@@ -163,14 +166,15 @@ procedure testSubmit(cte)
 return
 
 procedure testGetFiles(cte)
-    local msgLog
+    local msgLog, nRPCStatus
     saveLog("Entrou no testGetFiles com o parâmetro objeto cte")
     msgLog := "TESTANDO GETFILES DE CTEs" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE PARA OBTER OS ARQUIVOS PDF E XML <<" + hb_eol() + hb_eol()
     msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-GETFILES",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
-    msgLog += space(4) + '"nuvem_fiscal_id":"fe9eb8df-b2ed-4c31-bff0-e8c7ca99b3cf"'
+    msgLog += space(4) + '"nuvem_fiscal_id":"' + win_UuidCreateString(@nRPCStatus) + '",'
+    msgLog += space(4) + '"nRPCStatus":"' + hb_ntos(nRPCStatus) + '"'
     msgLog += "}"
     saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
@@ -184,7 +188,8 @@ procedure testCancel(cte)
     msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-CANCEL",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
-    msgLog += space(4) + '"nuvem_fiscal_id":"e6aded28-5194-4eb1-882f-f6e7a364c676"'
+    msgLog += space(4) + '"nuvem_fiscal_id":"' + win_UuidCreateString(@nRPCStatus) + '",'
+    msgLog += space(4) + '"nRPCStatus":"' + hb_ntos(nRPCStatus) + '"'
     msgLog += "}"
     saveLog(msgLog)
     MessageBox("Teste concluído, verificar arquivo de log", "Teste CANCEL")

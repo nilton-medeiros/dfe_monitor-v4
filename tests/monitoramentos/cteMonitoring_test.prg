@@ -162,7 +162,7 @@ procedure testSubmit(cte)
     msgLog += space(4) + '"monitor_action":"' + cte:monitor_action + '"' + hb_eol()
     msgLog += "}" + hb_eol() + hb_eol()
     saveLog(msgLog)
-    MsgBox({"Teste concluído, verificar arquivo de log", hb_eol(), "O Timer foi desativado"}, "Teste SUBMIT")
+    // MsgBox({"Teste concluído, verificar arquivo de log", hb_eol(), "O Timer foi desativado"}, "Teste SUBMIT")
 return
 
 procedure testGetFiles(cte)
@@ -173,11 +173,11 @@ procedure testGetFiles(cte)
     msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-GETFILES",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
-    msgLog += space(4) + '"nuvem_fiscal_id":"' + win_UuidCreateString(@nRPCStatus) + '",'
+    msgLog += space(4) + '"nuvem_fiscal_id":"' + win_UuidCreateString(@nRPCStatus) + '",' + hb_eol()
     msgLog += space(4) + '"nRPCStatus":"' + hb_ntos(nRPCStatus) + '"' + hb_eol()
     msgLog += "}" + hb_eol() + hb_eol()
     saveLog(msgLog)
-    MsgBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
+    // MsgBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
 return
 
 procedure testCancel(cte)
@@ -188,9 +188,9 @@ procedure testCancel(cte)
     msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-CANCEL",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()
-    msgLog += space(4) + '"nuvem_fiscal_id":"' + win_UuidCreateString(@nRPCStatus) + '",'
+    msgLog += space(4) + '"nuvem_fiscal_id":"' + win_UuidCreateString(@nRPCStatus) + '",' + hb_eol()
     msgLog += space(4) + '"nRPCStatus":"' + hb_ntos(nRPCStatus) + '"' + hb_eol()
     msgLog += "}" + hb_eol() + hb_eol()
     saveLog(msgLog)
-    MsgBox("Teste concluído, verificar arquivo de log", "Teste CANCEL")
+    // MsgBox("Testes concluídos, verificar arquivo de log", "Teste CANCEL")
 return

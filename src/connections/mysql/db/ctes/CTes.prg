@@ -182,7 +182,7 @@ method new() class TDbConhecimentos
     //sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
 
     // Testes em homologação: Remover este comando abaixo ---------------------------------
-    sql:add(" AND cte_id BETWEEN 44501 AND 44512 ")
+    sql:add(" AND cte_id BETWEEN 44501 AND 44506 ")
     // Testes em homologação --------------------------------------------------------------
 
     sql:add("ORDER BY cte_monitor_action, emp_id, cte_numero")

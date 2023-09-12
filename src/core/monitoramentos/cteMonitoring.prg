@@ -8,14 +8,17 @@ procedure cteMonitoring()
         return // Não retornou CTEs para transmitir a Sefaz
     endif
     for each cte in ctes:ctes
-        // Teste: remover esta variável após testes
+        // Testes: remover esta variável "emTeste" e o "if emTeste" após testes
         if emTeste
-            if cte:id < "44505"
+            if cte:id < "44503"
                 testSubmit(cte)
-            elseif cte:id < "44509"
+            elseif cte:id < "44504"
                 testGetFiles(cte)
             else
                 testCancel(cte)
+            endif
+            if !MsgOkCancel({'testSubmit: OK', hb_eol(), 'testGetFiles: OK', hb_eol(),'testCancel: OK', hb_eol(), "Ver log do sistema."}, "Testes Concluídos")
+                turnOFF(true)
             endif
         else
             switch cte:monitor_action

@@ -181,7 +181,7 @@ procedure testGetFiles(cte)
 return
 
 procedure testCancel(cte)
-    local msgLog
+    local msgLog, nRPCStatus
     saveLog("Entrou no testCancel com o parâmetro objeto cte")
     msgLog := "TESTANDO CANCEL DE CTEs" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE A SEREM CANCELADOS <<" + hb_eol() + hb_eol()

@@ -6,6 +6,7 @@ class TDbEmpresas
     data ok
     method new() constructor
     method count() setget
+    method getEmpresa(id)
 end class
 
 method new() class TDbEmpresas
@@ -36,9 +37,12 @@ method new() class TDbEmpresas
     sql:add("emp_seguradora AS seguradora, ")
     sql:add("emp_apolice AS apolice, ")
     sql:add("emp_simples_nacional AS CRT, ")
-    sql:add("IF(emp_dacte_layout='RETRATO', '1', '2') AS tpImp ")
+    sql:add("IF(emp_dacte_layout='RETRATO', '1', '2') AS tpImp, ")
+    sql:add("nuvemfiscal_client_id, ")
+    sql:add("nuvemfiscal_client_secret ")
     sql:add("FROM view_empresas ")
     sql:add("WHERE emp_ativa = 1 AND emp_tipo_emitente = 'CTE' AND emp_ambiente_sefaz IN (1,2) ")
+    sql:add(" AND CONCAT(nuvemfiscal_client_id, nuvemfiscal_client_secret) IS NOT NULL ")
     sql:add("ORDER BY emp_id")
 
     ::empresas := {}
@@ -60,3 +64,10 @@ return self
 
 method count() class TDbEmpresas
 return hmg_len(::empresas)
+
+method getEmpresa(id) class TDbEmpresas
+    local pos := hb_AScan(::empresas, {|oEmp| oEmp:FieldGet("id") == id})
+    if (pos == 0)
+        return nil
+    endif
+return ::empresas[pos]

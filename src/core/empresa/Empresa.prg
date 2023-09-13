@@ -29,6 +29,8 @@ class TEmpresa
     data apolice readonly
     data CRT readonly
     data tpImp readonly
+    data nuvemfiscal_client_id readonly
+    data nuvemfiscal_client_secret readonly
 
     method new(empresa) constructor
 
@@ -62,5 +64,7 @@ method new(empresa) class TEmpresa
     ::apolice := empresa['apolice']
     ::CRT := empresa['CRT']
     ::tpImp := empresa['tpImp']
+    ::nuvemfiscal_client_id := empresa['nuvemfiscal_client_id']
+    ::nuvemfiscal_client_secret := empresa['nuvemfiscal_client_secret']
 
 return self

@@ -49,88 +49,93 @@ method registerSystem() class TAppData
         hb_DirBuild( 'tmp' ) // Esta função, se precisar, cria pasta e subpastas em um comando só hb_DirBuild('dir1\dir2\dir3')
     endif
     if !hb_DirExists('log')
-       hb_DirBuild('log')
+        hb_DirBuild('log')
     endif
     if (RegistryRead(::winRegistryRoot + "DisplayName") == NIL)
-       RegistryWrite(::winRegistryRoot + "DisplayName", "Sistrom Sistemas web")
+        RegistryWrite(::winRegistryRoot + "DisplayName", "Sistrom Sistemas web")
     endif
     if (RegistryRead(::winRegistryRoot + "SupportUrl") == NIL)
-       RegistryWrite(::winRegistryRoot + "SupportUrl", ::supportUrl)
+        RegistryWrite(::winRegistryRoot + "SupportUrl", ::supportUrl)
     endif
     if (RegistryRead(::winRegistryPath + "Executable") == NIL)
-       RegistryWrite(::winRegistryPath + "Executable", ::executable)
+        RegistryWrite(::winRegistryPath + "Executable", ::executable)
     endif
     if (RegistryRead(::winRegistryPath + "DisplayName") == NIL) .or. !(RegistryRead(::winRegistryPath + "DisplayName") == ::displayName)
-       RegistryWrite(::winRegistryPath + "DisplayName", ::displayName)
+        RegistryWrite(::winRegistryPath + "DisplayName", ::displayName)
     endif
     if (RegistryRead(::winRegistryPath + "SysArchitecture") == NIL)
-       RegistryWrite(::winRegistryPath + "SysArchitecture", "32bit")
+        RegistryWrite(::winRegistryPath + "SysArchitecture", "32bit")
     endif
     if (RegistryRead(::winRegistryPath + "Version") == NIL) .or. !(RegistryRead(::winRegistryPath + "Version") == ::version)
-       RegistryWrite(::winRegistryPath + "Version", ::version)
-       RegistryWrite(::winRegistryPath + "SysVersion", hb_ULeft(::version, hb_RAt('.', ::version)-1))
+        RegistryWrite(::winRegistryPath + "Version", ::version)
+        RegistryWrite(::winRegistryPath + "SysVersion", hb_ULeft(::version, hb_RAt('.', ::version)-1))
     endif
     if (RegistryRead(::winRegistryPath + "SysVersion") == NIL)
-       RegistryWrite(::winRegistryPath + "SysVersion", hb_ULeft(::version, hb_RAt('.', ::version)-1))
+        RegistryWrite(::winRegistryPath + "SysVersion", hb_ULeft(::version, hb_RAt('.', ::version)-1))
     endif
     if (RegistryRead(::winRegistryPath + "InstallPath\Path") == NIL)
-       RegistryWrite(::winRegistryPath + "InstallPath\Path", hb_cwd())
+        RegistryWrite(::winRegistryPath + "InstallPath\Path", hb_cwd())
     endif
     if !(RegistryRead(::winRegistryPath + "InstallPath\dfePath") == NIL)
-      ::dfePath := RegistryRead(::winRegistryPath + "InstallPath\dfePath")
+        ::dfePath := RegistryRead(::winRegistryPath + "InstallPath\dfePath")
     else
-       RegistryWrite(::winRegistryPath + "InstallPath\dfePath", "C:\shared\DFe\")
+        RegistryWrite(::winRegistryPath + "InstallPath\dfePath", "C:\shared\DFe\")
     endif
     if (RegistryRead(::winRegistryPath + "Host\db_ServerName") == NIL)
-       RegistryWrite(::winRegistryPath + "Host\db_ServerName", "")
+        RegistryWrite(::winRegistryPath + "Host\db_ServerName", "")
     endif
     if (RegistryRead(::winRegistryPath + "Host\db_UserName") == NIL)
-       RegistryWrite(::winRegistryPath + "Host\db_UserName", "")
+        RegistryWrite(::winRegistryPath + "Host\db_UserName", "")
     endif
     if (RegistryRead(::winRegistryPath + "Host\db_Password") == NIL)
-       RegistryWrite(::winRegistryPath + "Host\db_Password", "")
+        RegistryWrite(::winRegistryPath + "Host\db_Password", "")
     endif
     if (RegistryRead(::winRegistryPath + "Host\db_Port") == NIL)
-       RegistryWrite(::winRegistryPath + "Host\db_Port", "")
+        RegistryWrite(::winRegistryPath + "Host\db_Port", "")
     endif
     if (RegistryRead(::winRegistryPath + "Host\db_Database") == NIL)
-       RegistryWrite(::winRegistryPath + "Host\db_Database", "")
+        RegistryWrite(::winRegistryPath + "Host\db_Database", "")
     endif
     if (RegistryRead(::winRegistryPath + "Host\ftp_url") == NIL)
         RegistryWrite(::winRegistryPath + "Host\ftp_url", "")
-     endif
+    endif
     if (RegistryRead(::winRegistryPath + "Host\ftp_server") == NIL)
         RegistryWrite(::winRegistryPath + "Host\ftp_server", "")
-     endif
+    endif
     if (RegistryRead(::winRegistryPath + "Host\ftp_user") == NIL)
         RegistryWrite(::winRegistryPath + "Host\ftp_user", "")
-     endif
+    endif
     if (RegistryRead(::winRegistryPath + "Host\ftp_password") == NIL)
         RegistryWrite(::winRegistryPath + "Host\ftp_password", "")
-     endif
+    endif
     if (RegistryRead(::winRegistryPath + "Monitoring\TimerStart") == NIL)
-       RegistryWrite(::winRegistryPath + "Monitoring\TimerStart", "23:00")
+        RegistryWrite(::winRegistryPath + "Monitoring\TimerStart", "23:00")
     endif
     if (RegistryRead(::winRegistryPath + "Monitoring\TimerEnd") == NIL)
-       RegistryWrite(::winRegistryPath + "Monitoring\TimerEnd", "08:00")
+        RegistryWrite(::winRegistryPath + "Monitoring\TimerEnd", "08:00")
     endif
     if (RegistryRead(::winRegistryPath + "Monitoring\frequency") == NIL)
-       RegistryWrite(::winRegistryPath + "Monitoring\frequency", 10)
+        RegistryWrite(::winRegistryPath + "Monitoring\frequency", 10)
     endif
     if (RegistryRead(::winRegistryPath + "Monitoring\Running") == NIL)
-       RegistryWrite(::winRegistryPath + "Monitoring\Running", 0)
+        RegistryWrite(::winRegistryPath + "Monitoring\Running", 0)
     endif
     if (RegistryRead(::winRegistryPath + "Monitoring\DontRun") == NIL)
-       RegistryWrite(::winRegistryPath + "Monitoring\DontRun", 0)
+        RegistryWrite(::winRegistryPath + "Monitoring\DontRun", 0)
     endif
     if (RegistryRead(::winRegistryPath + "Monitoring\Stop_Execution") == NIL)
-       RegistryWrite(::winRegistryPath + "Monitoring\Stop_Descricao", "Compatibilidade com o RemoteUpdate")
-       RegistryWrite(::winRegistryPath + "Monitoring\Stop_Execution", 0)
+        RegistryWrite(::winRegistryPath + "Monitoring\Stop_Descricao", "Compatibilidade com o RemoteUpdate")
+        RegistryWrite(::winRegistryPath + "Monitoring\Stop_Execution", 0)
     endif
+    if (RegistryRead(::winRegistryPath + "nuvemFiscal\token") == NIL)
+        RegistryWrite(::winRegistryPath + "nuvemFiscal\token", "")
+        RegistryWrite(::winRegistryPath + "nuvemFiscal\expires_in", "")
+    endif
+
     if ::isRunning()
-       saveLog('O sistema não foi desligado corretamente da última vez')
+        saveLog('O sistema não foi desligado corretamente da última vez')
     else
-       RegistryWrite(::winRegistryPath + "Monitoring\Running", 1)
+        RegistryWrite(::winRegistryPath + "Monitoring\Running", 1)
     endif
     AEval(Directory("log\*.*"), {|aFile| iif(aFile[3] <= (Date()-70), hb_FileDelete("log\"+aFile[1]), NIL)})
     AEval(Directory("tmp\*.*"), {|aFile| iif(aFile[3] <= (Date()-10), hb_FileDelete("tmp\"+aFile[1]), NIL)})
@@ -176,4 +181,4 @@ return nil
 
 method setUTC(emp_id) class TAppData
     ::utc := appEmpresas:getUTC(emp_id)
- return nil
+return nil

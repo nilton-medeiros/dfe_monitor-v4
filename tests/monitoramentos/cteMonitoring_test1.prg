@@ -10,9 +10,8 @@ procedure testSubmit(cte)
     local msgLog
     saveLog("Entrou no testSubmit com o parâmetro objeto cte")
 
-    msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO SUBMETER OS CTE" + hb_eol() + hb_eol()
-    msgLog += ">> ESPERA-SE QUE O OBJETO cte EXPORTE TODOS OS CAMPOS PARA A NUVEM FISCAL POR JSON <<" + hb_eol() + hb_eol()
-    
+    msgLog := "TESTANDO MONITORAMENTO DE CTEs" + hb_eol() + hb_eol()
+    msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON COM TODAS AS CHAVES E VALORES DO OBJETO cte <<" + hb_eol() + hb_eol()
     msgLog += '{' + hb_eol()
     msgLog += space(4) + '"test":"TEST-SUBMIT",' + hb_eol()
     msgLog += space(4) + '"id":"' + cte:id + '",' + hb_eol()

@@ -14,5 +14,6 @@
       "mdfes": "docs",
       "monitoramento": "wakatime",
       "monitoramentos": "wakatime",
+      "nuvemFiscal": "aws"
     }
   }

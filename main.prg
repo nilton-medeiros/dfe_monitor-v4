@@ -10,6 +10,7 @@ procedure main
     public appFTP
     public appEmpresas
     public appUsuarios
+    public appNuvemFiscal
 
     // Teste: Em modo de homologação - remover essa variável appQtdeDeTestes de todo o sistema após testes e modo em produção
     public appQtdeDeTestes := 0
@@ -44,22 +45,6 @@ procedure about()
         " by Sistrom Sistemas Web, 2010-" + hb_ntos(year(date())) + " | suporte@sistrom.com.br",;
         LoadTrayIcon(GetInstance(), "main");
     )
-return
-
-procedure turnOFF(isUser)
-
-    default isUser := false
-    stopTimer()
-    appDataSource:disconnect()
-
-    if isUser
-       saveLog('Sistema encerrado pelo usuário')
-    else
-       saveLog('Sistema encerrou a execução')
-    endif
-    RegistryWrite(appData:winRegistryPath + "Monitoring\Running", 0)
-    RELEASE WINDOW ALL
-
 return
 
 procedure main_form_oninit()
@@ -107,6 +92,11 @@ procedure main_form_oninit()
             saveLog("Nenhum usuario admin foi retornado do banco de dados")
         endif
     else
+        turnOFF()
+    endif
+
+    appNuvemFiscal := TNuvemFiscal():new()
+    if !appNuvemFiscal:Authorized
         turnOFF()
     endif
 
@@ -163,5 +153,21 @@ procedure main_Timer_dfe_action()
     endif
 
     startTimer()
+
+return
+
+procedure turnOFF(isUser)
+
+    default isUser := false
+    stopTimer()
+    appDataSource:disconnect()
+
+    if isUser
+       saveLog('Sistema encerrado pelo usuário')
+    else
+       saveLog('Sistema encerrou a execução')
+    endif
+    RegistryWrite(appData:winRegistryPath + "Monitoring\Running", 0)
+    RELEASE WINDOW ALL
 
 return

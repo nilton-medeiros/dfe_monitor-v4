@@ -35,7 +35,7 @@ procedure cteMonitoring()
 
     PlayOk()
     MsgInfo({'testSubmit: OK', hb_eol(), 'testGetFiles: OK', hb_eol(),'testCancel: OK', hb_eol(), "Ver log do sistema."}, "Testes Concluídos")
-    log("Fim dos testes, desligamento do sistema automático.")
+    saveLog("Fim dos testes, desligamento do sistema automático.")
     turnOFF()
 
 return

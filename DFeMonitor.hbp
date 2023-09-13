@@ -10,6 +10,7 @@ src\connections\mysql\db\shared\convertFieldsDb.prg
 src\connections\mysql\db\shared\Query.prg
 src\connections\mysql\db\shared\sqlString.prg
 src\connections\mysql\db\usuarios\Usuarios.prg
+src\connections\nuvemFiscal\NuvemFiscal.prg
 src\core\AppData.prg
 src\core\cte\cte.prg
 src\core\empresa\Empresa.prg
@@ -27,4 +28,5 @@ src\utils\log.prg
 src\utils\msgDebugInfo.prg
 src\utils\msgNotify.prg
 src\utils\timersForms.prg
+tests\monitoramentos\console.prg
 tests\monitoramentos\cteMonitoring_test.prg

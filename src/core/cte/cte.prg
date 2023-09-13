@@ -305,5 +305,4 @@ method new(cte) class TConhecimento
     ::nOCA := cte["nOCA"]
     ::dPrevAereo := date_as_string(cte["dPrevAereo"])
     ::monitor_action := cte["monitor_action"]
-
 return self

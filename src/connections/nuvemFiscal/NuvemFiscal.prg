@@ -1,5 +1,6 @@
 #include "hmg.ch"
 #include <hbclass.ch>
+
 #define MODO_ASSINCRONO .F.
 
 class TNuvemFiscal
@@ -38,15 +39,17 @@ method getNewToken() class TNuvemFiscal
     local client_secret := empresa:nuvemfiscal_client_secret
     local escope := "cte mdfe cnpj"
     local hResp
+    local objError
 
-    try
+    begin sequence
         restApi := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
-    catch
-        saveLog("Erro na criação do serviço: MSXML2")
-   	 consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi)})
-     return false
-    end
-    try
+        if Empty(restApi)
+            saveLog("Erro na criação do serviço: MSXML2")
+            consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi)})
+            Break
+        endif
+    end sequence
+    begin sequence
         restApi:Open("POST", url, MODO_ASSINCRONO)
         restApi:SetRequestHeader("Content-Type", content_type)
         restApi:SetRequestHeader("grant_type", grant_type)
@@ -55,11 +58,15 @@ method getNewToken() class TNuvemFiscal
         restApi:SetRequestHeader("escope", escope)
         restApi:Send()
         restApi:WaitForResponse(5000)
-    catch
+    recover using objError
         saveLog("Erro de conexão com o site")
-        consoleLog({"Erro de conexão com o site", hb_eol(), MsgDebug(restApi)})
-        return false
-    end
+        if objError:genCode != 0
+            consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), MsgDebug(restApi)})
+        else
+            consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), MsgDebug(restApi)})
+        endif
+        Break
+    end sequence
 
     response := restApi:ResponseBody
     consoleLog(response)

@@ -32,7 +32,7 @@ method getNewToken() class TNuvemFiscal
     local empresa := appEmpresas:empresas[1]
     local url := "https://auth.nuvemfiscal.com.br/oauth/token"
     local restApi, body, response, hToken
-    local content_type := ""application/x-www-form-urlencoded""
+	local content_type := "application/x-www-form-urlencoded"
     local grant_type := "client_credentials"
     local client_id := empresa:nuvemfiscal_client_id
     local client_secret := empresa:nuvemfiscal_client_secret
@@ -43,8 +43,8 @@ method getNewToken() class TNuvemFiscal
         restApi := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
     catch
         saveLog("Erro na criação do serviço: MSXML2")
-        consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi)})
-        return false
+   	 consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi)})
+     return false
     end
     try
         restApi:Open("POST", url, MODO_ASSINCRONO)

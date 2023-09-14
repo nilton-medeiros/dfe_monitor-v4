@@ -1,8 +1,23 @@
-hbmk2: Linkando... DFeMonitor.exe
-.hbmk/win/mingw/main.o:main.c:(.data+0x358): undefined reference to `HB_FUN_REGISTRYREAD'
-collect2.exe: error: ld returned 1 exit status
-hbmk2[DFeMonitor]: Erro: Executando linkeditor. 1
-gcc.exe .hbmk/win/mingw/main.o .hbmk/win/mingw/setup.o .hbmk/win/mingw/ComboBox.o .hbmk/win/mingw/textBoxFocus.o .hbmk/win/mingw/Ftp.o .hbmk/win/mingw/DataSource.o .hbmk/win/mingw/CTes.o .hbmk/win/mingw/Empresas.o .hbmk/win/mingw/convertFieldsDb.o .hbmk/win/mingw/Query.o .hbmk/win/mingw/sqlString.o .hbmk/win/mingw/Usuarios.o .hbmk/win/mingw/AppData.o .hbmk/win/mingw/cte.o .hbmk/win/mingw/Empresa.o .hbmk/win/mingw/cteMonitoring.o .hbmk/win/mingw/mdfeMonitoring.o .hbmk/win/mingw/Usuario.o .hbmk/win/mingw/capitalize.o .hbmk/win/mingw/desacentuar.o .hbmk/win/mingw/fieldConversions.o .hbmk/win/mingw/firstString.o .hbmk/win/mingw/getNumbers.o .hbmk/win/mingw/isTrue.o .hbmk/win/mingw/jsonDecode.o .hbmk/win/mingw/log.o .hbmk/win/mingw/msgDebugInfo.o .hbmk/win/mingw/msgNotify.o .hbmk/win/mingw/timersForms.o .hbmk/win/mingw/cteMonitoring_test.o .hbmk/win/mingw/_hbmkaut_main.o "C:/Users/nilto/OneDrive/Desenvolvimento/Projetos/harbour/apoio_tms/dfe_monitor-v4/_temp.o"    -pthread  -static-libgcc  -static-libstdc++  -static -lpthread -mwindows -Wl,--start-group -lhmg -lcrypt -ledit -leditex -lgraph -lini -lreport -lhfcl -lmsvfw32 -lvfw32 -lhbmysql -lmysql -lhbfimage -lhbpgsql -lsddmy -lhbvpdf -lhbct -lhbwin -lhbmzip -lminizip -lhbmemio -lhbmisc -lhbtip -lsqlite3 -lhbsqlit3 -lsddodbc -lrddsql -lhbodbc -lodbc32 -lhbhpdf -lhbnetio -lxhb -lpng -llibhpdf -lhbzebra -lhbextern -lhbdebug -lhbvmmt -lhbrtl -lhblang -lhbcpage -lgtcgi -lgtpca -lgtstd -lgtwin -lgtwvt -lgtgui -lhbrdd -lhbuddall -lhbusrrdd -lrddntx -lrddcdx -lrddnsx -lrddfpt -lhbrdd -lhbhsx -lhbsix -lhbmacro -lhbcplr -lhbpp -lhbcommon -lhbmainwin -lkernel32 -luser32 -lgdi32 -ladvapi32 -lws2_32 -liphlpapi -lwinspool -lcomctl32 -lcomdlg32 -lshell32 -luuid -lole32 -loleaut32 -lmpr -lwinmm -lmapi32 -limm32 -lmsimg32 -lwininet -lhbpcre -lhbzlib   -Wl,--end-group -oDFeMonitor.exe  -LC:/hmg.3.4.4/harbour/lib/win/mingw -LC:/hmg.3.4.4/lib
+hbmk2: Harbour: Compilando m�dulos...
+Harbour 3.2.0dev (r1703241902)
+Copyright (c) 1999-2016, http://harbour-project.org/
 
-hbmk2: Erro: Referenciado, faltando, mas fun��es desconhecida(s):
-       REGISTRYREAD()
+C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg(35) Error E0030  Syntax error "syntax error at 'APPLICATION'"
+
+C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg(42) Error E0020  Incomplete statement or unbalanced delimiters
+
+C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg(44) Error E0020  Incomplete statement or unbalanced delimiters
+
+C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg(48) Error E0010  ENDIF does not match IF
+
+C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg(49) Error E0020  Incomplete statement or unbalanced delimiters
+
+C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg(58) Error E0020  Incomplete statement or unbalanced delimiters
+
+C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg(62) Error E0010  ENDIF does not match IF
+
+7 errors
+
+No code generated.
+hbmk2[DFeMonitor]: Erro: Executando o compilador Harbour (interno): 1
+(C:\hmg.3.4.4\harbour\bin\harbour.exe) -n2 C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\main.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\mysql\db\empresas\Empresas.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\connections\nuvemFiscal\NuvemFiscal.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\core\AppData.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\core\cte\cte.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\core\empresa\Empresa.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\src\core\monitoramentos\cteMonitoring.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\tests\monitoramentos\console.prg C:\Users\nilto\OneDrive\Desenvolvimento\Projetos\harbour\apoio_tms\dfe_monitor-v4\tests\monitoramentos\cteMonitoring_test.prg -DHBMK_HAS_HMG32=1 -q -DHBMK_HAS_DFEMONITOR=1 -o.hbmk\win\mingw\ -iC:\hmg.3.4.4\harbour\include -i. -iC:\hmg.3.4.4\include

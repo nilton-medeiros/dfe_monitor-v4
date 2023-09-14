@@ -8,6 +8,7 @@ class TNuvemFiscal
     data token readonly
     data expires_in readonly
     data Authorized readonly
+    data regPath protected
 
     method new() constructor
     method getNewToken()
@@ -17,8 +18,9 @@ end class
 method new() class TNuvemFiscal
     static twoDaysBefore := 172800
 
-    ::token := CharXor(RegistryRead(::winRegistryPath + "nuvemFiscal\token"), "SysWeb2023")
-    ::expires_in := RegistryRead(::winRegistryPath + "nuvemFiscal\expires_in")
+    ::regPath := appData:winRegistryPath
+    ::token := CharXor(RegistryRead(::regPath + "nuvemFiscal\token"), "SysWeb2023")
+    ::expires_in := RegistryRead(::regPath + "nuvemFiscal\expires_in")
 
     if Empty(::expires_in) .or. (::expires_in > Seconds()-twoDaysBefore)
         ::Authorized := ::getNewToken()
@@ -75,8 +77,8 @@ method getNewToken() class TNuvemFiscal
     if hb_HGetRef(hResp, "access_token")
         ::token := hResp["access_token"]
         ::expires_in := Seconds() + hResp["expires_in"]
-        RegistryWrite(::winRegistryPath + "nuvemFiscal\token", CharXor(::token, "SysWeb2023"))
-        RegistryWrite(::winRegistryPath + "nuvemFiscal\expires_in", ::expires_in)
+        RegistryWrite(::regPath + "nuvemFiscal\token", CharXor(::token, "SysWeb2023"))
+        RegistryWrite(::regPath + "nuvemFiscal\expires_in", ::expires_in)
         lAuth := true
     else
         consoleLog({"O responseBody (hResp) retornou vazio", hb_eol(), MsgDebug(hResp)})

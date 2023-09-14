@@ -18,7 +18,7 @@ end class
 method new() class TNuvemFiscal
     ::regPath := appData:winRegistryPath
     ::token := CharXor(RegistryRead(::regPath + "nuvemFiscal\token"), "SysWeb2023")
-    ::expires_in := RegistryRead(::regPath + "nuvemFiscal\expires_in")
+    ::expires_in := StoD(RegistryRead(::regPath + "nuvemFiscal\expires_in"))
 
     if Empty(::expires_in) .or. (::expires_in > Date()-2)
         ::Authorized := ::getNewToken()

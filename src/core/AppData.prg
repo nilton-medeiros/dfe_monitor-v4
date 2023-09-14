@@ -129,7 +129,11 @@ method registerSystem() class TAppData
     endif
     if (RegistryRead(::winRegistryPath + "nuvemFiscal\token") == NIL)
         RegistryWrite(::winRegistryPath + "nuvemFiscal\token", "")
-        RegistryWrite(::winRegistryPath + "nuvemFiscal\expires_in", "")
+    endif
+    if (RegistryRead(::winRegistryPath + "nuvemFiscal\expires_in") == NIL)
+        RegistryWrite(::winRegistryPath + "nuvemFiscal\expires_in", Date()-2)
+        // Remover esta linha abaixo de teste
+        RegistryWrite(::winRegistryPath + "nuvemFiscal\expires_dtos", DtoS(Date()-2))
     endif
 
     if ::isRunning()

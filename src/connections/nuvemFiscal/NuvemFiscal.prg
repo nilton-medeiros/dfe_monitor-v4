@@ -16,13 +16,11 @@ class TNuvemFiscal
 end class
 
 method new() class TNuvemFiscal
-    static twoDaysBefore := 172800
-
     ::regPath := appData:winRegistryPath
     ::token := CharXor(RegistryRead(::regPath + "nuvemFiscal\token"), "SysWeb2023")
     ::expires_in := RegistryRead(::regPath + "nuvemFiscal\expires_in")
 
-    if Empty(::expires_in) .or. (::expires_in > Seconds()-twoDaysBefore)
+    if Empty(::expires_in) .or. (::expires_in > Date()-2)
         ::Authorized := ::getNewToken()
     else
         ::Authorized := true
@@ -39,22 +37,27 @@ method getNewToken() class TNuvemFiscal
     local client_id := empresa:nuvemfiscal_client_id
     local client_secret := empresa:nuvemfiscal_client_secret
     local scope := "cte mdfe cnpj"
-    local hResp
-    local objError, msgError
-    local body
+    local hResp, objError, msgError, body
 
     begin sequence
         restApi := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
         if Empty(restApi)
             saveLog("Erro na criação do serviço: MSXML2")
-            consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi)})
+            consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi), hb_eol()})
             Break
         endif
     end sequence
+
     begin sequence
+
         restApi:Open("POST", url, MODO_ASSINCRONO)
         restApi:SetRequestHeader("Content-Type", content_type)
 
+        /*  Os parâmetros são separados pelo & (ê comercial),
+            mas o Harbour interpreta como macro substituição!
+            Neste caso, é preciso usar o chr(38) para impor o &
+            a cada parâmentro na string body
+         */
         body := "grant_type=client_credentials"
         body += chr(38) + "client_id=" + client_id
         body += chr(38) + "client_secret=" + client_secret
@@ -62,24 +65,27 @@ method getNewToken() class TNuvemFiscal
 
         restApi:Send(body)
         restApi:WaitForResponse(5000)
+
     recover using objError
         msgError := MsgDebug(restApi)
         if objError:genCode != 0
-            consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), MsgDebug(restApi)})
+            consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), MsgDebug(restApi), hb_eol()})
         else
-            consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), MsgDebug(restApi)})
+            consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), MsgDebug(restApi), hb_eol()})
         endif
-        saveLog({"Erro de conexão com o site", hb_eol(), msgError})
+        saveLog({"Erro de conexão com o site", hb_eol(), msgError, hb_eol()})
         Break
     end sequence
 
     response := restApi:ResponseBody
-    consoleLog(response)
+    // consoleLog(response)
     hResp := jsonDecode(response)
 
     if hb_HGetRef(hResp, "access_token")
         ::token := hResp["access_token"]
-        ::expires_in := Seconds() + hResp["expires_in"]
+        // Converte os segundos em dia (até segunda ordem da nuvem fiscal, é sempre 2592000's, que dá 30 dias)
+        ::expires_in := Date() + hResp["expires_in"]/60/60/24
+        ::expires_in := ::expires_in -2 // Menos 2 dias para garantir a renovação antes de expirar efetivamente
         RegistryWrite(::regPath + "nuvemFiscal\token", CharXor(::token, "SysWeb2023"))
         RegistryWrite(::regPath + "nuvemFiscal\expires_in", ::expires_in)
         lAuth := true

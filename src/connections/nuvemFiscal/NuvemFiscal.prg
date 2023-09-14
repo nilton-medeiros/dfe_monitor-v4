@@ -38,7 +38,7 @@ method getNewToken() class TNuvemFiscal
 	local content_type := "application/x-www-form-urlencoded"
     local client_id := empresa:nuvemfiscal_client_id
     local client_secret := empresa:nuvemfiscal_client_secret
-    local escope := "cte mdfe cnpj"
+    local scope := "cte mdfe cnpj"
     local hResp
     local objError, msgError
     local body
@@ -58,7 +58,7 @@ method getNewToken() class TNuvemFiscal
         body := "grant_type=client_credentials"
         body += chr(38) + "client_id=" + client_id
         body += chr(38) + "client_secret=" + client_secret
-        body += chr(38) + "escope=" + escope
+        body += chr(38) + "scope=" + scope
 
         restApi:Send(body)
         restApi:WaitForResponse(5000)

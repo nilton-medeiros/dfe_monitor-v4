@@ -34,14 +34,14 @@ method getNewToken() class TNuvemFiscal
     local lAuth := false
     local empresa := appEmpresas:empresas[1]
     local url := "https://auth.nuvemfiscal.com.br/oauth/token"
-    local restApi, body, response, hToken
+    local restApi, response
 	local content_type := "application/x-www-form-urlencoded"
-    local grant_type := "client_credentials"
     local client_id := empresa:nuvemfiscal_client_id
     local client_secret := empresa:nuvemfiscal_client_secret
     local escope := "cte mdfe cnpj"
     local hResp
-    local objError
+    local objError, msgError
+    local body
 
     begin sequence
         restApi := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
@@ -54,19 +54,22 @@ method getNewToken() class TNuvemFiscal
     begin sequence
         restApi:Open("POST", url, MODO_ASSINCRONO)
         restApi:SetRequestHeader("Content-Type", content_type)
-        restApi:SetRequestHeader("grant_type", grant_type)
-        restApi:SetRequestHeader("client_id", client_id)
-        restApi:SetRequestHeader("client_secret", client_secret)
-        restApi:SetRequestHeader("escope", escope)
-        restApi:Send()
+
+        body := "grant_type=client_credentials"
+        body += chr(38) + "client_id=" + client_id
+        body += chr(38) + "client_secret=" + client_secret
+        body += chr(38) + "escope=" + escope
+
+        restApi:Send(body)
         restApi:WaitForResponse(5000)
     recover using objError
-        saveLog("Erro de conexão com o site")
+        msgError := MsgDebug(restApi)
         if objError:genCode != 0
             consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), MsgDebug(restApi)})
         else
             consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), MsgDebug(restApi)})
         endif
+        saveLog({"Erro de conexão com o site", hb_eol(), msgError})
         Break
     end sequence
 
@@ -81,7 +84,9 @@ method getNewToken() class TNuvemFiscal
         RegistryWrite(::regPath + "nuvemFiscal\expires_in", ::expires_in)
         lAuth := true
     else
-        consoleLog({"O responseBody (hResp) retornou vazio", hb_eol(), MsgDebug(hResp)})
+        msgError := MsgDebug(response, hResp)
+        consoleLog({"ResponseBody (hResp) retornou vazio", hb_eol(), msgError})
+        saveLog("Falha na autenticação com a API da NuvemFiscal, o responseBody (hResp) retornou vazio")
     endif
 
 return lAuth

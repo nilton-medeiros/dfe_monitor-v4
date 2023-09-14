@@ -106,7 +106,7 @@ procedure main_form_oninit()
     if !appNuvemFiscal:Authorized
         turnOFF()
     endif
-    consoleLog({'token: ', appNuvemFiscal:token, hb_eol(), 'Validade: ', appNuvemFiscal:expires_in, hb_eol(), 'Auth: ', appNuvemFiscal:Authorized, hb_eol(), 'RegPath: ', appNuvemFiscal:regPath})
+    consoleLog({'token: ', appNuvemFiscal:token, hb_eol(), 'Validade: ', appNuvemFiscal:expires_in, hb_eol(), 'Auth: ', appNuvemFiscal:Authorized, hb_eol()})
     SetProperty("main", "notifyIcon", "ntfyICON")
     startTimer()
 

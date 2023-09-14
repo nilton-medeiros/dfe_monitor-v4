@@ -63,6 +63,13 @@ procedure main_form_oninit()
 
         :registerDatabase()
 
+        /*
+            Substituição do translado da função RegistryRead pela real função win_regRead()
+            Por motivo que eu desconhecido, a função RegistryRead() aqui no main.prg não é
+            reconhecida pelo compilador, da erro de compilação, tentei de tudo, o
+            #include 'hmg.ch' está ok, tanto que curiosamente a função RegistryWrite() é reconhecida
+            pela compilação.
+        */
         dbServer := CharXor(win_regread(:winRegistryPath + "Host\db_ServerName"), "SysWeb2023")
         dbUser := CharXor(win_regread(:winRegistryPath + "Host\db_UserName"), "SysWeb2023")
         dbPassword := CharXor(win_regread(:winRegistryPath + "Host\db_Password"), "SysWeb2023")
@@ -99,7 +106,7 @@ procedure main_form_oninit()
     if !appNuvemFiscal:Authorized
         turnOFF()
     endif
-
+    consoleLog({'token: ', appNuvemFiscal:token, hb_eol(), 'Validade: ', appNuvemFiscal:expires_in, hb_eol(), 'Auth: ', appNuvemFiscal:Authorized, hb_eol(), 'RegPath: ', appNuvemFiscal:regPath})
     SetProperty("main", "notifyIcon", "ntfyICON")
     startTimer()
 

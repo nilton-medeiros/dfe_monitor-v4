@@ -8,7 +8,7 @@
 
 procedure cteSubmit(cte)
     local msgLog
-    saveLog("Entrou no cteSubmit com o parâmetro objeto cte")
+    consoleLog("Entrou no cteSubmit com o parâmetro objeto cte")
 
     msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO SUBMETER OS CTE" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA-SE QUE O OBJETO cte EXPORTE TODOS OS CAMPOS PARA A NUVEM FISCAL POR JSON <<" + hb_eol() + hb_eol()

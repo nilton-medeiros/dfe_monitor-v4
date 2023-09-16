@@ -10,7 +10,7 @@ class TDbEmpresas
 end class
 
 method new() class TDbEmpresas
-    local empresa, apiEmp
+    local empresa, nuvemFiscal
     local hRow, dbEmpresas, sql := TSQLString():new()
 
     sql:setValue("SELECT emp_id AS id, ")
@@ -18,6 +18,7 @@ method new() class TDbEmpresas
     sql:add("emp_nome_fantasia AS xFant, ")
     sql:add("emp_cnpj AS CNPJ, ")
     sql:add("emp_inscricao_estadual AS IE, ")
+    sql:add("emp_inscricao_municipal AS IM, ")
     sql:add("emp_logradouro AS xLgr, ")
     sql:add("emp_numero AS nro, ")
     sql:add("emp_complemento AS xCpl, ")
@@ -59,11 +60,16 @@ method new() class TDbEmpresas
             AAdd(::empresas, empresa)
             // Verifica se a empresa precisa ser cadastrada ou alterada na Nuvem Fiscal
             if empresa:nuvemfiscal_cadastrar
-                apiEmp := TApiEmpresas():new(empresa)
-                apiEmp:Cadastrar()
+                nuvemFiscal := TApiNfEmpresas():new()
+                if nuvemFiscal:Cadastrar(empresa)
+                    // Se cadastrou, verifica se retornou campos diferentes e atualiza bd
+                    consoleLog({"Empresa cadastrada | Campos retornados", hb_eol(), nuvemFiscal:responseBody})
+                else
+                    // Pega o motivo por não cadastrar
+                endif
             elseif empresa:nuvemfiscal_alterar
-                apiEmp := TApiEmpresas():new(empresa)
-                apiEmp:Alterar()
+                nuvemFiscal := TApiNfEmpresas():new()
+                nuvemFiscal:Alterar(empresa)
             endif
             dbEmpresas:db:Skip()
         enddo

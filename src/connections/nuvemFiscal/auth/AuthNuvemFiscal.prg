@@ -11,7 +11,7 @@ class TAuthNuvemFiscal
     data Authorized readonly
 
     method new() constructor
-    method getNewToken()
+    method getNewToken() protected
 
 end class
 
@@ -29,10 +29,10 @@ method new() class TAuthNuvemFiscal
 return Self
 
 method getNewToken() class TAuthNuvemFiscal
-    local lAuth := false
-    local empresa := appEmpresas:empresas[1]
+    local lAuth := false, lError := false
+    local empresa := appEmpresas:empresas[1]    // as Keys são as mesmas para todas as empresas
     local url := "https://auth.nuvemfiscal.com.br/oauth/token"
-    local restApi, response
+    local connection, response
 	local content_type := "application/x-www-form-urlencoded"
     local client_id := empresa:nuvemfiscal_client_id
     local client_secret := empresa:nuvemfiscal_client_secret
@@ -40,18 +40,23 @@ method getNewToken() class TAuthNuvemFiscal
     local hResp, objError, msgError, body
 
     begin sequence
-        restApi := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
-        if Empty(restApi)
+        connection := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
+        if Empty(connection)
             saveLog("Erro na criação do serviço: MSXML2")
-            // consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi), hb_eol()})
+            // consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(connection), hb_eol()})
+            lError := true
             Break
         endif
     end sequence
 
+    if lError
+        return false
+    endif
+
     begin sequence
 
-        restApi:Open("POST", url, MODO_ASSINCRONO)
-        restApi:SetRequestHeader("Content-Type", content_type)
+        connection:Open("POST", url, MODO_ASSINCRONO)
+        connection:SetRequestHeader("Content-Type", content_type)
 
         /*  Os parâmetros são separados pelo & (ê comercial),
             mas o Harbour interpreta como macro substituição!
@@ -63,23 +68,28 @@ method getNewToken() class TAuthNuvemFiscal
         body += chr(38) + "client_secret=" + client_secret
         body += chr(38) + "scope=" + scope
 
-        restApi:Send(body)
-        restApi:WaitForResponse(5000)
+        connection:Send(body)
+        connection:WaitForResponse(5000)
 
     recover using objError
-        msgError := MsgDebug(restApi)
+        msgError := MsgDebug(connection)
         if objError:genCode != 0
-            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), MsgDebug(restApi), hb_eol()})
+            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), msgError, hb_eol()})
             saveLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol()})
         else
-            // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), MsgDebug(restApi), hb_eol()})
-            consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol()})
+            // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), msgError, hb_eol()})
+            saveLog({"Erro de conexão com o site", hb_eol(), hb_eol()})
         endif
         saveLog({"Erro de conexão com o site", hb_eol(), msgError, hb_eol()})
+        lError := true
         Break
     end sequence
 
-    response := restApi:ResponseBody
+    if lError
+        return false
+    endif
+
+    response := connection:ResponseBody
     // consoleLog(response)
     hResp := jsonDecode(response)
 
@@ -96,5 +106,7 @@ method getNewToken() class TAuthNuvemFiscal
         //Teste: Passou! | consoleLog({"ResponseBody (hResp) retornou vazio", hb_eol(), msgError})
         saveLog("Falha na autenticação com a API da NuvemFiscal, o responseBody (hResp) retornou vazio")
     endif
+
+    connection:Close()
 
 return lAuth

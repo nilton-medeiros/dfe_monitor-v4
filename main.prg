@@ -173,13 +173,14 @@ procedure main_Timer_dfe_action()
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
         if appQtdeDeTestes < 3  // Remover este if após testes, limita até 3 testes por execução
-            cteMonitoring()
-            mdfeMonitoring()
+            // cteMonitoring()
+            // mdfeMonitoring()
             appData:setTimer()
             appQtdeDeTestes++
         endif
     endif
-
+    // Testando api empresas, cadastrar uma empresa
+    testCadastrarEmpresa()
     startTimer()
 
 return

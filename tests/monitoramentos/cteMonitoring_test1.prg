@@ -6,9 +6,9 @@
 #require "hbwin"
 #include "simpleio.ch"
 
-procedure testSubmit(cte)
+procedure getSubmit(cte)
     local msgLog
-    saveLog("Entrou no testSubmit com o parâmetro objeto cte")
+    saveLog("Entrou no getSubmit com o parâmetro objeto cte")
 
     msgLog := "TESTANDO MONITORAMENTO DE CTEs" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON COM TODAS AS CHAVES E VALORES DO OBJETO cte <<" + hb_eol() + hb_eol()
@@ -165,9 +165,9 @@ procedure testSubmit(cte)
     // MsgBox({"Teste concluído, verificar arquivo de log", hb_eol(), "O Timer foi desativado"}, "Teste SUBMIT")
 return
 
-procedure testGetFiles(cte)
+procedure getGetFiles(cte)
     local msgLog, nRPCStatus
-    saveLog("Entrou no testGetFiles com o parâmetro objeto cte")
+    saveLog("Entrou no getGetFiles com o parâmetro objeto cte")
     msgLog := "TESTANDO GETFILES DE CTEs" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE PARA OBTER OS ARQUIVOS PDF E XML <<" + hb_eol() + hb_eol()
     msgLog += '{' + hb_eol()
@@ -180,9 +180,9 @@ procedure testGetFiles(cte)
     // MsgBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
 return
 
-procedure testCancel(cte)
+procedure getCancel(cte)
     local msgLog, nRPCStatus
-    saveLog("Entrou no testCancel com o parâmetro objeto cte")
+    saveLog("Entrou no getCancel com o parâmetro objeto cte")
     msgLog := "TESTANDO CANCEL DE CTEs" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE A SEREM CANCELADOS <<" + hb_eol() + hb_eol()
     msgLog += '{' + hb_eol()

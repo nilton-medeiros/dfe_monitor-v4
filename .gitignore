@@ -9,7 +9,6 @@ tmp
 env.json
 .env.json
 .env_setup.json
-.TGedFTP.env
 .github.txt
 *.ex*
 *.pub

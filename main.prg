@@ -4,6 +4,21 @@
 
 REQUEST HB_CODEPAGE_UTF8
 
+/*
+    DFe_Monitor: Roda como um serviço minimizado na taskbar do Windows, monitora os DFes de um grupo de empresas
+                 transportadoras para emitir CTes (4.00) e MDFes, faz Autorização, Cancelamento, Carta de Correção e
+                 obtem XMLs/PDFs junto a Rest API da Nuvem Fiscal. Gera DACTE em PDF com layout mais apresentável.
+    main: Inicializa o programa, mas é na main_form_oninit() que realmente faz toda a configuração inicial.
+        * Todas os objetos públicos começam com "app", são utilizados em toda a aplicação
+        appData:        Contém configurações gerais e iniciais da aplicação, cria e atualiza o RegEdit do Windows.
+        appDataSource:  Utilizada em qualquer rotina que necessite se conectar ao backend (banco de dados).
+        appFTP:         Utilizada pelas rotinas de GED (Gerenciamento Eletrônico de Documentos),
+                        faz upload e download de arquivos como xml/pdf,etc de<->para nuvem (S3/Locaweb/etc).
+        appEmpresas:    Recebe todas as empresas emitentes de CTe/MDFe na inicialização do aplicativo.
+        appUsuarios:    Recebe todos os usuários admin de cada empresa que podem alterar parâmetros de monitoração
+                        e outras configurações no form setup do aplicaitvo.
+        appNuvemFiscal: Faz a autenticação e disponibiliza integração com a RestAPI da Nuvem Fiscal
+*/
 procedure main
     public appData := TAppData():new("4.0.00")
     public appDataSource
@@ -51,6 +66,7 @@ procedure main_form_oninit()
     local dbServer, dbUser, dbPassword, dbPort, dbDatabase
     local ftpUrl, ftpServer, ftpUser, ftpPassword
 
+    // Paraliza o timer de monitoramento enquanto faz as configurações iniciais
     StopTimer()
 
     if (win_regread(appData:winRegistryPath + "Monitoring\DontRun") == 1)
@@ -64,8 +80,8 @@ procedure main_form_oninit()
         :registerDatabase()
 
         /*
-            Substituição do translado da função RegistryRead pela real função win_regRead()
-            Por motivo que eu desconhecido, a função RegistryRead() aqui no main.prg não é
+            Substituição do translado da função RegistryRead() pela real função win_regRead()
+            Por motivo que eu desconheço, a função RegistryRead() aqui no main.prg, nesta aplicação não é
             reconhecida pelo compilador, da erro de compilação, tentei de tudo, o
             #include 'hmg.ch' está ok, tanto que curiosamente a função RegistryWrite() é reconhecida
             pela compilação.
@@ -102,22 +118,27 @@ procedure main_form_oninit()
         turnOFF()
     endif
 
-    appNuvemFiscal := TNuvemFiscal():new()
+    appNuvemFiscal := TAuthNuvemFiscal():new()
     if !appNuvemFiscal:Authorized
         turnOFF()
     endif
-    consoleLog({'token: ', appNuvemFiscal:token, hb_eol(), 'Validade: ', appNuvemFiscal:expires_in, hb_eol(), 'Auth: ', appNuvemFiscal:Authorized, hb_eol()})
+    // Teste: Passou! | consoleLog({'token: ', appNuvemFiscal:token, hb_eol(), 'Validade: ', appNuvemFiscal:expires_in, hb_eol(), 'Auth: ', appNuvemFiscal:Authorized, hb_eol()})
     SetProperty("main", "notifyIcon", "ntfyICON")
     startTimer()
 
 return
 
-// Essa procedure é invodada pelo timer em main.fmg conforme intervalo estabelecido no timer: 10 segundos
+// Monitoramento: Essa procedure é invodada pelo timer em main.fmg conforme intervalo estabelecido no timer: 10 segundos
 procedure main_Timer_dfe_action()
     local timeHHMM := hb_ULeft(Time(), 5)
     local timerStart := appData:timerStart
     local timerEnd := appData:timerEnd
 
+    /*
+        Paraliza o Timer do form principal main para que as rotinas de monitoramento não
+        não sejam chamadas novamente (encavale) enquanto elas estão em execução, o tempo de execução
+        depende da quantidade de CTes e MDFes a serem processados
+    */
     stopTimer()
 
     if IsWindowActive(setup)
@@ -130,12 +151,12 @@ procedure main_Timer_dfe_action()
         turnOFF()
     endif
 
-    // timerStart e timerEnd são período de inatividade
+    // timerStart e timerEnd são período de inatividade definido pelos usuários admins em setup form
     if (timerStart < timerEnd)
         // Inatividade dentro do mesmo dia
         if (timeHHMM >= timerStart) .and. (timeHHMM <= timerEnd)
             // Período de inatividade ativo, não faz monitoramento de CTes/MDFes
-            appData:setTimer()
+            appData:setTimer()  // Reseta o timer para mais 10 segundos...
             startTimer()
             return
         endif
@@ -151,7 +172,7 @@ procedure main_Timer_dfe_action()
 
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
-        if appQtdeDeTestes < 3
+        if appQtdeDeTestes < 3  // Remover este if após testes, limita até 3 testes por execução
             cteMonitoring()
             mdfeMonitoring()
             appData:setTimer()

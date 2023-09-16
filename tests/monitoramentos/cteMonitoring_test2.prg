@@ -6,9 +6,9 @@
 #require "hbwin"
 #include "simpleio.ch"
 
-procedure cteSubmit(cte)
+procedure getSubmit(cte)
     local msgLog
-    saveLog("Entrou no cteSubmit com o parâmetro objeto cte")
+    saveLog("Entrou no getSubmit com o parâmetro objeto cte")
 
     msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO SUBMETER OS CTE" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA-SE QUE O OBJETO cte EXPORTE TODOS OS CAMPOS PARA A NUVEM FISCAL POR JSON <<" + hb_eol() + hb_eol()
@@ -166,9 +166,9 @@ procedure cteSubmit(cte)
     // MsgBox({"Teste concluído, verificar arquivo de log", hb_eol(), "O Timer foi desativado"}, "Teste SUBMIT")
 return
 
-procedure cteGetFiles(cte)
+procedure getGetFiles(cte)
     local msgLog, nRPCStatus
-    saveLog("Entrou no cteGetFiles com o parâmetro objeto cte")
+    saveLog("Entrou no getGetFiles com o parâmetro objeto cte")
     msgLog := "TESTANDO GETFILES DE CTEs" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE PARA OBTER OS ARQUIVOS PDF E XML <<" + hb_eol() + hb_eol()
     msgLog += '{' + hb_eol()
@@ -184,9 +184,9 @@ procedure cteGetFiles(cte)
     // MsgBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
 return
 
-procedure cteCancel(cte)
+procedure getCancel(cte)
     local msgLog, nRPCStatus
-    saveLog("Entrou no cteCancel com o parâmetro objeto cte")
+    saveLog("Entrou no getCancel com o parâmetro objeto cte")
     msgLog := "TESTANDO CANCEL DE CTEs" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA SER CRIADO ABAIXO UM JSON SIMPLES APENAS COM O ID DO CTE A SEREM CANCELADOS <<" + hb_eol() + hb_eol()
     msgLog += '{' + hb_eol()

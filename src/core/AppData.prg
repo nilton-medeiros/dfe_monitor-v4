@@ -156,6 +156,11 @@ method registerDatabase() class TAppData
     ::TimerEnd := RegistryRead(::winRegistryPath + "Monitoring\TimerEnd")
     ::frequency := RegistryRead(::winRegistryPath + "Monitoring\frequency")
 
+    /*
+        O arquivo ".env.json" existe na primeira instalação do sistema no servidor do cliente e é oculto
+        Verifica se o arquivo oculto ".env.json" existe, se existe carrega para o RegEdit a configuração
+        inicial sensíveis (key, token, logins de db e ftp), em seguida deleta o aquivo ".env.json"
+    */
     if hb_FileExists(".env.json")
         hEnv := jsonDecode(hb_MemoRead(".env.json"))
         if hb_HGetRef(hEnv, "mysql") .and. hb_HGetRef(hEnv, "ftp")

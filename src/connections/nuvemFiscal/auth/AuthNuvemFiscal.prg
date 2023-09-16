@@ -3,19 +3,19 @@
 
 #define MODO_ASSINCRONO .F.
 
-class TNuvemFiscal
+class TAuthNuvemFiscal
 
+    data regPath protected
     data token readonly
     data expires_in readonly
     data Authorized readonly
-    data regPath protected
 
     method new() constructor
     method getNewToken()
 
 end class
 
-method new() class TNuvemFiscal
+method new() class TAuthNuvemFiscal
     ::regPath := appData:winRegistryPath
     ::token := CharXor(RegistryRead(::regPath + "nuvemFiscal\token"), "SysWeb2023")
     ::expires_in := StoD(RegistryRead(::regPath + "nuvemFiscal\expires_in"))
@@ -28,7 +28,7 @@ method new() class TNuvemFiscal
 
 return Self
 
-method getNewToken() class TNuvemFiscal
+method getNewToken() class TAuthNuvemFiscal
     local lAuth := false
     local empresa := appEmpresas:empresas[1]
     local url := "https://auth.nuvemfiscal.com.br/oauth/token"
@@ -36,14 +36,14 @@ method getNewToken() class TNuvemFiscal
 	local content_type := "application/x-www-form-urlencoded"
     local client_id := empresa:nuvemfiscal_client_id
     local client_secret := empresa:nuvemfiscal_client_secret
-    local scope := "cte mdfe cnpj"
+    local scope := "cte mdfe cnpj empresa cep"
     local hResp, objError, msgError, body
 
     begin sequence
         restApi := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
         if Empty(restApi)
             saveLog("Erro na criação do serviço: MSXML2")
-            consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi), hb_eol()})
+            // consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(restApi), hb_eol()})
             Break
         endif
     end sequence
@@ -69,9 +69,11 @@ method getNewToken() class TNuvemFiscal
     recover using objError
         msgError := MsgDebug(restApi)
         if objError:genCode != 0
-            consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), MsgDebug(restApi), hb_eol()})
+            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), MsgDebug(restApi), hb_eol()})
+            saveLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol()})
         else
-            consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), MsgDebug(restApi), hb_eol()})
+            // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), MsgDebug(restApi), hb_eol()})
+            consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol()})
         endif
         saveLog({"Erro de conexão com o site", hb_eol(), msgError, hb_eol()})
         Break
@@ -91,7 +93,7 @@ method getNewToken() class TNuvemFiscal
         lAuth := true
     else
         msgError := MsgDebug(response, hResp)
-        consoleLog({"ResponseBody (hResp) retornou vazio", hb_eol(), msgError})
+        //Teste: Passou! | consoleLog({"ResponseBody (hResp) retornou vazio", hb_eol(), msgError})
         saveLog("Falha na autenticação com a API da NuvemFiscal, o responseBody (hResp) retornou vazio")
     endif
 

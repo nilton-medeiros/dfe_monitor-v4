@@ -10,31 +10,33 @@ procedure cteMonitoring()
     for each cte in ctes:ctes
         // Testes: remover esta variável "emTeste" e o "if emTeste" após testes
         if emTeste
+            // Os CTes de 44501 à 44506 são dados reais e vem do banco de dados e serao processados no ambiente de homologação
             if cte:id < "44503"
-                testSubmit(cte)
+                cteSubmit(cte)
             elseif cte:id < "44505"
-                testGetFiles(cte)
+                cteGetFiles(cte)
             else
-                testCancel(cte)
+                cteCancel(cte)
             endif
         else
             switch cte:monitor_action
                 case "SUBMIT"
-                    testSubmit(cte)
+                    cteSubmit(cte)
                     exit
                 case "GETFILES"
-                    testGetFiles(cte)
+                    cteGetFiles(cte)
                     exit
                 case "CANCEL"
-                    testCancel(cte)
+                    cteCancel(cte)
                     exit
             endswitch
             DO EVENTS
         endif
     next
 
+    // Testes - remover essas linhas abaixo
     PlayOk()
-    MsgInfo({'testSubmit: OK', hb_eol(), 'testGetFiles: OK', hb_eol(),'testCancel: OK', hb_eol(), "Ver log do sistema."}, "Testes Concluídos")
+    MsgInfo({'getSubmit: OK', hb_eol(), 'getGetFiles: OK', hb_eol(),'getCancel: OK', hb_eol(), "Ver log do sistema."}, "Testes Concluídos")
     saveLog("Fim dos testes, desligamento do sistema automático.")
     turnOFF()
 

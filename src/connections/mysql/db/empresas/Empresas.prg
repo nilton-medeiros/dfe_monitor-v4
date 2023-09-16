@@ -10,7 +10,8 @@ class TDbEmpresas
 end class
 
 method new() class TDbEmpresas
-    local hRow, dbCompanies, sql := TSQLString():new()
+    local empresa, apiEmp
+    local hRow, dbEmpresas, sql := TSQLString():new()
 
     sql:setValue("SELECT emp_id AS id, ")
     sql:add("CONCAT(emp_razao_social, '  (', emp_sigla_cia, IF(ISNULL(cid_sigla),'', CONCAT('-',cid_sigla)), ')') AS xNome, ")
@@ -39,7 +40,9 @@ method new() class TDbEmpresas
     sql:add("emp_simples_nacional AS CRT, ")
     sql:add("IF(emp_dacte_layout='RETRATO', '1', '2') AS tpImp, ")
     sql:add("nuvemfiscal_client_id, ")
-    sql:add("nuvemfiscal_client_secret ")
+    sql:add("nuvemfiscal_client_secret, ")
+    sql:add("nuvemfiscal_cadastrar, ")
+    sql:add("nuvemfiscal_alterar ")
     sql:add("FROM view_empresas ")
     sql:add("WHERE emp_ativa = 1 AND emp_tipo_emitente = 'CTE' AND emp_ambiente_sefaz IN (1,2) ")
     sql:add(" AND CONCAT(nuvemfiscal_client_id, nuvemfiscal_client_secret) IS NOT NULL ")
@@ -47,18 +50,27 @@ method new() class TDbEmpresas
 
     ::empresas := {}
     ::ok := false
-    dbCompanies := TQuery():new(sql:value)
+    dbEmpresas := TQuery():new(sql:value)
 
-    if dbCompanies:executed
-        do while !dbCompanies:db:Eof()
-            hRow := convertFieldsDb(dbCompanies:db:GetRow())
-            AAdd(::empresas, TEmpresa():new(hRow))
-            dbCompanies:db:Skip()
+    if dbEmpresas:executed
+        do while !dbEmpresas:db:Eof()
+            hRow := convertFieldsDb(dbEmpresas:db:GetRow())
+            empresa := TEmpresa():new(hRow)
+            AAdd(::empresas, empresa)
+            // Verifica se a empresa precisa ser cadastrada ou alterada na Nuvem Fiscal
+            if empresa:nuvemfiscal_cadastrar
+                apiEmp := TApiEmpresas():new(empresa)
+                apiEmp:Cadastrar()
+            elseif empresa:nuvemfiscal_alterar
+                apiEmp := TApiEmpresas():new(empresa)
+                apiEmp:Alterar()
+            endif
+            dbEmpresas:db:Skip()
         enddo
     endif
 
     ::ok := !(hmg_len(::empresas) == 0)
-    dbCompanies:Destroy()
+    dbEmpresas:Destroy()
 
 return self
 

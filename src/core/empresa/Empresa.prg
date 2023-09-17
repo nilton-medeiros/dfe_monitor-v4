@@ -6,7 +6,7 @@ class TEmpresa
     data id readonly
     data xNome readonly
     data xFant readonly
-    data CNPJ 
+    data CNPJ
     data IE readonly
     data IM readonly
     data xLgr readonly
@@ -32,7 +32,8 @@ class TEmpresa
     data tpImp readonly
     data nuvemfiscal_client_id readonly
     data nuvemfiscal_client_secret readonly
-
+    data nuvemfiscal_cadastrar readonly
+    data nuvemfiscal_alterar readonly
     method new(empresa) constructor
 
 end class

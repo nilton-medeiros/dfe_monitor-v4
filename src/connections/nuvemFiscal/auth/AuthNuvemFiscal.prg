@@ -20,7 +20,7 @@ method new() class TAuthNuvemFiscal
     ::token := CharXor(RegistryRead(::regPath + "nuvemFiscal\token"), "SysWeb2023")
     ::expires_in := StoD(RegistryRead(::regPath + "nuvemFiscal\expires_in"))
 
-    if Empty(::expires_in) .or. (::expires_in > Date()-2)
+    if Empty(::expires_in) .or. (::expires_in < Date()-2)
         ::Authorized := ::getNewToken()
     else
         ::Authorized := true
@@ -99,14 +99,12 @@ method getNewToken() class TAuthNuvemFiscal
         ::expires_in := Date() + hResp["expires_in"]/60/60/24
         ::expires_in := ::expires_in -2 // Menos 2 dias para garantir a renovação antes de expirar efetivamente
         RegistryWrite(::regPath + "nuvemFiscal\token", CharXor(::token, "SysWeb2023"))
-        RegistryWrite(::regPath + "nuvemFiscal\expires_in", ::expires_in)
+        RegistryWrite(::regPath + "nuvemFiscal\expires_in", DtoS(::expires_in))
         lAuth := true
     else
         msgError := MsgDebug(response, hResp)
         //Teste: Passou! | consoleLog({"ResponseBody (hResp) retornou vazio", hb_eol(), msgError})
         saveLog("Falha na autenticação com a API da NuvemFiscal, o responseBody (hResp) retornou vazio")
     endif
-
-    connection:Close()
 
 return lAuth

@@ -181,6 +181,7 @@ procedure main_Timer_dfe_action()
     endif
     // Testando api empresas, cadastrar uma empresa
     testCadastrarEmpresa()
+    turnOFF()
     startTimer()
 
 return

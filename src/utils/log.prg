@@ -63,3 +63,17 @@ function auxEncrypt(string)
     next
     encrypted := hb_ULeft(encrypted, hmg_len(encrypted)-3)
 return encrypted
+
+/*
+   Copiar esta função e usar em https://os.allcom.pl/harbour/
+   para descriptar o texto.
+
+function auxDecrypt(encrypted)
+  local a := hb_ATokens(encrypted, "#|@")
+  local L, texto := ""
+
+  for each L in a
+  	texto += chr(Val(L))
+  next
+return texto
+*/

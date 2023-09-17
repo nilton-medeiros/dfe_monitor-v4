@@ -1,12 +1,12 @@
 procedure testCadastrarEmpresa()
-    local msgLog, empresa := appEmpresas:empresa[1]
+    local msgLog, empresa := appEmpresas:empresas[1]
     local nuvemFiscal := TApiNfEmpresas():new()
 
     msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO CADASTRAR EMPRESA EMITENTE" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA-SE CONEXÃO OK MAS FALHE O CADASTRO POR CAMPOS INVÁLIDOS <<" + hb_eol() + hb_eol()
     consoleLog(msgLog)
 
-    empresa:CNPJ := "0000000000" // 10 zeros, DEVERÁ RETORNAR ERRO NO CNPJ
+    // empresa:CNPJ := "0000000000" // 10 zeros, DEVERÁ RETORNAR ERRO NO CNPJ
 
     if nuvemFiscal:connected
         if nuvemFiscal:Cadastrar(empresa)

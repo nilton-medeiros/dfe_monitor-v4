@@ -9,6 +9,7 @@ class TApiNfEmpresas
     data connection protected
     data connected readonly
     data httpMethod protected
+    data body readonly
     data responseBody readonly
 
     method new() constructor
@@ -33,7 +34,7 @@ method new() class TApiNfEmpresas
         if Empty(::token)
             saveLog("Token vazio para conexão com a Nuvem Fiscal")
         else
-            ::connected := true 
+            ::connected := true
         endif
     end sequence
 return self
@@ -113,9 +114,8 @@ method Broadcast(operation) class TApiNfEmpresas
         Break
     end sequence
 
-    msgError := MsgDebug(lError, ;
-                         ::connection:Status,;
-                         ::connection:getResponseHeaders,;
+    msgError := MsgDebug(::connection:Status,;
+                         ::connection:ResponseText,;
                          ::connection:ResponseBody)
 
     consoleLog({"Empresa: ", operation, hb_eol(), msgError})
@@ -129,7 +129,7 @@ method Broadcast(operation) class TApiNfEmpresas
             ::responseBody := ::connection:ResponseBody
             lError := false
         elseif (::connection:Status > 399) .and. (::connection:Status < 600)
-            response := ::connection:getResponseHeaders
+            response := ::connection:ResponseText
             if ("application/json" $ response)
                 ::responseBody := ::connection:ResponseBody
             else

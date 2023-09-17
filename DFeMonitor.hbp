@@ -29,5 +29,6 @@ src\utils\log.prg
 src\utils\msgDebugInfo.prg
 src\utils\msgNotify.prg
 src\utils\timersForms.prg
+tests\api\cadastrarEmpresa_test.prg
 tests\monitoramentos\console.prg
 tests\monitoramentos\cteMonitoring_test.prg

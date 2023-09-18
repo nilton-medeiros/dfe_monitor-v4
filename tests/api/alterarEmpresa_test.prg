@@ -6,7 +6,7 @@ procedure testAlterarEmpresa()
     msgLog += ">> ESPERA-SE SUCESSO AO ALTERAR O COMPLEMENTO DO ENDEREÇO <<" + hb_eol() + hb_eol()
     consoleLog(msgLog)
 
-    empresa:xCpl := "Complemento teste" //
+    empresa:xCpl := "Complemento teste"
 
     if nuvemFiscal:connected
         if nuvemFiscal:Alterar(empresa)

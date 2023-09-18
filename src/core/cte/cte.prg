@@ -306,3 +306,11 @@ method new(cte) class TConhecimento
     ::dPrevAereo := date_as_string(cte["dPrevAereo"])
     ::monitor_action := cte["monitor_action"]
 return self
+
+// Debug:
+procedure cteSubmit()
+return
+procedure cteGetFiles()
+return
+procedure cteCancel()
+return

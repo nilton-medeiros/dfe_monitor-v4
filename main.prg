@@ -66,6 +66,7 @@ return
 procedure main_form_oninit()
     local dbServer, dbUser, dbPassword, dbPort, dbDatabase
     local ftpUrl, ftpServer, ftpUser, ftpPassword
+    local empresa
 
     // Paraliza o timer de monitoramento enquanto faz as configurações iniciais
     StopTimer()
@@ -129,7 +130,7 @@ procedure main_form_oninit()
         // Para cada empresa, verifica se já tem cadastrou ou alterar algo em Nuvem Fiscal
         if empresa:nuvemfiscal_cadastrar
             cadastrarEmpresa(empresa)
-        elseif nuvemfiscal_alterar
+        elseif empresa:nuvemfiscal_alterar
             alterarEmpresa(empresa)
         endif
     next
@@ -191,7 +192,7 @@ procedure main_Timer_dfe_action()
         endif
     endif
     // Testando api empresas, cadastrar uma empresa
-    testAlteraEmpresa()
+    testAlterarEmpresa()
     turnOFF()
     startTimer()
 

@@ -125,8 +125,7 @@ method Broadcast(operation) class TApiNfEmpresas
             ::responseBody := ::connection:ResponseBody
             lError := false
         elseif (::connection:Status > 399) .and. (::connection:Status < 600)
-            consoleLog({operation + " empresa | ", "Status: ", ::connection:Status, hb_eol(), "responseBody: ", ::connection:getResponseHeader("Context-Type")})
-            consoleLog({hb_eol(), "Conteúdo do objeto ::connection: ", msgError})
+            consoleLog({operation + " empresa | ", "Status: ", ::connection:Status, hb_eol(), "getResponseAllHeaders: ", ::connection:getAllResponseHeaders(), hb_eol(), "getResponseHeader.Content-Type: ", ::connection:getResponseHeader("Content-Type")})
             if (["error": {] $ ::connection:ResponseBody)
                 // "application/json"
                 ::responseBody := ::connection:ResponseBody

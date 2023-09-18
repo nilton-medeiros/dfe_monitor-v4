@@ -21,11 +21,14 @@ procedure setup_form_oninit()
 
     stopTimer()
 
-	DoMethod( 'setup', 'Grid_1', "DeleteAllItems" )
+	DoMethod( 'setup', 'Grid_Empresas', "DeleteAllItems" )
 
     for each empresa in appEmpresas:empresas
-		DoMethod('setup', 'Grid_1', "AddItem", {empresa:id, empresa:xNome, iif(empresa:tpAmb == '1','Produção', 'Homologação')})
+		DoMethod('setup', 'Grid_Empresas', "AddItem", {empresa:id, empresa:xNome, iif(empresa:tpAmb == '1','Produção', 'Homologação')})
     next
+
+	SetProperty('setup', 'Tab_Setup', 'value', 1)
+	SetProperty('setup', 'Grid_Empresas', 'value', 1)
 
 	cbxUsers := TComboBox():new('setup', 'Combo_Users')
 
@@ -115,4 +118,26 @@ return
 
 procedure setup_form_onrelease()
 	startTimer()
+return
+
+procedure setup_Grid_Empresas_onChange()
+	local index := GetProperty("setup", "Grid_Empresas", "value")
+	local empresa
+
+	if !(index == 0)
+		empresa :=  appEmpresas:empresas[index]
+		with object empresa
+			SetProperty('setup', 'Text_RazaoSocial', 'value', :xNome)
+			SetProperty('setup', 'Text_CNPJ', 'value', :CNPJ)
+		endwith
+	endif
+
+return
+
+procedure setup_button_Submit_action()
+	if Empty(GetProperty('setup', 'Text_ArquivoPFX', 'value')) .or. Empty(GetProperty('setup', 'Text_SenhaPFX', 'value'))
+		MsgExclamation("Arquivo PFX ou senha não podem estar vazios!", "Arquivo PFX (Certificado A1)")
+	else
+		// Submeter a Nuvem Fiscal e obter resposta
+	endif
 return

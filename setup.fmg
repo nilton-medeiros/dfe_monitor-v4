@@ -8,61 +8,9 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
         STATUSITEM "BD" WIDTH 270 RAISED
     END STATUSBAR
 
-    DEFINE TAB Tab_1 AT 20 , 20 WIDTH 800 HEIGHT 400 VALUE 1 FONT "Arial" SIZE 9 TOOLTIP "" ON CHANGE Nil
+    DEFINE TAB Tab_Setup AT 20 , 20 WIDTH 800 HEIGHT 400 VALUE 1 FONT "Arial" SIZE 9 TOOLTIP "" ON CHANGE Nil
 
         PAGE "Configurações"
-
-            DEFINE BUTTON Button_Save
-                ROW    420
-                COL    330
-                WIDTH  100
-                HEIGHT 30
-                ACTION setup_button_save_action()
-                CAPTION "&Salvar"
-                FONTNAME "Arial"
-                FONTSIZE 9
-                TOOLTIP "Salvar configurações e voltar a monitorar"
-                FONTBOLD .F.
-                FONTITALIC .F.
-                FONTUNDERLINE .F.
-                FONTSTRIKEOUT .F.
-                ONGOTFOCUS Nil
-                ONLOSTFOCUS Nil
-                HELPID Nil
-                FLAT .F.
-                TABSTOP .T.
-                VISIBLE .T.
-                TRANSPARENT .F.
-                MULTILINE .F.
-                PICTURE Nil
-                PICTALIGNMENT TOP
-            END BUTTON
-
-            DEFINE BUTTON Button_Cancel
-                ROW    420
-                COL    450
-                WIDTH  100
-                HEIGHT 30
-                ACTION setup_button_cancel_action()
-                CAPTION "&Cancelar"
-                FONTNAME "Arial"
-                FONTSIZE 9
-                TOOLTIP "Sair sem salvar e voltar a monitorar"
-                FONTBOLD .F.
-                FONTITALIC .F.
-                FONTUNDERLINE .F.
-                FONTSTRIKEOUT .F.
-                ONGOTFOCUS Nil
-                ONLOSTFOCUS Nil
-                HELPID Nil
-                FLAT .F.
-                TABSTOP .T.
-                VISIBLE .T.
-                TRANSPARENT .F.
-                MULTILINE .F.
-                PICTURE Nil
-                PICTALIGNMENT TOP
-            END BUTTON
 
             DEFINE FRAME Frame_1
                 ROW    40
@@ -81,7 +29,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 OPAQUE .T.
             END FRAME
 
-            DEFINE GRID Grid_1
+            DEFINE GRID Grid_Empresas
                 ROW    65
                 COL    20
                 WIDTH  750
@@ -93,7 +41,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP "Selecionar Empresa para monitorar DFe"
-                ONCHANGE Nil
+                ONCHANGE setup_Grid_Empresas_onChange()
                 ONGOTFOCUS Nil
                 ONLOSTFOCUS Nil
                 FONTBOLD .F.
@@ -369,7 +317,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FONTCOLOR NIL
                 INPUTMASK "9,999"
                 FORMAT "E"
-                NUMERIC .T. 
+                NUMERIC .T.
                 VALUE 300
             END TEXTBOX
 
@@ -468,7 +416,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 AUTOSIZE .F.
                 BACKCOLOR NIL
                 FONTCOLOR NIL
-                CENTERALIGN .T. 
+                CENTERALIGN .T.
             END LABEL
 
             DEFINE TEXTBOX Text_as
@@ -536,32 +484,6 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 OPAQUE .T.
             END FRAME
 
-            DEFINE BUTTON Button_turnOFF
-                ROW    420
-                COL    575
-                WIDTH  222
-                HEIGHT 30
-                ACTION setup_button_turnOFF_action()
-                CAPTION "&Desligar o DFeMonitor"
-                FONTNAME "Arial"
-                FONTSIZE 9
-                TOOLTIP ""
-                FONTBOLD .F.
-                FONTITALIC .F.
-                FONTUNDERLINE .F.
-                FONTSTRIKEOUT .F.
-                ONGOTFOCUS Nil
-                ONLOSTFOCUS Nil
-                HELPID Nil
-                FLAT .F.
-                TABSTOP .T.
-                VISIBLE .T.
-                TRANSPARENT .F.
-                MULTILINE .F.
-                PICTURE "btDesligar"
-                PICTALIGNMENT LEFT
-            END BUTTON
-
             DEFINE FRAME Frame_3
                 ROW    180
                 COL    520
@@ -610,7 +532,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 VALUE ""
             END TEXTBOX
 
-        END PAGE 
+        END PAGE
 
         PAGE "Certificado Digital"
 
@@ -901,7 +823,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FONTCOLOR NIL
             END LABEL
 
-            DEFINE TEXTBOX Text_6
+            DEFINE TEXTBOX Text_Validade
                 ROW    180
                 COL    340
                 WIDTH  440
@@ -1033,7 +955,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FONTCOLOR Nil
             END LABEL
 
-            DEFINE TEXTBOX Text_1
+            DEFINE TEXTBOX Text_SenhaPFX
                 ROW    300
                 COL    20
                 WIDTH  200
@@ -1064,12 +986,12 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 VALUE ""
             END TEXTBOX
 
-            DEFINE BUTTON Button_Submeter
+            DEFINE BUTTON Button_Submit
                 ROW    298
                 COL    260
                 WIDTH  200
                 HEIGHT 34
-                ACTION Nil
+                ACTION setup_button_Submit_action()
                 CAPTION "Enviar"
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -1110,12 +1032,89 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 AUTOSIZE .F.
                 BACKCOLOR Nil
                 FONTCOLOR Nil
-                CENTERALIGN .T. 
+                CENTERALIGN .T.
             END LABEL
 
-        END PAGE 
+        END PAGE
 
-    END TAB 
+    END TAB
+
+    DEFINE BUTTON Button_Save
+        ROW    420
+        COL    330
+        WIDTH  100
+        HEIGHT 30
+        ACTION setup_button_save_action()
+        CAPTION "&Salvar"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Salvar configurações e voltar a monitorar"
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        MULTILINE .F.
+        PICTURE Nil
+        PICTALIGNMENT TOP
+    END BUTTON
+
+    DEFINE BUTTON Button_Cancel
+        ROW    420
+        COL    450
+        WIDTH  100
+        HEIGHT 30
+        ACTION setup_button_cancel_action()
+        CAPTION "&Cancelar"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Sair sem salvar e voltar a monitorar"
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        MULTILINE .F.
+        PICTURE Nil
+        PICTALIGNMENT TOP
+    END BUTTON
+
+    DEFINE BUTTON Button_turnOFF
+        ROW    420
+        COL    575
+        WIDTH  222
+        HEIGHT 30
+        ACTION setup_button_turnOFF_action()
+        CAPTION "&Desligar o DFeMonitor"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        MULTILINE .F.
+        PICTURE "btDesligar"
+        PICTALIGNMENT LEFT
+    END BUTTON
 
 END WINDOW
-

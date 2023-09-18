@@ -32,5 +32,3 @@ src\utils\log.prg
 src\utils\msgDebugInfo.prg
 src\utils\msgNotify.prg
 src\utils\timersForms.prg
-tests\api\alterarEmpresa_test.prg
-tests\api\cadastrarEmpresa_test.prg

@@ -1,0 +1,23 @@
+procedure testAlterarEmpresa()
+    local msgLog, empresa := appEmpresas:empresas[1]
+    local nuvemFiscal := TApiNfEmpresas():new()
+
+    msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO ALTERAR EMPRESA EMITENTE" + hb_eol() + hb_eol()
+    msgLog += ">> ESPERA-SE CONEXÃO OK E SUCESSO AO ALTERAR O COMPLEMENTO DO ENDEREÇO <<" + hb_eol() + hb_eol()
+    consoleLog(msgLog)
+
+    empresa:xCpl := "Complemento teste" //
+
+    if nuvemFiscal:connected
+        if nuvemFiscal:Alterar(empresa)
+            MsgBox("Empresa alterada com sucesso!", "API Nuvem Fiscal")
+            consoleLog("Empresa alterada com sucesso!")
+        else
+            MsgExclamation("Falha ao alterar empresa, ver consoleLog", "API Nuvem Fiscal")
+            consoleLog("Falha ao alterar empresa!")
+        endif
+    else
+        MsgExclamation("Falha de conexão com a Nuvem Fiscal, ver consoleLog", "API Nuvem Fiscal")
+    endif
+
+return

@@ -9,7 +9,7 @@ REQUEST HB_CODEPAGE_UTF8
                  transportadoras para emitir CTes (4.00) e MDFes, faz Autorização, Cancelamento, Carta de Correção e
                  obtem XMLs/PDFs junto a Rest API da Nuvem Fiscal. Gera DACTE em PDF com layout mais apresentável.
     main: Inicializa o programa, mas é na main_form_oninit() que realmente faz toda a configuração inicial.
-        * Todas os objetos públicos começam com "app", são utilizados em toda a aplicação
+        * Nesta aplicação: Todos os objetos públicos começam com "app", são utilizados em toda a aplicação
         appData:        Contém configurações gerais e iniciais da aplicação, cria e atualiza o RegEdit do Windows.
         appDataSource:  Utilizada em qualquer rotina que necessite se conectar ao backend (banco de dados).
         appFTP:         Utilizada pelas rotinas de GED (Gerenciamento Eletrônico de Documentos),
@@ -18,6 +18,7 @@ REQUEST HB_CODEPAGE_UTF8
         appUsuarios:    Recebe todos os usuários admin de cada empresa que podem alterar parâmetros de monitoração
                         e outras configurações no form setup do aplicaitvo.
         appNuvemFiscal: Faz a autenticação e disponibiliza integração com a RestAPI da Nuvem Fiscal
+        links: sistrom.com.br, nuvemfiscal.com.br
 */
 procedure main
     public appData := TAppData():new("4.0.00")
@@ -27,7 +28,7 @@ procedure main
     public appUsuarios
     public appNuvemFiscal
 
-    // Teste: Em modo de homologação - remover essa variável appQtdeDeTestes de todo o sistema após testes e modo em produção
+    // Debug: Teste: Em modo de homologação - remover essa variável appQtdeDeTestes de todo o sistema após testes e modo em produção
     public appQtdeDeTestes := 0
 
     IF HMG SUPPORT UNICODE RUN
@@ -81,10 +82,10 @@ procedure main_form_oninit()
 
         /*
             Substituição do translado da função RegistryRead() pela real função win_regRead()
-            Por motivo que eu desconheço, a função RegistryRead() aqui no main.prg, nesta aplicação não é
-            reconhecida pelo compilador, da erro de compilação, tentei de tudo, o
+            Por motivo que eu desconheço, a função RegistryRead() aqui no main.prg, nesta aplicação
+            não é reconhecida pelo compilador, da erro de compilação, tentei de tudo, o
             #include 'hmg.ch' está ok, tanto que curiosamente a função RegistryWrite() é reconhecida
-            pela compilação.
+            pela compilação neste main.prg.
         */
         dbServer := CharXor(win_regread(:winRegistryPath + "Host\db_ServerName"), "SysWeb2023")
         dbUser := CharXor(win_regread(:winRegistryPath + "Host\db_UserName"), "SysWeb2023")
@@ -119,10 +120,20 @@ procedure main_form_oninit()
     endif
 
     appNuvemFiscal := TAuthNuvemFiscal():new()
+
     if !appNuvemFiscal:Authorized
         turnOFF()
     endif
-    // Teste: Passou! | consoleLog({'token: ', appNuvemFiscal:token, hb_eol(), 'Validade: ', appNuvemFiscal:expires_in, hb_eol(), 'Auth: ', appNuvemFiscal:Authorized, hb_eol()})
+
+    for each empresa in appEmpresas:empresas
+        // Para cada empresa, verifica se já tem cadastrou ou alterar algo em Nuvem Fiscal
+        if empresa:nuvemfiscal_cadastrar
+            cadastrarEmpresa(empresa)
+        elseif nuvemfiscal_alterar
+            alterarEmpresa(empresa)
+        endif
+    next
+
     SetProperty("main", "notifyIcon", "ntfyICON")
     startTimer()
 
@@ -172,7 +183,7 @@ procedure main_Timer_dfe_action()
 
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
-        if appQtdeDeTestes < 3  // Remover este if após testes, limita até 3 testes por execução
+        if appQtdeDeTestes < 3  // Debug: Remover este if após testes, limita até 3 testes por execução
             // cteMonitoring()
             // mdfeMonitoring()
             appData:setTimer()
@@ -180,7 +191,7 @@ procedure main_Timer_dfe_action()
         endif
     endif
     // Testando api empresas, cadastrar uma empresa
-    testCadastrarEmpresa()
+    testAlteraEmpresa()
     turnOFF()
     startTimer()
 

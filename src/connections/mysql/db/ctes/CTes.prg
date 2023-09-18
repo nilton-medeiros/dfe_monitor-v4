@@ -179,9 +179,9 @@ method new() class TDbConhecimentos
     endif
 
     // Real em produção: Remover estes comentários em produção ----------------------------
-    //sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
+    // sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
 
-    // Testes em homologação: Remover este comando abaixo ---------------------------------
+    // Debug: Testes em homologação: Remover este comando abaixo ---------------------------------
     sql:add(" AND cte_id BETWEEN 44501 AND 44506 ")
     // Testes em homologação --------------------------------------------------------------
 

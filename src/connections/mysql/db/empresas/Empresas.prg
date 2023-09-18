@@ -7,6 +7,7 @@ class TDbEmpresas
     method new() constructor
     method count() setget
     method getEmpresa(id)
+    method update(id)
 end class
 
 method new() class TDbEmpresas
@@ -85,7 +86,19 @@ return hmg_len(::empresas)
 
 method getEmpresa(id) class TDbEmpresas
     local pos := hb_AScan(::empresas, {|oEmp| oEmp:FieldGet("id") == id})
-    if (pos == 0)
-        return nil
-    endif
 return ::empresas[pos]
+
+method update(id) class TDbEmpresas
+    local sql := TSQLString():new()
+    local updated, changed
+
+    sql:setValue("UPDATE empresas SET ")
+    sql:add("nuvemfiscal_alterar = 0, ")
+    sql:add("nuvemfiscal_cadastrar = 0 ")
+    sql:add("WHERE emp_id = " + id)
+
+    updated := TQuery():new(sql:value)
+    changed := updated:executed
+    updated:Destroy()
+
+return changed

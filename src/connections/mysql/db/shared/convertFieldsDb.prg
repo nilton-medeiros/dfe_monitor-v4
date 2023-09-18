@@ -7,6 +7,10 @@ function convertFieldsDb(oRow)
         if ValType(value) == "C"
             value := ansi_to_unicode(value)
         elseif ValType(value) == "N"
+            /*
+               Nenhum valor numérico será usado em cálculos matemáticos,
+               logo é tratado como string
+            */
             value := hb_ntos(value)
         endif
         hb_hSet(hRow, cKey, value)

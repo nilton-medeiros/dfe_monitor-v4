@@ -2,6 +2,7 @@
 #include <hbclass.ch>
 #define MODO_ASSINCRONO .F.
 
+
 class TApiNfEmpresas
 
     data token protected
@@ -10,18 +11,19 @@ class TApiNfEmpresas
     data connected readonly
     data httpMethod protected
     data body readonly
-    data responseBody readonly
-    data responseText readonly
+    data response readonly
+    data responseType readonly
     data responseStatus readonly
 
     method new() constructor
+    method Alterar(empresa)
     method Cadastrar(empresa)
-    // method Consultar(empresa)
-    // method Alterar(empresa)
+    method Consultar(empresa)
     method defineBody(empresa)
     method Broadcast()
 
 end class
+
 
 method new() class TApiNfEmpresas
     ::connected := false
@@ -41,6 +43,29 @@ method new() class TApiNfEmpresas
     end sequence
 return self
 
+
+method Alterar(empresa) class TApiNfEmpresas
+
+    if !::connected
+        return false
+    endif
+
+    ::httpMethod := "PUT"
+
+    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
+    // if empresa:tpAmb == "1"
+        // API de Produção
+        // ::apiUrl := "https://api.nuvemfiscal.com.br/empresas"
+    // else
+        // API de Teste
+        ::apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
+    // endif
+
+    ::defineBody(empresa)   // Prepara o json text
+    // Broadcast: Transmitir solicitação a API da Nuvem Fiscal
+return ::Broadcast("ALTERAR")
+
+
 method Cadastrar(empresa) class TApiNfEmpresas
 
     if !::connected
@@ -50,7 +75,6 @@ method Cadastrar(empresa) class TApiNfEmpresas
     ::httpMethod := "POST"
 
     // Integração em teste, remover os comentários do laço if/endif abaixo
-    consoleLog("Cadastrando empresa em Nuvem Fiscal modo teste (sandbox)")
     // if empresa:tpAmb == "1"
         // API de Produção
         // ::apiUrl := "https://api.nuvemfiscal.com.br/empresas"
@@ -60,12 +84,32 @@ method Cadastrar(empresa) class TApiNfEmpresas
     // endif
 
     ::defineBody(empresa)   // Prepara o json text
-    // Broadcast: Transmitir solicitação a API da Nuvem Fiscal
+
 return ::Broadcast("CADASTRAR")
 
-/* defineBody: Utilizado pelos métodos Cadastrar e Alterar */
+
+method Consultar(empresa) class TApiNfEmpresas
+
+    if !::connected
+        return false
+    endif
+
+    ::httpMethod := "GET"
+    ::body := ""
+
+    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
+    // if empresa:tpAmb == "1"
+        // API de Produção
+        // ::apiUrl := "https://api.nuvemfiscal.com.br/empresas"
+    // else
+        // API de Teste
+        ::apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
+    // endif
+
+return ::Broadcast("CONSULTAR")
+
+
 method defineBody(empresa) class TApiNfEmpresas
-    // body: Json com as informações da empresa
     ::body := '{' + hb_eol()
     ::body += '  "cpf_cnpj": "' + empresa:cnpj + '",' + hb_eol()
     ::body += '  "inscricao_estadual": "' + empresa:IE + '",' + hb_eol()
@@ -87,51 +131,55 @@ method defineBody(empresa) class TApiNfEmpresas
     ::body += '}'
 return nil
 
+
 /*
     Broadcast: Transmitir
     Transmite à API da Nuvem Fiscal a solicitação (endpoint) e json
     (body) de acordo com o método http solicitado.
 */
 method Broadcast(operation) class TApiNfEmpresas
-    local objError, msgError, lError := false
+    local objError, lError := false
 
     begin sequence
         ::connection:Open(::httpMethod, ::apiUrl, MODO_ASSINCRONO)
         ::connection:SetRequestHeader("Authorization", "Bearer " + ::token)
         ::connection:SetRequestHeader("Content-Type", "application/json")
-        ::connection:Send(::body)
+        if !Empty(::body)
+            ::connection:Send(::body)
+        endif
         ::connection:WaitForResponse(5000)
     recover using objError
-        msgError := MsgDebug(::connection)
         if objError:genCode != 0
-            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), msgError, hb_eol()})
+            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), hb_eol()})
             saveLog({"Erro de conexão com o site em " + operation + " Empresa", hb_eol(), "Error: ", objError:description, hb_eol()})
         else
-            // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), msgError, hb_eol()})
-            saveLog({"Erro de conexão com o site em " + operation + " Empresa", hb_eol(), msgError, hb_eol(), hb_eol()})
+            // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), hb_eol()})
+            saveLog({"Erro de conexão com o site em " + operation + " Empresa", hb_eol(), hb_eol(), hb_eol()})
         endif
         lError := true
         Break
     end sequence
 
-    ::responseBody := ""
-    ::responseText := ""
+    ::response := ""
+    ::responseType := ""
 
     if !lError
         lError := true
         ::responseStatus := ::connection:Status
         if (::connection:Status > 199) .and. (::connection:Status < 300)
             // Entre 200 e 299
-            ::responseBody := ::connection:ResponseBody
+            ::response := ::connection:ResponseBody
+            ::responseType := "json"
             lError := false
         elseif (::connection:Status > 399) .and. (::connection:Status < 600)
-            consoleLog({operation + " empresa | ", "Status: ", ::connection:Status, hb_eol(), "getResponseAllHeaders: ", ::connection:getAllResponseHeaders(), hb_eol(), "getResponseHeader.Content-Type: ", ::connection:getResponseHeader("Content-Type")})
-            if (["error": {] $ ::connection:ResponseBody)
+            if ("json" $ ::connection:getResponseHeader("Content-Type"))
                 // "application/json"
-                ::responseBody := ::connection:ResponseBody
+                ::response := ::connection:ResponseBody
+                ::responseType := "json"
             else
                 // "application/text"
-                ::responseText := ::connection:ResponseText
+                ::response := ::connection:ResponseText
+                ::responseType := "text"
             endif
         endif
     endif

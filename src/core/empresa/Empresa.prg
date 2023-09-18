@@ -34,7 +34,9 @@ class TEmpresa
     data nuvemfiscal_client_secret readonly
     data nuvemfiscal_cadastrar readonly
     data nuvemfiscal_alterar readonly
+
     method new(empresa) constructor
+    method update()
 
 end class
 
@@ -73,3 +75,15 @@ method new(empresa) class TEmpresa
     ::nuvemfiscal_alterar := iif(empresa['nuvemfiscal_alterar'] == '1', true, false)
 
 return self
+
+method update() class TEmpresa
+    local changed := appEmpresas:update(::id)
+    if changed
+        ::nuvemfiscal_alterar := false
+        ::nuvemfiscal_alterar := false
+    else
+        saveLog("Erro ao atualizar banco de dados tabela empresa! Sistema abortado")
+        MsgExclamation("Erro ao atualizar empresa, avise ao suporte!", "Erro! Sistema será parado")
+        turnOFF()
+    endif
+return changed

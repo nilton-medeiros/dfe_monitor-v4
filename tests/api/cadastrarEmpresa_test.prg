@@ -6,7 +6,7 @@ procedure testCadastrarEmpresa()
     msgLog += ">> ESPERA-SE CONEXÃO OK MAS FALHE O CADASTRO POR CAMPOS INVÁLIDOS <<" + hb_eol() + hb_eol()
     consoleLog(msgLog)
 
-    // empresa:CNPJ := "0000000000" // 10 zeros, DEVERÁ RETORNAR ERRO NO CNPJ
+    empresa:CNPJ := "0000000000" // 10 zeros, DEVERÁ RETORNAR ERRO NO CNPJ
 
     if nuvemFiscal:connected
         if nuvemFiscal:Cadastrar(empresa)

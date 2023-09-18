@@ -11,6 +11,8 @@ class TApiNfEmpresas
     data httpMethod protected
     data body readonly
     data responseBody readonly
+    data responseText readonly
+    data responseStatus readonly
 
     method new() constructor
     method Cadastrar(empresa)
@@ -92,7 +94,6 @@ return nil
 */
 method Broadcast(operation) class TApiNfEmpresas
     local objError, msgError, lError := false
-    local response
 
     begin sequence
         ::connection:Open(::httpMethod, ::apiUrl, MODO_ASSINCRONO)
@@ -104,36 +105,35 @@ method Broadcast(operation) class TApiNfEmpresas
         msgError := MsgDebug(::connection)
         if objError:genCode != 0
             // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), msgError, hb_eol()})
-            saveLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol()})
+            saveLog({"Erro de conexão com o site em " + operation + " Empresa", hb_eol(), "Error: ", objError:description, hb_eol()})
         else
             // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), msgError, hb_eol()})
-            saveLog({"Erro de conexão com o site", hb_eol(), hb_eol()})
+            saveLog({"Erro de conexão com o site em " + operation + " Empresa", hb_eol(), msgError, hb_eol(), hb_eol()})
         endif
-        saveLog({"Erro de conexão com o site", hb_eol(), msgError, hb_eol()})
         lError := true
         Break
     end sequence
 
-    msgError := MsgDebug(::connection:Status,;
-                         ::connection:ResponseText,;
-                         ::connection:ResponseBody)
-
-    consoleLog({"Empresa: ", operation, hb_eol(), msgError})
-
     ::responseBody := ""
+    ::responseText := ""
 
     if !lError
         lError := true
+        ::responseStatus := ::connection:Status
         if (::connection:Status > 199) .and. (::connection:Status < 300)
             // Entre 200 e 299
             ::responseBody := ::connection:ResponseBody
             lError := false
         elseif (::connection:Status > 399) .and. (::connection:Status < 600)
-            response := ::connection:ResponseText
-            if ("application/json" $ response)
+            consoleLog({operation + " empresa | ", "Status: ", ::connection:Status, hb_eol(), "responseBody: ", ::connection:responseBody, hb_eol(), "ResponseText: ", ::connection:ResponseText})
+            msgError := MsgDebug(::connection)
+            consoleLog({hb_eol(), "Conteúdo do objeto ::connection: ", msgError})
+            if (["error": {] $ ::connection:ResponseBody)
+                // "application/json"
                 ::responseBody := ::connection:ResponseBody
             else
-                ::responseBody := response
+                // "application/text"
+                ::responseText := ::connection:ResponseText
             endif
         endif
     endif

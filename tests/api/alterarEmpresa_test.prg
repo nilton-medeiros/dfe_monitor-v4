@@ -3,7 +3,7 @@ procedure testAlterarEmpresa()
     local nuvemFiscal := TApiNfEmpresas():new()
 
     msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO ALTERAR EMPRESA EMITENTE" + hb_eol() + hb_eol()
-    msgLog += ">> ESPERA-SE CONEXÃO OK E SUCESSO AO ALTERAR O COMPLEMENTO DO ENDEREÇO <<" + hb_eol() + hb_eol()
+    msgLog += ">> ESPERA-SE SUCESSO AO ALTERAR O COMPLEMENTO DO ENDEREÇO <<" + hb_eol() + hb_eol()
     consoleLog(msgLog)
 
     empresa:xCpl := "Complemento teste" //

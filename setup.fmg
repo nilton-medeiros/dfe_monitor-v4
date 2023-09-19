@@ -317,7 +317,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FONTCOLOR NIL
                 INPUTMASK "9,999"
                 FORMAT "E"
-                NUMERIC .T. 
+                NUMERIC .T.
                 VALUE 300
             END TEXTBOX
 
@@ -416,7 +416,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 AUTOSIZE .F.
                 BACKCOLOR NIL
                 FONTCOLOR NIL
-                CENTERALIGN .T. 
+                CENTERALIGN .T.
             END LABEL
 
             DEFINE TEXTBOX Text_as
@@ -532,7 +532,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 VALUE ""
             END TEXTBOX
 
-        END PAGE 
+        END PAGE
 
         PAGE "Certificado Digital"
 
@@ -912,7 +912,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 COL    750
                 WIDTH  30
                 HEIGHT 30
-                ACTION Nil
+                ACTION setup_button_ArquivoPFX_action()
                 CAPTION Nil
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -1032,12 +1032,12 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 AUTOSIZE .F.
                 BACKCOLOR NIL
                 FONTCOLOR NIL
-                CENTERALIGN .T. 
+                CENTERALIGN .T.
             END LABEL
 
-        END PAGE 
+        END PAGE
 
-    END TAB 
+    END TAB
 
     DEFINE BUTTON Button_Save
         ROW    440
@@ -1118,4 +1118,3 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
     END BUTTON
 
 END WINDOW
-

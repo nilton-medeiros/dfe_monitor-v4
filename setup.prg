@@ -134,6 +134,11 @@ procedure setup_Grid_Empresas_onChange()
 
 return
 
+procedure setup_button_ArquivoPFX_action()
+	local filePFX := GetFile({{'Arquivos PFX', '*.pfx'}}, 'Selecione o Certificado', hb_cwd() + 'certificados\')
+	GetProperty('setup', 'Text_ArquivoPFX', 'value', filePFX)
+return
+
 procedure setup_button_Submit_action()
 	if Empty(GetProperty('setup', 'Text_ArquivoPFX', 'value')) .or. Empty(GetProperty('setup', 'Text_SenhaPFX', 'value'))
 		MsgExclamation("Arquivo PFX ou senha não podem estar vazios!", "Arquivo PFX (Certificado A1)")

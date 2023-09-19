@@ -317,7 +317,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FONTCOLOR NIL
                 INPUTMASK "9,999"
                 FORMAT "E"
-                NUMERIC .T.
+                NUMERIC .T. 
                 VALUE 300
             END TEXTBOX
 
@@ -416,7 +416,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 AUTOSIZE .F.
                 BACKCOLOR NIL
                 FONTCOLOR NIL
-                CENTERALIGN .T.
+                CENTERALIGN .T. 
             END LABEL
 
             DEFINE TEXTBOX Text_as
@@ -532,7 +532,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 VALUE ""
             END TEXTBOX
 
-        END PAGE
+        END PAGE 
 
         PAGE "Certificado Digital"
 
@@ -584,7 +584,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    60
                 COL    20
                 WIDTH  530
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -615,7 +615,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    60
                 COL    580
                 WIDTH  200
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -668,7 +668,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    120
                 COL    20
                 WIDTH  360
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -683,7 +683,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 HELPID Nil
                 TABSTOP .T.
                 VISIBLE .T.
-                READONLY .F.
+                READONLY .T.
                 RIGHTALIGN .F.
                 DISABLEDBACKCOLOR Nil
                 DISABLEDFONTCOLOR Nil
@@ -721,7 +721,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    120
                 COL    400
                 WIDTH  380
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -736,7 +736,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 HELPID Nil
                 TABSTOP .T.
                 VISIBLE .T.
-                READONLY .F.
+                READONLY .T.
                 RIGHTALIGN .F.
                 DISABLEDBACKCOLOR Nil
                 DISABLEDFONTCOLOR Nil
@@ -774,7 +774,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    180
                 COL    20
                 WIDTH  300
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -789,7 +789,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 HELPID Nil
                 TABSTOP .T.
                 VISIBLE .T.
-                READONLY .F.
+                READONLY .T.
                 RIGHTALIGN .F.
                 DISABLEDBACKCOLOR Nil
                 DISABLEDFONTCOLOR Nil
@@ -827,7 +827,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    180
                 COL    340
                 WIDTH  440
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -842,7 +842,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 HELPID Nil
                 TABSTOP .T.
                 VISIBLE .T.
-                READONLY .F.
+                READONLY .T.
                 RIGHTALIGN .F.
                 DISABLEDBACKCOLOR Nil
                 DISABLEDFONTCOLOR Nil
@@ -880,7 +880,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    240
                 COL    20
                 WIDTH  715
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -908,7 +908,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
             END TEXTBOX
 
             DEFINE BUTTON Button_ArquivoPFX
-                ROW    240
+                ROW    237
                 COL    750
                 WIDTH  30
                 HEIGHT 30
@@ -951,15 +951,15 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 TRANSPARENT .F.
                 ACTION Nil
                 AUTOSIZE .F.
-                BACKCOLOR Nil
-                FONTCOLOR Nil
+                BACKCOLOR NIL
+                FONTCOLOR NIL
             END LABEL
 
             DEFINE TEXTBOX Text_SenhaPFX
                 ROW    300
                 COL    20
                 WIDTH  200
-                HEIGHT 30
+                HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
                 TOOLTIP ""
@@ -979,15 +979,15 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 DISABLEDBACKCOLOR Nil
                 DISABLEDFONTCOLOR Nil
                 CASECONVERT NONE
-                BACKCOLOR Nil
-                FONTCOLOR Nil
+                BACKCOLOR NIL
+                FONTCOLOR NIL
                 INPUTMASK Nil
                 FORMAT Nil
                 VALUE ""
             END TEXTBOX
 
             DEFINE BUTTON Button_Submit
-                ROW    298
+                ROW    295
                 COL    260
                 WIDTH  200
                 HEIGHT 34
@@ -1030,18 +1030,18 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 TRANSPARENT .T.
                 ACTION Nil
                 AUTOSIZE .F.
-                BACKCOLOR Nil
-                FONTCOLOR Nil
-                CENTERALIGN .T.
+                BACKCOLOR NIL
+                FONTCOLOR NIL
+                CENTERALIGN .T. 
             END LABEL
 
-        END PAGE
+        END PAGE 
 
-    END TAB
+    END TAB 
 
     DEFINE BUTTON Button_Save
-        ROW    420
-        COL    330
+        ROW    440
+        COL    355
         WIDTH  100
         HEIGHT 30
         ACTION setup_button_save_action()
@@ -1066,8 +1066,8 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
     END BUTTON
 
     DEFINE BUTTON Button_Cancel
-        ROW    420
-        COL    450
+        ROW    440
+        COL    475
         WIDTH  100
         HEIGHT 30
         ACTION setup_button_cancel_action()
@@ -1092,8 +1092,8 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
     END BUTTON
 
     DEFINE BUTTON Button_turnOFF
-        ROW    420
-        COL    575
+        ROW    440
+        COL    597
         WIDTH  222
         HEIGHT 30
         ACTION setup_button_turnOFF_action()
@@ -1118,3 +1118,4 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
     END BUTTON
 
 END WINDOW
+

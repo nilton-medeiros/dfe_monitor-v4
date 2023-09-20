@@ -42,9 +42,13 @@ procedure setup_form_oninit()
     SetProperty('setup', 'Text_das', 'Value', appData:timerStart)
     SetProperty('setup', 'Text_as', 'Value', appData:timerEnd)
     SetProperty('setup', 'Text_path_xml_pdf', 'Value', appData:dfePath)
-    SetProperty("setup", "StatusBar", "Item", 1, "Database: " + appDataSource:database + " | " + notifyTooltip)
+	SetProperty("setup", "ProgressBar_Transmitindo", "visible", false)
+	SetProperty("setup", "ProgressBar_Transmitindo", "enabled", false)
+	SetProperty("setup", "ProgressBar_Transmitindo", "value", 50)
+	SetProperty("setup", "StatusBar", "Item", 1, "Database: " + appDataSource:database + " | " + notifyTooltip)
     SetProperty("setup", "StatusBar", "Item", 2, appDataSource:connectionStatus)
     SetProperty("setup", "StatusBar", "Icon", 2, appDataSource:iconStatus)
+
 
 return
 
@@ -134,15 +138,80 @@ procedure setup_Grid_Empresas_onChange()
 
 return
 
-procedure setup_button_ArquivoPFX_action()
-	local filePFX := GetFile({{'Arquivos PFX', '*.pfx'}}, 'Selecione o Certificado', hb_cwd() + 'certificados\')
-	GetProperty('setup', 'Text_ArquivoPFX', 'value', filePFX)
+procedure setup_button_arquivopfx_action()
+	local filePFX := GetFile({{'Arquivos PFX (*.pfx)', '*.pfx'}, {'Arquivos P12 (*.p12)', '*.p12'}}, 'Selecione o Certificado', 'certificados')
+	SetProperty('setup', 'Text_ArquivoPFX', 'value', filePFX)
 return
 
 procedure setup_button_Submit_action()
-	if Empty(GetProperty('setup', 'Text_ArquivoPFX', 'value')) .or. Empty(GetProperty('setup', 'Text_SenhaPFX', 'value'))
-		MsgExclamation("Arquivo PFX ou senha não podem estar vazios!", "Arquivo PFX (Certificado A1)")
+	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
+	local filePFX := GetProperty('setup', 'Text_ArquivoPFX', 'value')
+	local paswPFX := GetProperty('setup', 'Text_SenhaPFX', 'value')
+	local paswUser := GetProperty('setup', 'Text_password', 'Value')
+	local certificado, cdEncode64, fileLoaded, tudoCerto
+	local hResponse, jsonResponse, periodoValidade, msgRetorno
+
+	SetProperty('setup', 'Label_StatusPFX', 'value', '')
+
+	if Empty(filePFX)
+		MsgExclamation("Arquivo PFX não podem estar vazios!", "Arquivo PFX (Certificado A1)")
+	elseif  Empty(paswPFX)
+		MsgExclamation("Senha do certificado A1 inválida!", "Senha (Certificado A1)")
+	elseif !hb_FileExists(filePFX)
+		MsgExclamation("Arquivo " + filePFX + hb_eol() + "não encontrado!", "Arquivo PFX (Certificado A1)")
+	elseif !(paswUser == cbxUsers:getCargo())
+		MsgExclamation("Senha do admin inválida!" + hb_eol() + "Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
+	elseif Empty(cnpj)
+		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "Selecione uma Empresa")
 	else
 		// Submeter a Nuvem Fiscal e obter resposta
+		SetProperty('setup', 'Label_StatusPFX', 'value', 'Carregando...')
+		SetProperty('setup', 'Label_StatusPFX', 'visible', true)
+		SetProperty("setup", "ProgressBar_Transmitindo", "visible", true)
+		SetProperty("setup", "ProgressBar_Transmitindo", "enabled", true)
+		SET PROGRESSBAR ProgressBar_Transmitindo OF setup ENABLE MARQUEE UPDATED 10
+
+		// Transmitir para a nuvem fiscal e pegar retorno
+		fileLoaded := hb_MemoRead(filePFX)
+		cdEncode64 := HB_Base64Encode(fileLoaded)
+		certificado := TApiCertificado():new(cnpj)
+		tudoCerto := certificado:Cadastrar(cdEncode64, paswPFX)
+
+		if tudoCerto
+			jsonResponse := jsonDecode(certificado:response)
+			SetProperty('setup', 'Text_RazaoSocial', 'value', jsonResponse['nome_razao_social'])
+			SetProperty('setup', 'Text_Assunto', 'value', jsonResponse['subject_name'])
+			SetProperty('setup', 'Text_Emissor', 'value', jsonResponse['issuer_name'])
+			SetProperty('setup', 'Text_Serie', 'value', jsonResponse['serial_number'])
+
+			// 2019-08-24T14:15:22Z
+			periodoValidade := Left(StrTran(jsonResponse['not_valid_before'], "T", " "), 19)
+			periodoValidade += " à " + Left(StrTran(jsonResponse['not_valid_after'], "T", " "), 19)
+			SetProperty('setup', 'Text_Validade', 'value', periodoValidade)
+		else
+			if certificado:ContentType == "json"
+				consoleLog(certificado:response)
+				jsonResponse := jsonDecode(certificado:response)
+				msgRetorno := "codigo: " + jsonResponse['error']['code'] + hb_eol()
+				msgRetorno += "Menssagem: " + jsonResponse['error']['message']
+			else
+				msgRetorno := certificado:response
+			endif
+			saveLog(msgRetorno)
+		endif
+
+		SET PROGRESSBAR ProgressBar_Transmitindo OF setup DISABLE MARQUEE
+		SetProperty("setup", "ProgressBar_Transmitindo", "enabled", false)
+		SetProperty("setup", "ProgressBar_Transmitindo", "visible", false)
+
+		if tudoCerto
+			SetProperty('setup', 'Label_StatusPFX', 'value', 'Certificado carregado com sucesso!')
+		else
+			SetProperty('setup', 'Label_StatusPFX', 'value', 'Erro ao carregar Certificado!')
+			SetProperty('setup', 'Label_StatusPFX', 'FontColor', {255,0,0})
+			MsgStop(msgRetorno, "Erro ao carregar Certificado A1")
+		endif
+
 	endif
+
 return

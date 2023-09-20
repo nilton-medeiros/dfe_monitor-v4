@@ -1,7 +1,7 @@
 * HMG-IDE UNICODE Form Designer Generated Code
 * (c) Roberto Lopez - http://sites.google.com/site/hmgweb
 
-DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "DFe Monitor" ICON "icoSetup" CHILD NOMAXIMIZE NOMINIMIZE NOSIZE CURSOR NIL ON INIT setup_form_oninit() ON RELEASE setup_form_onrelease() ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "DFe Monitor" ICON "icoSetup" CHILD NOSIZE CURSOR NIL ON INIT setup_form_oninit() ON RELEASE setup_form_onrelease() ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
 
     DEFINE STATUSBAR FONT "Arial" SIZE 9
         STATUSITEM "Status" WIDTH 500 RAISED
@@ -317,7 +317,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FONTCOLOR NIL
                 INPUTMASK "9,999"
                 FORMAT "E"
-                NUMERIC .T.
+                NUMERIC .T. 
                 VALUE 300
             END TEXTBOX
 
@@ -416,7 +416,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 AUTOSIZE .F.
                 BACKCOLOR NIL
                 FONTCOLOR NIL
-                CENTERALIGN .T.
+                CENTERALIGN .T. 
             END LABEL
 
             DEFINE TEXTBOX Text_as
@@ -532,7 +532,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 VALUE ""
             END TEXTBOX
 
-        END PAGE
+        END PAGE 
 
         PAGE "Certificado Digital"
 
@@ -667,7 +667,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
             DEFINE TEXTBOX Text_Assunto
                 ROW    120
                 COL    20
-                WIDTH  360
+                WIDTH  370
                 HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -697,7 +697,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
 
             DEFINE LABEL Label_Emissor
                 ROW    100
-                COL    400
+                COL    410
                 WIDTH  100
                 HEIGHT 18
                 VALUE "Emissor"
@@ -719,8 +719,8 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
 
             DEFINE TEXTBOX Text_Emissor
                 ROW    120
-                COL    400
-                WIDTH  380
+                COL    410
+                WIDTH  370
                 HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -773,7 +773,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
             DEFINE TEXTBOX Text_Serie
                 ROW    180
                 COL    20
-                WIDTH  300
+                WIDTH  370
                 HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -803,7 +803,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
 
             DEFINE LABEL Label_Validade
                 ROW    160
-                COL    340
+                COL    410
                 WIDTH  120
                 HEIGHT 18
                 VALUE "Período de Validade"
@@ -825,8 +825,8 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
 
             DEFINE TEXTBOX Text_Validade
                 ROW    180
-                COL    340
-                WIDTH  440
+                COL    410
+                WIDTH  370
                 HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -912,7 +912,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 COL    750
                 WIDTH  30
                 HEIGHT 30
-                ACTION setup_button_ArquivoPFX_action()
+                ACTION setup_button_arquivopfx_action()
                 CAPTION Nil
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -958,7 +958,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
             DEFINE TEXTBOX Text_SenhaPFX
                 ROW    300
                 COL    20
-                WIDTH  200
+                WIDTH  530
                 HEIGHT 24
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -988,7 +988,7 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
 
             DEFINE BUTTON Button_Submit
                 ROW    295
-                COL    260
+                COL    580
                 WIDTH  200
                 HEIGHT 34
                 ACTION setup_button_Submit_action()
@@ -1006,18 +1006,18 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 FLAT .F.
                 TABSTOP .T.
                 VISIBLE .T.
-                TRANSPARENT .F.
+                TRANSPARENT .T.
                 MULTILINE .F.
-                PICTURE "Submit"
-                PICTALIGNMENT RIGHT
+                PICTURE Nil
+                PICTALIGNMENT TOP
             END BUTTON
 
             DEFINE LABEL Label_StatusPFX
-                ROW    345
+                ROW    350
                 COL    20
-                WIDTH  765
-                HEIGHT 35
-                VALUE ""
+                WIDTH  200
+                HEIGHT 25
+                VALUE "Transmitindo..."
                 FONTNAME "Arial"
                 FONTSIZE 14
                 TOOLTIP ""
@@ -1029,15 +1029,31 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 VISIBLE .F.
                 TRANSPARENT .T.
                 ACTION Nil
-                AUTOSIZE .F.
+                AUTOSIZE .T.
                 BACKCOLOR NIL
-                FONTCOLOR NIL
-                CENTERALIGN .T.
+                FONTCOLOR {0,128,128}
             END LABEL
 
-        END PAGE
+            DEFINE PROGRESSBAR ProgressBar_Transmitindo
+                ROW    350
+                COL    260
+                WIDTH  520
+                HEIGHT 25
+                RANGEMIN 0
+                RANGEMAX 100
+                VALUE 0
+                TOOLTIP ""
+                HELPID Nil
+                VISIBLE .F.
+                SMOOTH .T.
+                VERTICAL .F. 
+                BACKCOLOR NIL
+                FORECOLOR NIL
+            END PROGRESSBAR
 
-    END TAB
+        END PAGE 
+
+    END TAB 
 
     DEFINE BUTTON Button_Save
         ROW    440
@@ -1118,3 +1134,4 @@ DEFINE WINDOW TEMPLATE AT 147 , 308 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
     END BUTTON
 
 END WINDOW
+

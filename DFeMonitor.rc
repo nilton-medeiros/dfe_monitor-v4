@@ -26,9 +26,9 @@ serverOFF ICON resources\serverOFF48x.ico
 serverWAIT ICON resources\serverWAIT48x.ico
 serverFAILED ICON resources\serverFailed48x.ico
 icoSetup PNG resources\setup17x.png
-folderOpen PNG resources\folder_open_fb.png
+folderOpen PNG resources\folder_open.png
 about PNG resources\about17x.png
 close PNG resources\close17x.png
 icoDatabase PNG resources\database24x.png
 spy PNG resources\spy16x.png
-Submit ICON resources\send_share_fb.ico
+Submit PNG resources\send_share.png

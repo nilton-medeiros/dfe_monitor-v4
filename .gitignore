@@ -13,3 +13,7 @@ env.json
 *.ex*
 *.pub
 _*.*
+certificado
+certificados
+*.pfx
+*.p12

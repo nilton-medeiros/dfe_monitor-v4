@@ -10,7 +10,9 @@ src\connections\mysql\db\shared\convertFieldsDb.prg
 src\connections\mysql\db\shared\Query.prg
 src\connections\mysql\db\shared\sqlString.prg
 src\connections\mysql\db\usuarios\Usuarios.prg
-src\connections\nuvemFiscal\api\ApiNfEmpresas.prg
+src\connections\nuvemFiscal\api\ApiBroadcast.prg
+src\connections\nuvemFiscal\api\ApiCertificado.prg
+src\connections\nuvemFiscal\api\ApiEmpresas.prg
 src\connections\nuvemFiscal\auth\AuthNuvemFiscal.prg
 src\core\AppData.prg
 src\core\cte\cte.prg
@@ -31,4 +33,5 @@ src\utils\jsonDecode.prg
 src\utils\log.prg
 src\utils\msgDebugInfo.prg
 src\utils\msgNotify.prg
+src\utils\SysWait.prg
 src\utils\timersForms.prg

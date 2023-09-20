@@ -1,6 +1,6 @@
 
 procedure alterarEmpresa(empresa)
-    local nuvemFiscal := TApiNfEmpresas():new()
+    local nuvemFiscal := TApiEmpresas():new()
 
     if nuvemFiscal:connected
         if nuvemFiscal:Alterar(empresa)

@@ -1,6 +1,6 @@
 
 procedure cadastrarEmpresa(empresa)
-    local nuvemFiscal := TApiNfEmpresas():new()
+    local nuvemFiscal := TApiEmpresas():new()
 
     if nuvemFiscal:connected
         if nuvemFiscal:Cadastrar(empresa)

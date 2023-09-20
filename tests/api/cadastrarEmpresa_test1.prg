@@ -1,6 +1,6 @@
 procedure testCadastrarEmpresa()
     local msgLog, empresa := appEmpresas:empresas[1]
-    local nuvemFiscal := TApiNfEmpresas():new()
+    local nuvemFiscal := TApiEmpresas():new()
 
     msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO CADASTRAR EMPRESA EMITENTE" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA-SE CONEXÃO OK MAS FALHE O CADASTRO POR CAMPOS INVÁLIDOS <<" + hb_eol() + hb_eol()

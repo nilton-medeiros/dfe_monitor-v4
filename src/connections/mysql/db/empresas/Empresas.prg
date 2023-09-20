@@ -61,7 +61,7 @@ method new() class TDbEmpresas
             AAdd(::empresas, empresa)
             // Verifica se a empresa precisa ser cadastrada ou alterada na Nuvem Fiscal
             if empresa:nuvemfiscal_cadastrar
-                nuvemFiscal := TApiNfEmpresas():new()
+                nuvemFiscal := TApiEmpresas():new()
                 if nuvemFiscal:Cadastrar(empresa)
                     // Se cadastrou, verifica se retornou campos diferentes e atualiza bd
                     consoleLog({"Empresa cadastrada | Campos retornados", hb_eol(), nuvemFiscal:responseBody})
@@ -69,7 +69,7 @@ method new() class TDbEmpresas
                     // Pega o motivo por não cadastrar
                 endif
             elseif empresa:nuvemfiscal_alterar
-                nuvemFiscal := TApiNfEmpresas():new()
+                nuvemFiscal := TApiEmpresas():new()
                 nuvemFiscal:Alterar(empresa)
             endif
             dbEmpresas:db:Skip()

@@ -51,6 +51,9 @@ method registerSystem() class TAppData
     if !hb_DirExists('log')
         hb_DirBuild('log')
     endif
+    if !hb_DirExists('certificados')
+        hb_DirBuild('certificados')
+    endif
     if (RegistryRead(::winRegistryRoot + "DisplayName") == NIL)
         RegistryWrite(::winRegistryRoot + "DisplayName", "Sistrom Sistemas web")
     endif

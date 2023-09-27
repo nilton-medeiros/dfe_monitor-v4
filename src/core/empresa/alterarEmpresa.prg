@@ -9,7 +9,7 @@ procedure alterarEmpresa(empresa)
         else
             saveLog("Falha ao alterar empresa na API Nuvem Fiscal")
             saveLog({;
-                "Content-Type: " + nuvemFiscal:responseType, hb_eol(),;
+                "Content-Type: " + nuvemFiscal:ContentType, hb_eol(),;
                 "Response: " + nuvemFiscal:response, hb_eol(),;
                 "Html Status: " + hb_ntos(nuvemFiscal:responseStatus);
             })

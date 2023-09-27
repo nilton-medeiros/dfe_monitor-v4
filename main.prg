@@ -126,6 +126,7 @@ procedure main_form_oninit()
         turnOFF()
     endif
 
+    // Executa a cada vez que o sistema é iniciado, mais ou menos a cada 24hs
     for each empresa in appEmpresas:empresas
         // Para cada empresa, verifica se já tem cadastrou ou alterar algo em Nuvem Fiscal
         if empresa:nuvemfiscal_cadastrar

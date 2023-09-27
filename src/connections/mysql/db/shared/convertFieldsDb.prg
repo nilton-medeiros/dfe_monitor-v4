@@ -9,7 +9,7 @@ function convertFieldsDb(oRow)
         elseif ValType(value) == "N"
             /*
                Nenhum valor numérico será usado em cálculos matemáticos,
-               logo é tratado como string
+               logo é tratado como string, facilita a criação de json
             */
             value := hb_ntos(value)
         endif

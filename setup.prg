@@ -1,7 +1,10 @@
 #include "hmg.ch"
+#define GREEN_OCRE {0, 128, 128}
+#define YELLOW_OCRE {253, 253, 0}
 
 procedure setup()
 	private cbxUsers AS OBJECT
+	private REGISTRY_PATH
 
 	if isWindowActive(setup)
 		doMethod('setup', 'setFOCUS')
@@ -45,18 +48,23 @@ procedure setup_form_oninit()
 	SetProperty("setup", "ProgressBar_Transmitindo", "visible", false)
 	SetProperty("setup", "ProgressBar_Transmitindo", "enabled", false)
 	SetProperty("setup", "ProgressBar_Transmitindo", "value", 50)
-	SetProperty("setup", "StatusBar", "Item", 1, "Database: " + appDataSource:database + " | " + notifyTooltip)
+	SetProperty("setup", "StatusBar", "Item", 1, "Database: " + notifyTooltip)
     SetProperty("setup", "StatusBar", "Item", 2, appDataSource:connectionStatus)
     SetProperty("setup", "StatusBar", "Icon", 2, appDataSource:iconStatus)
 
+	// Buttons
+	SetProperty('setup', 'Button_Submit_Certificado', 'Enabled', false)
+	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', false)
 
 return
 
 procedure showPassword_action()
-		SetProperty('setup', 'Label_showPassword', 'Value', GetProperty('setup', 'Text_Password', 'Value'))
-		SetProperty('setup', 'Label_showPassword', 'Visible', true)
-		Inkey(2)
-		SetProperty('setup', 'Label_showPassword', 'Visible', false)
+	SetProperty('setup', 'Text_Password', 'visible', false)
+	SetProperty('setup', 'Label_showPassword', 'Visible', true)
+	SetProperty('setup', 'Label_showPassword', 'Value', GetProperty('setup', 'Text_Password', 'Value'))
+	Inkey(2)
+	SetProperty('setup', 'Label_showPassword', 'Visible', false)
+	SetProperty('setup', 'Text_Password', 'visible', true)
 return
 
 procedure setup_text_seconds_onLostFocus()
@@ -82,13 +90,14 @@ return
 
 procedure setup_button_save_action()
 	local dfePath := GetProperty('setup', 'Text_path_xml_pdf', 'Value')
+	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 
     if empty(dfePath)
 		MsgExclamation('Definir a pasta raiz dos XMLs & PDFs')
         return
     endif
 	if !hb_DirExists(dfePath) .and. !hb_DirBuild(dfePath)
-		MsgExclamation('Pasta raiz inválida, não pode ser criada')
+		MsgExclamation('Pasta para armazenar os XMLs e PDFs dos DFEs inválida, não pode ser criada', 'Pasta de DFEs')
         return
 	endif
 
@@ -97,11 +106,11 @@ procedure setup_button_save_action()
 	endif
 
     if (GetProperty('setup', 'Text_password', 'Value') == cbxUsers:getCargo())
-        appData:dfePath := dfePath
-        RegistryWrite(appData:registryPath + "InstallPath\dfePath", dfePath)
-        RegistryWrite(appData:registryPath + "Monitoring\TimerStart", GetProperty('setup', 'Text_das', 'Value'))
-        RegistryWrite(appData:registryPath + "Monitoring\TimerEnd", GetProperty('setup', 'Text_as', 'Value'))
-        RegistryWrite(appData:registryPath + "Monitoring\frequency", GetProperty('setup', 'Text_seconds', 'Value'))
+        appData:setDfePath(dfePath)
+        RegistryWrite(appData:winRegistryPath + "InstallPath\dfePath", appData:dfePath)
+        RegistryWrite(appData:winRegistryPath + "Monitoring\TimerStart", GetProperty('setup', 'Text_das', 'Value'))
+        RegistryWrite(appData:winRegistryPath + "Monitoring\TimerEnd", GetProperty('setup', 'Text_as', 'Value'))
+        RegistryWrite(appData:winRegistryPath + "Monitoring\frequency", GetProperty('setup', 'Text_seconds', 'Value'))
         saveLog('Usuario ' + cbxUsers:getDisplay() + ' alterou campos do setup')
         doMethod('setup', 'RELEASE')
 	else
@@ -126,30 +135,100 @@ return
 
 procedure setup_Grid_Empresas_onChange()
 	local index := GetProperty("setup", "Grid_Empresas", "value")
-	local empresa
+	local msgUpload, empresa
 
-	if !(index == 0)
-		empresa :=  appEmpresas:empresas[index]
-		with object empresa
-			SetProperty('setup', 'Text_RazaoSocial', 'value', :xNome)
-			SetProperty('setup', 'Text_CNPJ', 'value', :CNPJ)
-		endwith
+	if (index == 0)
+		REGISTRY_PATH := appData:winRegistryPath + "nuvemFiscal\Emp0\"
+	else
+		empresa := appEmpresas:empresas[index]
+		REGISTRY_PATH := appData:winRegistryPath + "nuvemFiscal\Emp" + empresa:id + "\"
+		// Certificado
+		if  (RegistryRead(REGISTRY_PATH + "certificado\nome_razao_social") == NIL)
+			RegistryWrite(REGISTRY_PATH + "certificado\nome_razao_social", empresa:xNome)
+			RegistryWrite(REGISTRY_PATH + "certificado\cnpj", empresa:CNPJ)
+			RegistryWrite(REGISTRY_PATH + "certificado\subject_name", "")
+			RegistryWrite(REGISTRY_PATH + "certificado\issuer_name", "")
+			RegistryWrite(REGISTRY_PATH + "certificado\serial_number", "")
+			RegistryWrite(REGISTRY_PATH + "certificado\validity_period", "")
+			RegistryWrite(REGISTRY_PATH + "certificado\expires_in", "")
+			RegistryWrite(REGISTRY_PATH + "certificado\upladed", 0)
+			RegistryWrite(REGISTRY_PATH + "certificado\CertFile", "")
+			SetProperty('setup', 'Text_RazaoSocial', 'value', empresa:xNome)
+			SetProperty('setup', 'Text_CNPJ', 'value', empresa:CNPJ)
+			SetProperty('setup', 'Text_RazaoSocial_logotipo', 'value', empresa:xNome)
+			SetProperty('setup', 'Text_CNPJ_logotipo', 'value', empresa:CNPJ)
+			SetProperty('setup', 'Text_ArquivoPFX', 'value', "")
+		else
+			SetProperty("setup", "Text_RazaoSocial", "value", RegistryRead(REGISTRY_PATH + "certificado\nome_razao_social"))
+			SetProperty("setup", "Text_CNPJ", "value", RegistryRead(REGISTRY_PATH + "certificado\cnpj"))
+			SetProperty("setup", "Text_RazaoSocial_logotipo", "value", empresa:xNome)
+			SetProperty("setup", "Text_CNPJ_logotipo", "value", empresa:CNPJ)
+			SetProperty("setup", "Text_Assunto", "value", RegistryRead(REGISTRY_PATH + "certificado\subject_name"))
+			SetProperty("setup", "Text_Emissor", "value", RegistryRead(REGISTRY_PATH + "certificado\issuer_name"))
+			SetProperty("setup", "Text_Serie", "value", RegistryRead(REGISTRY_PATH + "certificado\serial_number"))
+			SetProperty("setup", "Text_Validade", "value", RegistryRead(REGISTRY_PATH + "certificado\validity_period"))
+			SetProperty('setup', 'Text_ArquivoPFX', 'value', RegistryRead(REGISTRY_PATH + "certificado\CertFile"))
+		endif
+
+		// logotipo
+		if (RegistryRead(REGISTRY_PATH + "logotipo\LogoFile" ) == NIL)
+			RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", "")
+			RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 0)
+		else
+			SetProperty("setup", "Image_logotipo", "picture", RegistryRead(REGISTRY_PATH + "logotipo\LogoFile"))
+			if Empty(RegistryRead(REGISTRY_PATH + "logotipo\uploaded"))
+				msgUpload := "Logotipo não enviado para DACTE"
+			else
+				msgUpload := "Logotipo enviado para DACTE"
+			endif
+			SetProperty("setup", "Label_StatusLogotipo", "value", msgUpload)
+		endif
+
 	endif
+
+	if Empty(GetProperty('setup', 'Image_logotipo', 'picture')) .or. (RegistryRead(REGISTRY_PATH + "logotipo\uploaded") == 0)
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', false)
+	else
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', true)
+	endif
+
+	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', !Empty(GetProperty('setup', 'Image_logotipo', 'picture')))
 
 return
 
 procedure setup_button_arquivopfx_action()
-	local filePFX := GetFile({{'Arquivos PFX (*.pfx)', '*.pfx'}, {'Arquivos P12 (*.p12)', '*.p12'}}, 'Selecione o Certificado', 'certificados')
+	local filePFX := GetFile({{'Arquivos PFX (*.PFX,*.P12)', '*.pfx;*.p12'}}, 'Selecione o Certificado', 'certificados')
 	SetProperty('setup', 'Text_ArquivoPFX', 'value', filePFX)
+	SetProperty('setup', 'Button_Submit_Certificado', 'Enabled', !Empty(filePFX))
 return
 
-procedure setup_button_Submit_action()
+procedure setup_button_logotipo_action()
+	local fileLogo := GetFile({{'Logotipos (*.PNG,*.JPG,*.JPEG)', '*.png;*.jpg;*.jpeg'}}, 'Selecione um Logotipo', 'Logotipos')
+	local nSize := hb_FSize(fileLogo)
+	if (nSize > 204800)
+		nSize := nSize / 1024
+		MsgExclamation({"Tamanho do logotipo maior que permitido!", hb_eol(), "Tamanho: " + hb_ntos(nSize) + " KB", hb_eol(), "Pemitido até: 200 KB"}, "Logotipo Recusado")
+	else
+		SetProperty('setup', 'Image_logotipo', 'picture', fileLogo)
+	endif
+
+	if Empty(GetProperty('setup', 'Image_logotipo', 'picture')) .or. (RegistryRead(REGISTRY_PATH + "logotipo\uploaded") == 0)
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', false)
+	else
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', true)
+	endif
+
+	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', !Empty(GetProperty('setup', 'Image_logotipo', 'picture')))
+
+return
+
+procedure setup_Button_Submit_Certificado_action()
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local filePFX := GetProperty('setup', 'Text_ArquivoPFX', 'value')
 	local paswPFX := GetProperty('setup', 'Text_SenhaPFX', 'value')
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
-	local certificado, cdEncode64, fileLoaded, tudoCerto
-	local hResponse, jsonResponse, periodoValidade, msgRetorno
+	local certificado, cdEncode64, fileLoaded, tudoCerto, expires_in
+	local jsonResponse, periodoValidade, msgRetorno
 
 	SetProperty('setup', 'Label_StatusPFX', 'value', '')
 
@@ -165,6 +244,7 @@ procedure setup_button_Submit_action()
 		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "Selecione uma Empresa")
 	else
 		// Submeter a Nuvem Fiscal e obter resposta
+		SetProperty('setup', 'Label_StatusPFX', 'FontColor', YELLOW_OCRE)
 		SetProperty('setup', 'Label_StatusPFX', 'value', 'Carregando...')
 		SetProperty('setup', 'Label_StatusPFX', 'visible', true)
 		SetProperty("setup", "ProgressBar_Transmitindo", "visible", true)
@@ -178,17 +258,33 @@ procedure setup_button_Submit_action()
 		tudoCerto := certificado:Cadastrar(cdEncode64, paswPFX)
 
 		if tudoCerto
+
 			jsonResponse := jsonDecode(certificado:response)
 			SetProperty('setup', 'Text_RazaoSocial', 'value', jsonResponse['nome_razao_social'])
+			SetProperty('setup', 'Text_CNPJ_logotipo', 'value', jsonResponse['cpf_cnpj'])
 			SetProperty('setup', 'Text_Assunto', 'value', jsonResponse['subject_name'])
 			SetProperty('setup', 'Text_Emissor', 'value', jsonResponse['issuer_name'])
 			SetProperty('setup', 'Text_Serie', 'value', jsonResponse['serial_number'])
 
-			// 2019-08-24T14:15:22Z
+			// 2019-08-24T14:15:22Z => 2019-08-24 14:15:22
+			expires_in := Left(StrTran(jsonResponse['not_valid_after'], "T", " "), 19)
 			periodoValidade := Left(StrTran(jsonResponse['not_valid_before'], "T", " "), 19)
-			periodoValidade += " à " + Left(StrTran(jsonResponse['not_valid_after'], "T", " "), 19)
+			periodoValidade += " à " + expires_in
 			SetProperty('setup', 'Text_Validade', 'value', periodoValidade)
+
+			RegistryWrite(REGISTRY_PATH + "certificado\CertFile", filePFX)
+			RegistryWrite(REGISTRY_PATH + "certificado\cnpj", jsonResponse['cpf_cnpj'])
+			RegistryWrite(REGISTRY_PATH + "certificado\expires_in", expires_in)
+			RegistryWrite(REGISTRY_PATH + "certificado\issuer_name", jsonResponse['issuer_name'])
+			RegistryWrite(REGISTRY_PATH + "certificado\nome_razao_social", jsonResponse['nome_razao_social'])
+			RegistryWrite(REGISTRY_PATH + "certificado\serial_number", jsonResponse['serial_number'])
+			RegistryWrite(REGISTRY_PATH + "certificado\subject_name", jsonResponse['subject_name'])
+			RegistryWrite(REGISTRY_PATH + "certificado\uploaded", 1)
+			RegistryWrite(REGISTRY_PATH + "certificado\validity_period", periodoValidade)
+
 		else
+
+			// Response Schema
 			if certificado:ContentType == "json"
 				consoleLog(certificado:response)
 				jsonResponse := jsonDecode(certificado:response)
@@ -198,6 +294,7 @@ procedure setup_button_Submit_action()
 				msgRetorno := certificado:response
 			endif
 			saveLog(msgRetorno)
+
 		endif
 
 		SET PROGRESSBAR ProgressBar_Transmitindo OF setup DISABLE MARQUEE
@@ -206,12 +303,93 @@ procedure setup_button_Submit_action()
 
 		if tudoCerto
 			SetProperty('setup', 'Label_StatusPFX', 'value', 'Certificado carregado com sucesso!')
+			SetProperty('setup', 'Label_StatusPFX', 'FontColor', GREEN_OCRE)
 		else
 			SetProperty('setup', 'Label_StatusPFX', 'value', 'Erro ao carregar Certificado!')
-			SetProperty('setup', 'Label_StatusPFX', 'FontColor', {255,0,0})
+			SetProperty('setup', 'Label_StatusPFX', 'FontColor', RED)
 			MsgStop(msgRetorno, "Erro ao carregar Certificado A1")
 		endif
 
 	endif
+
+return
+
+procedure setup_Button_Submit_Logotipo_action()
+	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
+	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
+	local paswUser := GetProperty('setup', 'Text_password', 'Value')
+	local logotipo, fileLoaded
+
+	SetProperty('setup', 'Label_StatusLogotipo', 'value', '')
+
+	if Empty(fileLogo)
+		MsgExclamation("Arquivo Logotipo não pode estar vazio!", "Arquivo de Logotipo")
+	elseif !hb_FileExists(fileLogo)
+		MsgExclamation("Arquivo " + fileLogo + hb_eol() + "não encontrado!", "Arquivo de Logotipo")
+	elseif !(paswUser == cbxUsers:getCargo())
+		MsgExclamation("Senha do admin inválida!" + hb_eol() + ;
+			"Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
+	elseif Empty(cnpj)
+		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "Selecione uma Empresa")
+	else
+		// Submeter a Nuvem Fiscal e obter resposta
+		SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Carregando...')
+		SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', YELLOW_OCRE)
+
+		// Transmitir para a nuvem fiscal e pegar retorno
+		fileLoaded := hb_MemoRead(fileLogo)
+		logotipo := TApiLogotipo():new(cnpj)
+
+		if logotipo:Enviar(fileLoaded, hb_FNameExt(fileLogo))
+			RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", fileLogo)
+			RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 1)
+			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Logotipo carregado com sucesso!')
+			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', GREEN_OCRE)
+		else
+			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Erro ao carregar Logotipo!')
+			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', RED)
+			MsgStop(getMessageApiError(logotipo), "Erro ao carregar Logotipo")
+		endif
+
+	endif
+
+	if Empty(GetProperty('setup', 'Image_logotipo', 'picture')) .or. (RegistryRead(REGISTRY_PATH + "logotipo\uploaded") == 0)
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', false)
+	else
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', true)
+	endif
+
+	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', !Empty(GetProperty('setup', 'Image_logotipo', 'picture')))
+
+return
+
+procedure setup_button_delete_logotipo_action()
+	local cnpj, logo
+
+	if MsgYesNo("Confirme a remoção do logotipo no PDF da DACTE/DAMDFE", "Remover Logotipo", false)
+		SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Deletando Logo...')
+		SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', YELLOW_OCRE)
+		cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
+		logo := TApiLogotipo():new(cnpj)
+		if logo:Deletar()
+			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Logo Removido com Sucesso!')
+			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', GREEN_OCRE)
+			SetProperty("setup", "Image_logotipo", "picture", "")
+			RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", "")
+			RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 0)
+		else
+			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Erro ao Remover Logotipo!')
+			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', RED)
+			MsgStop(getMessageApiError(logo), "Erro ao remover Logo do PDF da DACTE/DAMDFE")
+		endif
+	endif
+
+	if Empty(GetProperty('setup', 'Image_logotipo', 'picture')) .or. (RegistryRead(REGISTRY_PATH + "logotipo\uploaded") == 0)
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', false)
+	else
+		SetProperty('setup', 'Button_Delete_Logotipo', 'Enabled', true)
+	endif
+
+	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', !Empty(GetProperty('setup', 'Image_logotipo', 'picture')))
 
 return

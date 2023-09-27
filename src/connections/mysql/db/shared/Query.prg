@@ -8,6 +8,7 @@ class TQuery
     data db as object readonly
     data sql readonly
     data executed readonly
+    data count readonly
 
     method new(cSql) constructor
     method runQuery(sql)
@@ -19,9 +20,11 @@ end class
 method new(cSql) class TQuery
     ::sql := cSql
     ::executed := false
+    ::count := 0
     if appDataSource:connected .or. appDataSource:connect()
         msgNotify({'notifyTooltip' => "Executando query..."})
         if ::runQuery()
+            ::count := ::db:LastRec()
             ::db:GoTop()
         endif
         msgNotify()

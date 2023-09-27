@@ -5,18 +5,25 @@
     Transmite à API da Nuvem Fiscal a solicitação (endpoint) e json
     (body) de acordo com o método http solicitado.
 */
-function Broadcast(connection, httpMethod, apiUrl, token, operation, body)
+function Broadcast(connection, httpMethod, apiUrl, token, operation, body, content_type)
     local objError
     local resposta := {"error" => false, "status" => 0, "ContentType" => "", "response" => ""}
 
+    default content_type := "application/json"
+
     begin sequence
+
         connection:Open(httpMethod, apiUrl, false)
         connection:SetRequestHeader("Authorization", "Bearer " + token)
-        connection:SetRequestHeader("Content-Type", "application/json")
+        connection:SetRequestHeader("Content-Type", content_type)   // Request Body Schema
+
         if !Empty(body)
+            // Request Body
             connection:Send(body)
         endif
+
         connection:WaitForResponse(5000)
+
     recover using objError
         if objError:genCode != 0
             // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), hb_eol()})
@@ -26,6 +33,8 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body)
             saveLog({"Erro de conexão com o site em " + operation, hb_eol(), hb_eol(), hb_eol()})
         endif
         resposta["error"] := true
+        resposta["ContentType"] := "text"
+        resposta["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation
         Break
     end sequence
 

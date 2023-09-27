@@ -39,7 +39,7 @@ method new() class TDbEmpresas
     sql:add("emp_email_comercial AS email, ")
     sql:add("emp_seguradora AS seguradora, ")
     sql:add("emp_apolice AS apolice, ")
-    sql:add("emp_simples_nacional AS CRT, ")
+    sql:add("IF(emp_simples_nacional, '1','3') AS CRT, ")
     sql:add("IF(emp_dacte_layout='RETRATO', '1', '2') AS tpImp, ")
     sql:add("nuvemfiscal_client_id, ")
     sql:add("nuvemfiscal_client_secret, ")
@@ -63,14 +63,19 @@ method new() class TDbEmpresas
             if empresa:nuvemfiscal_cadastrar
                 nuvemFiscal := TApiEmpresas():new()
                 if nuvemFiscal:Cadastrar(empresa)
-                    // Se cadastrou, verifica se retornou campos diferentes e atualiza bd
-                    consoleLog({"Empresa cadastrada | Campos retornados", hb_eol(), nuvemFiscal:responseBody})
+                    consoleLog("Empresa cadastrada na API Nuvem Fiscal")
                 else
-                    // Pega o motivo por não cadastrar
+                    MsgStop(getMessageApiError(nuvemFiscal), "Erro ao cadastrar Empresa na API da Nuvem Fiscal")
+                    turnOFF()
                 endif
             elseif empresa:nuvemfiscal_alterar
                 nuvemFiscal := TApiEmpresas():new()
-                nuvemFiscal:Alterar(empresa)
+                if nuvemFiscal:Alterar(empresa)
+                    consoleLog("Empresa alterada na API Nuvem Fiscal")
+                else
+                    MsgStop(getMessageApiError(nuvemFiscal), "Erro ao alterar Empresa na API da Nuvem Fiscal")
+                    turnOFF()
+                endif
             endif
             dbEmpresas:db:Skip()
         enddo

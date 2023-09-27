@@ -25,6 +25,7 @@ class TAppData
     method registerDatabase()
     method setUTC(emp_id)
     method setTimer() inline ::timer := Seconds()
+    method setDfePath(path)
 
 end class
 
@@ -54,6 +55,9 @@ method registerSystem() class TAppData
     if !hb_DirExists('certificados')
         hb_DirBuild('certificados')
     endif
+    if !hb_DirExists('logotipos')
+        hb_DirBuild('logotipos')
+    endif
     if (RegistryRead(::winRegistryRoot + "DisplayName") == NIL)
         RegistryWrite(::winRegistryRoot + "DisplayName", "Sistrom Sistemas web")
     endif
@@ -79,10 +83,10 @@ method registerSystem() class TAppData
     if (RegistryRead(::winRegistryPath + "InstallPath\Path") == NIL)
         RegistryWrite(::winRegistryPath + "InstallPath\Path", hb_cwd())
     endif
-    if !(RegistryRead(::winRegistryPath + "InstallPath\dfePath") == NIL)
-        ::dfePath := RegistryRead(::winRegistryPath + "InstallPath\dfePath")
-    else
+    if (RegistryRead(::winRegistryPath + "InstallPath\dfePath") == NIL)
         RegistryWrite(::winRegistryPath + "InstallPath\dfePath", "C:\shared\DFe\")
+    else
+        ::dfePath := RegistryRead(::winRegistryPath + "InstallPath\dfePath")
     endif
     if (RegistryRead(::winRegistryPath + "Host\db_ServerName") == NIL)
         RegistryWrite(::winRegistryPath + "Host\db_ServerName", "")
@@ -192,3 +196,15 @@ return nil
 method setUTC(emp_id) class TAppData
     ::utc := appEmpresas:getUTC(emp_id)
 return nil
+
+method setDfePath(path) class TAppData
+    local lSet := false
+    if !Empty(path)
+        path := AllTrim(path)
+        if !(hb_URight(path, 1) == "\")
+            path += "\"
+        endif
+        ::dfePath := path
+        lSet := true
+    endif
+return lSet

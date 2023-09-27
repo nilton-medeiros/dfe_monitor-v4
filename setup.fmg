@@ -1,7 +1,7 @@
 * HMG-IDE UNICODE Form Designer Generated Code
 * (c) Roberto Lopez - http://sites.google.com/site/hmgweb
 
-DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "DFe Monitor" ICON "icoSetup" CHILD NOSIZE CURSOR NIL ON INIT setup_form_oninit() ON RELEASE setup_form_onrelease() ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE AT 210 , 380 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "DFe Monitor" ICON "icoSetup" CHILD NOSIZE CURSOR NIL ON INIT setup_form_oninit() ON RELEASE setup_form_onrelease() ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
 
     DEFINE STATUSBAR FONT "Arial" SIZE 9
         STATUSITEM "Status" WIDTH 500 RAISED
@@ -174,9 +174,9 @@ DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 ROW    220
                 COL    240
                 WIDTH  220
-                HEIGHT 24
+                HEIGHT 30
                 FONTNAME "Arial"
-                FONTSIZE 9
+                FONTSIZE 10
                 TOOLTIP ""
                 ONCHANGE Nil
                 ONGOTFOCUS TextBox_onGoToFocus("setup", "Text_password")
@@ -204,9 +204,9 @@ DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
 
             DEFINE BUTTON Button_showPassword
                 ROW    220
-                COL    475
-                WIDTH  24
-                HEIGHT 24
+                COL    470
+                WIDTH  30
+                HEIGHT 30
                 ACTION showPassword_action()
                 CAPTION Nil
                 FONTNAME "Arial"
@@ -229,13 +229,13 @@ DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
             END BUTTON
 
             DEFINE LABEL Label_showPassword
-                ROW    207
+                ROW    223
                 COL    245
-                WIDTH  205
-                HEIGHT 19
+                WIDTH  210
+                HEIGHT 22
                 VALUE ""
                 FONTNAME "Arial"
-                FONTSIZE 9
+                FONTSIZE 10
                 TOOLTIP ""
                 FONTBOLD .F.
                 FONTITALIC .F.
@@ -246,8 +246,8 @@ DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 TRANSPARENT .F.
                 ACTION Nil
                 AUTOSIZE .F.
-                BACKCOLOR NIL
-                FONTCOLOR NIL
+                BACKCOLOR {255,255,255}
+                FONTCOLOR {0,0,0}
             END LABEL
 
             DEFINE FRAME Frame_4
@@ -986,12 +986,12 @@ DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 VALUE ""
             END TEXTBOX
 
-            DEFINE BUTTON Button_Submit
+            DEFINE BUTTON Button_Submit_Certificado
                 ROW    295
                 COL    580
                 WIDTH  200
                 HEIGHT 34
-                ACTION setup_button_Submit_action()
+                ACTION setup_Button_Submit_Certificado_action()
                 CAPTION "Enviar"
                 FONTNAME "Arial"
                 FONTSIZE 9
@@ -1050,6 +1050,245 @@ DEFINE WINDOW TEMPLATE AT 209 , 379 WIDTH 853 HEIGHT 533 VIRTUAL WIDTH Nil VIRTU
                 BACKCOLOR NIL
                 FORECOLOR NIL
             END PROGRESSBAR
+
+        END PAGE 
+
+        PAGE "Logotipo DACTE (PDF)"
+
+            DEFINE LABEL Label_RazaoSocial_logotipo
+                ROW    40
+                COL    20
+                WIDTH  100
+                HEIGHT 18
+                VALUE "Razão Social"
+                FONTNAME "Arial"
+                FONTSIZE 9
+                TOOLTIP ""
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                HELPID Nil
+                VISIBLE .T.
+                TRANSPARENT .F.
+                ACTION Nil
+                AUTOSIZE .F.
+                BACKCOLOR NIL
+                FONTCOLOR NIL
+            END LABEL
+
+            DEFINE LABEL Label_CNPJ_logotipo
+                ROW    40
+                COL    580
+                WIDTH  100
+                HEIGHT 18
+                VALUE "CNPJ"
+                FONTNAME "Arial"
+                FONTSIZE 9
+                TOOLTIP ""
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                HELPID Nil
+                VISIBLE .T.
+                TRANSPARENT .F.
+                ACTION Nil
+                AUTOSIZE .F.
+                BACKCOLOR NIL
+                FONTCOLOR NIL
+            END LABEL
+
+            DEFINE TEXTBOX Text_RazaoSocial_logotipo
+                ROW    60
+                COL    20
+                WIDTH  530
+                HEIGHT 24
+                FONTNAME "Arial"
+                FONTSIZE 9
+                TOOLTIP ""
+                ONCHANGE Nil
+                ONGOTFOCUS Nil
+                ONLOSTFOCUS Nil
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                ONENTER Nil
+                HELPID Nil
+                TABSTOP .T.
+                VISIBLE .T.
+                READONLY .T.
+                RIGHTALIGN .F.
+                DISABLEDBACKCOLOR Nil
+                DISABLEDFONTCOLOR Nil
+                CASECONVERT NONE
+                BACKCOLOR NIL
+                FONTCOLOR NIL
+                INPUTMASK Nil
+                FORMAT Nil
+                VALUE ""
+            END TEXTBOX
+
+            DEFINE TEXTBOX Text_CNPJ_logotipo
+                ROW    60
+                COL    580
+                WIDTH  200
+                HEIGHT 24
+                FONTNAME "Arial"
+                FONTSIZE 9
+                TOOLTIP ""
+                ONCHANGE Nil
+                ONGOTFOCUS Nil
+                ONLOSTFOCUS Nil
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                ONENTER Nil
+                HELPID Nil
+                TABSTOP .T.
+                VISIBLE .T.
+                READONLY .T.
+                RIGHTALIGN .F.
+                DISABLEDBACKCOLOR Nil
+                DISABLEDFONTCOLOR Nil
+                CASECONVERT NONE
+                BACKCOLOR NIL
+                FONTCOLOR NIL
+                INPUTMASK Nil
+                FORMAT Nil
+                VALUE ""
+            END TEXTBOX
+
+            DEFINE FRAME Frame_logotipo
+                ROW    105
+                COL    20
+                WIDTH  380
+                HEIGHT 270
+                FONTNAME "Arial"
+                FONTSIZE 9
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                CAPTION "Logotipo"
+                BACKCOLOR NIL
+                FONTCOLOR NIL
+                OPAQUE .T.
+            END FRAME
+
+            DEFINE IMAGE Image_logotipo
+                ROW    130
+                COL    30
+                WIDTH  360
+                HEIGHT 230
+                PICTURE ""
+                HELPID Nil
+                VISIBLE .T.
+                STRETCH .F.
+                ACTION Nil
+            END IMAGE
+
+            DEFINE BUTTON Button_Logotipo
+                ROW    120
+                COL    470
+                WIDTH  80
+                HEIGHT 75
+                ACTION setup_button_logotipo_action()
+                CAPTION Nil
+                FONTNAME "Arial"
+                FONTSIZE 9
+                TOOLTIP ""
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                ONGOTFOCUS Nil
+                ONLOSTFOCUS Nil
+                HELPID Nil
+                FLAT .F.
+                TABSTOP .T.
+                VISIBLE .T.
+                TRANSPARENT .F.
+                MULTILINE .F.
+                PICTURE "folderOpen"
+                PICTALIGNMENT TOP
+            END BUTTON
+
+            DEFINE LABEL Label_StatusLogotipo
+                ROW    350
+                COL    420
+                WIDTH  360
+                HEIGHT 25
+                VALUE "Enviando..."
+                FONTNAME "Arial"
+                FONTSIZE 14
+                TOOLTIP ""
+                FONTBOLD .T.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                HELPID Nil
+                VISIBLE .T.
+                TRANSPARENT .T.
+                ACTION Nil
+                AUTOSIZE .F.
+                BACKCOLOR NIL
+                FONTCOLOR {0,128,128}
+            END LABEL
+
+            DEFINE BUTTON Button_Submit_Logotipo
+                ROW    120
+                COL    580
+                WIDTH  200
+                HEIGHT 34
+                ACTION setup_Button_Submit_Logotipo_action()
+                CAPTION "Enviar p/ DACTE"
+                FONTNAME "Arial"
+                FONTSIZE 9
+                TOOLTIP ""
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                ONGOTFOCUS Nil
+                ONLOSTFOCUS Nil
+                HELPID Nil
+                FLAT .F.
+                TABSTOP .T.
+                VISIBLE .T.
+                TRANSPARENT .T.
+                MULTILINE .F.
+                PICTURE Nil
+                PICTALIGNMENT TOP
+            END BUTTON
+
+            DEFINE BUTTON Button_Delete_Logotipo
+                ROW    160
+                COL    580
+                WIDTH  200
+                HEIGHT 34
+                ACTION setup_button_delete_logotipo_action()
+                CAPTION "Deletar da DACTE"
+                FONTNAME "Arial"
+                FONTSIZE 9
+                TOOLTIP ""
+                FONTBOLD .F.
+                FONTITALIC .F.
+                FONTUNDERLINE .F.
+                FONTSTRIKEOUT .F.
+                ONGOTFOCUS Nil
+                ONLOSTFOCUS Nil
+                HELPID Nil
+                FLAT .F.
+                TABSTOP .T.
+                VISIBLE .T.
+                TRANSPARENT .F.
+                MULTILINE .F.
+                PICTURE Nil
+                PICTALIGNMENT TOP
+            END BUTTON
 
         END PAGE 
 

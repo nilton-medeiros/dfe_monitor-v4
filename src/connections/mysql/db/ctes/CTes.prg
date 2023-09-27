@@ -6,10 +6,13 @@ class TDbConhecimentos
     data ok
     method new() constructor
     method count() setget
+    method getObsFisco(cteId)
+    method getAnexosCTe(hCTe)
+    method getEmails(hCTe)
 end class
 
 method new() class TDbConhecimentos
-    local hRow
+    local hCTe, hAnexos, emails
     local dbCTes, empresa, sql := TSQLString():new()
 
     sql:setValue("SELECT cte_id AS id, ")
@@ -157,6 +160,8 @@ method new() class TDbConhecimentos
     sql:add("cte_tipo_doc_anexo AS tipo_doc_anexo, ")
     sql:add("cte_operacional_master AS nOCA, ")
     sql:add("cte_data_entrega_prevista AS dPrevAereo, ")
+    sql:add("referencia_uuid, ")
+    sql:add("nuvemfiscal_uuid, ")
     sql:add("cte_monitor_action AS monitor_action ")
     sql:add("FROM view_ctes ")
 
@@ -193,8 +198,10 @@ method new() class TDbConhecimentos
 
     if dbCTes:executed
         do while !dbCTes:db:Eof()
-            hRow := convertFieldsDb(dbCTes:db:GetRow())
-            AAdd(::ctes, TConhecimento():new(hRow))
+            hCTe := convertFieldsDb(dbCTes:db:GetRow())
+            hAnexos := ::getAnexosCTe(hCTe)
+            emails := ::getEmails(hCTe)
+            AAdd(::ctes, TConhecimento():new(hCTe, hAnexos, emails))
             dbCTes:db:Skip()
         enddo
     endif
@@ -206,3 +213,130 @@ return self
 
 method count() class TDbConhecimentos
 return hmg_len(::ctes)
+
+method getAnexosCTe(hCTe) class TDbConhecimentos
+    local sql := TSQLString():new(), where := TSQLString():new()
+    local obsFisco, compCalc, doc
+    local hResult := {"obs_fisco" => {}, "comp_calc" => {}, "doc" => {}}
+
+    sql:setValue("SELECT cte_ocf_titulo AS xCampo, cte_ocf_texto AS xTexto, cte_ocf_interessado AS interessado ")
+    sql:add("FROM ctes_obs_contr_fisco ")
+    sql:add("WHERE cte_id = " + hCTe['id']  + " ")
+    sql:add("ORDER BY cte_ocf_interessado, cte_ocf_id ")
+    obsFisco := TQuery():new(sql:value)
+
+    if obsFisco:executed
+        do while !obsFisco:db:Eof()
+            AAdd(hResult['obs_fisco'], convertFieldsDb(obsFisco:db:GetRow()))
+            obsFisco:db:Skip()
+        enddo
+    else
+       //MsgDebug(queryObs)
+       obsFisco:Destroy()
+       turnOFF()
+    endif
+
+    sql:setValue("SELECT ")
+    sql:add("ccc_titulo AS xNome, ")
+    sql:add("ccc_valor AS vComp, ")
+    sql:add("ccc_tipo_tarifa AS CL, ")
+    sql:add("ccc_valor_tarifa_kg AS vTar ")
+    sql:add("FROM ctes_comp_calculo ")
+    sql:add("WHERE cte_id = " + hCTe['id'] + " ")
+    sql:add("AND (ccc_exibir_valor_dacte = 1 OR ccc_valor > 0)")
+    compCalc := TQuery():new(sql:value)
+
+    if compCalc:executed
+        do while !compCalc:db:Eof()
+            AAdd(hResult['comp_calc'], convertFieldsDb(compCalc:db:GetRow()))
+            compCalc:db:Skip()
+        enddo
+    else
+       //MsgDebug(queryObs)
+       compCalc:Destroy()
+       turnOFF()
+    endif
+
+   // Documentos anexos ao CTe
+   sql:setValue("SELECT ")
+   where:setValue("WHERE cte_id = " + hCTe['id'] + " ")
+
+   switch hCTe['tipo_doc_anexo']
+      case '1' // 1-Nota Fiscal
+         sql:add("cte_doc_modelo AS modelo, ")
+         sql:add("cte_doc_serie AS serie, ")
+         sql:add("cte_doc_bc_icms AS vBC, ")
+         sql:add("cte_doc_valor_icms AS vICMS, ")
+         sql:add("cte_doc_bc_icms_st AS vBCST, ")
+         sql:add("cte_doc_valor_icms_st AS vST, ")
+         sql:add("cte_doc_valor_produtos AS vProd, ")
+         sql:add("cte_doc_valor_nota AS vNF, ")
+         sql:add("cte_doc_cfop AS nCFOP, ")
+         sql:add("cte_doc_peso_total AS nPeso, ") // Continua com mais campos a baixo
+         where:add("AND cte_doc_numero IS NOT NULL AND cte_doc_numero != '' ") // WHERE para cada caso
+         where:add("AND cte_doc_serie IS NOT NULL ")
+//       where:add("AND cte_doc_serie IS NOT NULL AND cte_doc_serie != '' ")                   // série = 0 é considerada '', acaba não entrando neste where
+         exit
+      case '2' // 2-NFe
+         sql:add("cte_doc_chave_nfe AS chave, ") // Continua com mais campos a baixo
+         where:add("AND cte_doc_chave_nfe IS NOT NULL AND cte_doc_chave_nfe != '' ")
+         exit
+      case '3' // 3-Declaração
+         sql:add("cte_doc_tipo_doc AS tpDoc, ")
+         sql:add("cte_doc_descricao AS descOutros, ")
+         sql:add("cte_doc_valor_nota AS vDocFisc, ") // Continua com mais campos a baixo
+         where:add("AND cte_doc_tipo_doc IS NOT NULL ")
+         exit
+   endswitch
+
+   sql:add("cte_doc_numero AS nDoc, ")
+   sql:add("cte_doc_pin AS PIN, ")
+   sql:add("cte_doc_data_emissao AS dEmi ")
+   sql:add("FROM ctes_documentos ")
+   sql:add(where:value)
+   doc := TQuery():new(sql:value)
+
+   if doc:executed
+        do while !doc:db:Eof()
+            AAdd(hResult['doc'], convertFieldsDb(doc:db:GetRow()))
+            doc:db:Skip()
+        enddo
+    else
+        //MsgDebug(queryObs)
+        doc:Destroy()
+        turnOFF()
+    endif
+
+   obsFisco:Destroy()
+   compCalc:Destroy()
+   doc:Destroy()
+
+return hResult
+
+method getEmails(hCTe) class TDbConhecimentos
+    local sql := TSQLString():new()
+    local cliente, contato
+    local clientes := {
+            {"name" => "tomador", "id" => hCTe['clie_tomador_id'], "email" => ""},;
+            {"name" => "remetente", "id" => hCTe['clie_remetente_id'], "email" => ""},;
+            {"name" => "destinatario", "id" => hCTe['clie_destinatario_id'], "email" => ""},;
+            {"name" => "expedidor", "id" => hCTe['clie_expedidor_id'], "email" => ""},;
+            {"name" => "recebedor", "id" => hCTe['clie_recebedor_id'], "email" => ""};
+          }
+
+    for each cliente in clientes
+        if !Empty(cliente["id"])
+            sql:setValue("SELECT con_email_cte as email FROM clientes_contatos ")
+            sql:add("WHERE clie_id = " + cliente["id"] + " AND ")
+            sql:add("NOT ISNULL(con_email_cte) AND con_email_cte != '' AND ")
+            sql:add("LOCATE('.', con_email_cte, LCOATE('@', con_email_cte)) > 0 ")
+            sql:add("LIMIT 1")
+            contato := TQuery():new(sql:value)
+            if !(contato:count == 0)
+                cliente['email'] := contato:FieldGet("email")
+            endif
+            contato:Destroy()
+        endif
+    next
+
+return clientes

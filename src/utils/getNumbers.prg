@@ -4,7 +4,7 @@ function getNumbers(string)
 
     if ValType(string) == "C" .and. !Empty(string)
         for each char in string
-            if char $ "0123456789"
+            if (char $ "0123456789")
                 charNumbers += char
             endif
         next

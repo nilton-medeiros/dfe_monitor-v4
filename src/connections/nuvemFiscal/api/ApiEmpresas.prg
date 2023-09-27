@@ -1,6 +1,5 @@
 #include "hmg.ch"
 #include <hbclass.ch>
-#define MODO_ASSINCRONO .F.
 
 
 class TApiEmpresas
@@ -10,7 +9,6 @@ class TApiEmpresas
     data connected readonly
     data body readonly
     data response readonly
-    data responseType readonly
     data httpStatus readonly
     data ContentType readonly
 
@@ -25,27 +23,18 @@ end class
 
 method new() class TApiEmpresas
 
-    ::token := ""
     ::connected := false
     ::response := ""
-    ::responseType := ""
     ::httpStatus := 0
     ::ContentType := ""
+    ::token := appNuvemFiscal:token
 
-    begin sequence
-        ::connection := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
-        if Empty(::connection)
-            saveLog("Erro na criação do serviço: MSXML2")
-            consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(connect), hb_eol()})
-            Break
-        endif
-        ::token := appNuvemFiscal:token
-        if Empty(::token)
-            saveLog("Token vazio para conexão com a Nuvem Fiscal")
-        else
-            ::connected := true
-        endif
-    end sequence
+    if Empty(::token)
+        saveLog("Token vazio para conexão com a Nuvem Fiscal")
+    else
+        ::connection := GetMSXMLConnection()
+        ::connected := !Empty(::connection)
+    endif
 
 return self
 
@@ -66,8 +55,10 @@ method Cadastrar(empresa) class TApiEmpresas
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas"
     // endif
 
+    // Request Body
     ::defineBody(empresa)
 
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
     res := Broadcast(::connection, "POST", apiUrl, ::token, "Cadastrar Empresa", ::body)
 
     ::httpStatus := res['status']
@@ -78,6 +69,7 @@ method Cadastrar(empresa) class TApiEmpresas
         saveLog({"Erro ao cadastrar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
     endif
+    
 return !res['error']
 
 
@@ -97,6 +89,7 @@ method Consultar(empresa) class TApiEmpresas
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
     // endif
 
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar Empresa")
 
     ::httpStatus := res['status']
@@ -107,6 +100,7 @@ method Consultar(empresa) class TApiEmpresas
         saveLog({"Erro ao consultar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
     endif
+
 return !res['error']
 
 
@@ -125,9 +119,10 @@ method Alterar(empresa) class TApiEmpresas
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
     // endif
-
+    // Request Body
     ::defineBody(empresa)
 
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
     res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar Empresa", ::body)
 
     ::httpStatus := res['status']
@@ -138,9 +133,10 @@ method Alterar(empresa) class TApiEmpresas
         saveLog({"Erro ao alterar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
     endif
+
 return !res['error']
 
-
+// Request Body
 method defineBody(empresa) class TApiEmpresas
     ::body := '{' + hb_eol()
     ::body += '  "cpf_cnpj": "' + empresa:cnpj + '",' + hb_eol()

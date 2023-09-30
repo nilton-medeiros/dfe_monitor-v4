@@ -92,7 +92,7 @@ method getNewToken() class TAuthNuvemFiscal
 
     response := connection:ResponseBody
     // consoleLog(response)
-    hResp := jsonDecode(response)
+    hResp := hb_jsonDecode(response)
 
     if hb_HGetRef(hResp, "access_token")
         ::token := hResp["access_token"]

@@ -169,7 +169,7 @@ method registerDatabase() class TAppData
         inicial sensíveis (key, token, logins de db e ftp), em seguida deleta o aquivo ".env.json"
     */
     if hb_FileExists(".env.json")
-        hEnv := jsonDecode(hb_MemoRead(".env.json"))
+        hEnv := hb_jsonDecode(hb_MemoRead(".env.json"))
         if hb_HGetRef(hEnv, "mysql") .and. hb_HGetRef(hEnv, "ftp")
             mysql := hEnv["mysql"]
             ftp := hEnv["ftp"]
@@ -185,6 +185,13 @@ method registerDatabase() class TAppData
             RegistryWrite(::winRegistryPath + "Host\ftp_user", CharXor(ftp["user"], "SysWeb2023"))
             RegistryWrite(::winRegistryPath + "Host\ftp_password", CharXor(ftp["password"], "SysWeb2023"))
         endif
+        if hb_HGetRef(hEnv, "respTec")
+            RegistryWrite(::winRegistryPath + "Host\respTec\CNPJ", hEnv["respTec"])
+            RegistryWrite(::winRegistryPath + "Host\respTec\xContato", hEnv["xContato"])
+            RegistryWrite(::winRegistryPath + "Host\respTec\email", hEnv["email"])
+            RegistryWrite(::winRegistryPath + "Host\respTec\fone", hEnv["fone"])
+        endif
+
         hb_FileDelete(".env.json", "H")
         hb_FileDelete(".env.json")
     endif

@@ -60,7 +60,7 @@ method Emitir(cte) class TApiCTe
     endif
 
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if cte:tpAmb == "1"
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/cte"
     // else
@@ -83,7 +83,7 @@ method Emitir(cte) class TApiCTe
             "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
     else
-        jsonRes := jsonDecode(::response)
+        jsonRes := hb_jsonDecode(::response)
         ::nuvemfiscal_id := jsonRes['id']
         ::status := jsonRes['status']
         ::data_emissao := jsonRes['data_emissao']
@@ -99,211 +99,179 @@ return !res['error']
 
 // Request Body
 method defineBody(cte) class TApiCTe
-    local clieEMail, pos, obs, comp
+    local hBody, infCte,ide, toma
+    local compl, fluxo, entrega, ObsContFisco
+    local emite, remet, exped, receb, desti, ender
+    local vPrest, Comp, imp, ICMS
+    local infCteNorm, infCarga, infDoc, docAnexos, infModal, rodo, aereo, tarifa
+    local clieEMail, pos, obs, hComp, hDoc, tag, ambiente
     // Doc: https://dev.nuvemfiscal.com.br/docs/api#tag/Cte/operation/EmitirCte
 
-    ::body := '{' + hb_eol()
-    ::body += '    "infCte": {' + hb_eol()
-    ::body += '        "versao": "' + cte:versao_xml + '",' + hb_eol()
-    ::body += '        "ide": {' + hb_eol()
-    ::body += '            "cUF": ' + cte:emitente:cUF + ',' + hb_eol()
-    ::body += '            "cCT": "' + cte:cCT + '",' + hb_eol()    // Minuta
-    ::body += '            "CFOP": "' + cte:CFOP + '",' + hb_eol()
-    ::body += '            "natOp": "' + cte:natOp + '",' + hb_eol()
-    ::body += '            "mod": ' + cte:modelo + ',' + hb_eol()
-    ::body += '            "serie": ' + cte:serie + ',' + hb_eol()
-    ::body += '            "nCT": ' + cte:nCT + ',' + hb_eol()
-    ::body += '            "dhEmi": "' + cte:dhEmi + '",' + hb_eol()
-    ::body += '            "tpImp": ' + cte:emitente:tpImp + ',' + hb_eol()
-    ::body += '            "tpEmis": ' + cte:tpEmis + ',' + hb_eol()
-    // ::body += '            "cDV": 0,' + hb_eol() // Será gerado pela api da nuvem fiscal
-    // Debug: Modo 2 - Homologação, remover a linha baixo quando compilar versão final modo produção
-    ::body += '            "tpAmb": 2,' + hb_eol()
-    // Debug: Descomentar linha abaixo em modo produção
-    // ::body += '            "tpAmb": ' + cte:emitente:tpAmb + ',' + hb_eol()
-    ::body += '            "tpCTe": ' + cte:tpCTe + ',' + hb_eol()
-    ::body += '            "procEmi": 0,' + hb_eol()    // 0 - Emissão de CT-e com aplicativo do contribuinte
-    ::body += '            "verProc": "' + Left(appData:version, hb_RAt('.', appData:version)) + '0",' + hb_eol()
-
-    // Consultar regra em CTeMonitor-v1\cte_createObject.prg procedure infGlobalizado(930)
-    if (cte:indGlobalizado == '1')
-        ::body += '            "indGlobalizado": 1,' + hb_eol()
+    // Tag ide
+    ide := {=>}
+    ide["cUF"] := cte:cUF
+    ide["cCT"] := cte:cCT
+    ide["CFOP"] := cte:CFOP
+    ide["natOp"] := cte:natOp
+    ide["mod"] := cte:modelo
+    ide["serie"] := cte:serie
+    ide["nCT"] := cte:nCT
+    ide["dhEmi"] := cte:dhEmi
+    ide["tpImp"] :=  cte:tpEmp
+    ide["tpEmis"] := cte:tpEmis
+    ide["tpAmb"] := 2                       // Debug: 2- Homologação, mudar para -> cte:tpAmb quando terminar os testes
+    ide["tpCTe"] := cte:tpCTe
+    ide["procEmi"] := 0                     // 0 - Emissão de CT-e com aplicativo do contribuinte
+    ide["verProc"] := Left(appData:version, hb_RAt('.', appData:version)) + '0'
+    if (cte:indGlobalizado == 1)
+        ide["indGlobalizado"] := 1
     endif
+    ide["cMunEnv"] := cte:emitente:cMunEnv
+    ide["xMunEnv"] := cte:emitente:xMunEnv
+    ide["UFEnv"] := cte:emitente:UF
+    ide["modal"] := cte:modal
+    ide["tpServ"] := cte:tpServ
+    ide["cMunIni"] := cte:cMunIni
+    ide["xMunIni"] := cte:xMunIni
+    ide["UFIni"] := cte:UFIni
+    ide["cMunFim"] := cte:cMunFim
+    ide["xMunFim"] := cte:xMunFim
+    ide["UFFim"] := cte:UFFim
+    ide["retira"] := cte:retira
+    ide["xDetRetira"] := cte:xDetRetira
+    ide["indIEToma"] := cte:indIEToma
 
-    ::body += '            "cMunEnv": "' + cte:emitente:cMunEnv + '",' + hb_eol()
-    ::body += '            "xMunEnv": "' + cte:emitente:xMunEnv + '",' + hb_eol()
-    ::body += '            "UFEnv": "' + cte:emitente:UF + '",' + hb_eol()
-    ::body += '            "modal": "' + cte:modal + '",' + hb_eol()
-    ::body += '            "tpServ": ' + cte:tpServ + ',' + hb_eol()
-    ::body += '            "cMunIni": "' + cte:cMunIni + '",' + hb_eol()
-    ::body += '            "xMunIni": "' + cte:xMunIni + '",' + hb_eol()
-    ::body += '            "UFIni": "' + cte:UFIni + '",' + hb_eol()
-    ::body += '            "cMunFim": "' + cte:cMunFim + '",' + hb_eol()
-    ::body += '            "xMunFim": "' + cte:xMunFim + '",' + hb_eol()
-    ::body += '            "UFFim": "' + cte:UFFim + '",' + hb_eol()
-    ::body += '            "retira": ' + cte:retira + ',' + hb_eol()
-    ::body += '            "xDetRetira": "' + cte:xDetRetira + '",' + hb_eol()
-    ::body += '            "indIEToma": ' + cte:indIEToma + ',' + hb_eol()
-
-    // Consultar regra em CTeMonitor-v1\cte_createObject.prg procedure ideCTe(241)
-    if cte:tomador == '4'
-        ::body += '            "toma4": {' + hb_eol()
-        ::body += '                "toma": 4,' + hb_eol()
+    // Tag toma3 ou toma4
+    if cte:tomador == 4
+        toma := {=>}
+        toma["toma"] := 4
 
         if Empty(cte:tom_cnpj)
-            ::body += '                "CPF": "' + cte:tom_cpf + '",' + hb_eol()
+            toma["CPF"] := cte:tom_cpf
         else
-            ::body += '                "CNPJ": "' + cte:tom_cnpj + '",' + hb_eol()
+            toma["CNPJ"] := cte:tom_cnpj
         endif
-        ::body += '                "IE": "' + cte:tom_ie + '",' + hb_eol()
-        ::body += '                "xNome": "' + cte:tom_xNome + '",' + hb_eol()
-        ::body += '                "xFant": "' + cte:tom_xFant + '",' + hb_eol()
-        ::body += '                "fone": "' + cte:tom_fone + '",' + hb_eol()
-        ::body += '                "enderToma": {' + hb_eol()
-        ::body += '                    "xLgr": "' + cte:tom_end_logradouro + '",' + hb_eol()
-        ::body += '                    "nro": "' + cte:tom_end_numero + '",' + hb_eol()
-        ::body += '                    "xCpl": "' + cte:tom_end_complemento + '",' + hb_eol()
-        ::body += '                    "xBairro": "' + cte:tom_end_bairro + '",' + hb_eol()
-        ::body += '                    "cMun": "' + cte:tom_cid_codigo_municipio + '",' + hb_eol()
-        ::body += '                    "xMun": "' + cte:tom_cid_municipio + '",' + hb_eol()
-        ::body += '                    "CEP": "' + cte:tom_end_cep + '",' + hb_eol()
-        ::body += '                    "UF": "' + cte:tom_cid_uf + '",' + hb_eol()
-        ::body += '                    "cPais": "1058",' + hb_eol()
-        ::body += '                    "xPais": "BRASIL"' + hb_eol()
-        ::body += '                },' + hb_eol()
+        toma["IE"] := cte:tom_ie
+        toma["xNome"] := cte:tom_xNome
+        toma["xFant"] := cte:tom_xFant
+        toma["fone"] := cte:tom_fone
 
-        pos := hb_AScan(cte:clie_emails, {|hClie| hClie['name'] == 'tomador'})
-        clieEMail := cte:clie_emails[pos]['email']
+        ender := {=>}
+        ender["xLgr"] := cte:tom_end_logradouro
+        ender["nro"] := cte:tom_end_numero
+        ender["xCpl"] := cte:tom_end_complemento
+        ender["xBairro"] := cte:tom_end_bairro
+        ender["cMun"] := cte:tom_cid_codigo_municipio
+        ender["xMun"] := cte:tom_cid_municipio
+        ender["CEP"] := cte:tom_end_cep
+        ender["UF"] := cte:tom_cid_uf
+        ender["cPais"] := "cPais": "1058"
+        ender["xPais"] := "xPais": "BRASIL"
 
-        ::body += '                "email": "' + clieEMail + '"' + hb_eol()
-        ::body += '            },' + hb_eol()
+        toma["enderToma"] := ender
+        ender := nil
+
+        toma["email"] := cte:tom_email
+
+        ide["toma4"] := toma
+        toma := nil
+
     else
-        ::body += '            "toma3": {' + hb_eol()
-        ::body += '                "toma": ' + cte:tomador + ' + hb_eol()
-        ::body += '            },' + hb_eol()
+        ide["toma3"] := {"toma" => cte:tomador}
     endif
 
-    if (:tpEmis:value $ '5|7|8')
-        ::body += '            "dhCont": "' + date_as_DateTime() + '",' + hb_eol()
-        ::body += '            "xJust": "Manutencao agendada na Sefaz"' + hb_eol()
-     endif
-
-    // Fecha ide
-    ::body += '        },' + hb_eol()
-    ::body += '        "compl": {' + hb_eol()
-    ::body += '            "xCaracAd": "' + cte:xCaracAd + '",' + hb_eol()
-    ::body += '            "xCaracSer": "' + cte:xCaracSer + '",' + hb_eol()
-    ::body += '            "xEmi": "' + cte:xEmi + '",' + hb_eol()
-
-    if (::modal == '02')
-        // Aereo
-        ::body += '            "fluxo": {' + hb_eol()
-        ::body += '                "xOrig": "' + cte:xOrig + '",' + hb_eol()
-        ::body += '                "pass": [' + hb_eol()
-        ::body += '                    {' + hb_eol()
-        ::body += '                        "xPass": "' + cte:xPass + '"' + hb_eol()
-        ::body += '                    }' + hb_eol()
-        ::body += '                ],' + hb_eol()
-        ::body += '                "xDest": "' + cte:xDest + '"' + hb_eol()
-        // ::body += '                "xRota": null' + hb_eol()
-        ::body += '            },' + hb_eol()
+    // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
+    if (hb_ntos(cte:tpEmis) $ '5|7|8')
+        ide["dhCont"] := date_as_DateTime()
+        ide["xJust"] := "Manutencao agendada na Sefaz"
     endif
 
-    ::body += '            "entrega": {' + hb_eol()
+    // Tag compl
+    compl := {=>}
+    compl["xCaracAd"] := cte:xCaracAd
+    compl["xCaracSer"] := cte:xCaracSer
+    compl["xEmi"] := cte:xEmi
 
-    // Tipo de data/período programado para a entrega: 0 - Sem data definida; 1 - Na data; 2 - Até a data; 3 - A partir da data; 4 – No período
+    if (cte:modal == "02")
+        // Tag fluxo para modal Aéreo
+        fluxo := {=>}
+        fluxo["xOrig"] := cte:xOrig
+        fluxo["pass"] := {{"xPass" => cte:xPass}}
+        fluxo["xDest"] := cte:xDest
+        compl["fluxo"] := fluxo
+        fluxo := nil
+    endif
+
+    // Tag Entrega: Tipo de data/período programado para a entrega: 0 - Sem data definida; 1 - Na data; 2 - Até a data; 3 - A partir da data; 4 – No período
+    entrega := {=>}
     do case
-        case (cte:tpPer == '0')
-            ::body += '                "semData": {' + hb_eol()
-            ::body += '                    "tpPer": 0' + hb_eol()
-            ::body += '                },' + hb_eol()
-        case (cte:tpPer $ '1|2|3')
-            ::body += '                "comData": {' + hb_eol()
-            ::body += '                    "tpPer": ' + cte:tpPer + ',' + hb_eol()
-            ::body += '                    "dProg": "' + cte:dProg + '"' + hb_eol()
-            ::body += '                },' + hb_eol()
-        case (cte:tpPer == '4')
-            ::body += '                "noPeriodo": {' + hb_eol()
-            ::body += '                    "tpPer": ' + cte:tpPer + ',' + hb_eol()
-            ::body += '                    "dIni": "' + cte:dIni + '",' + hb_eol()
-            ::body += '                    "dFim": "' + cte:dFim + '"' + hb_eol()
-            ::body += '                },' + hb_eol()
+    case (cte:tpPer == 0)
+        entrega["semData"] := {"tpPer" => 0}
+    case (hb_ntos(cte:tpPer) $ '1|2|3')
+        entrega["comData"] := {"tpPer": => cte:tpPer, "dProg" => cte:dProg}
+    case (cte:tpPer == 4)
+        entrega["noPeriodo"] := {"tpPer": => cte:tpPer, "dIni" => cte:dIni, "dFim" => cte:dFim}
     endcase
-
     // Tipo de hora/período programado para a entrega: 0 - Sem hora definida; 1 - Na hora; 2 - Até a hora; 3 - A partir da hora; 4 – No intervalo de tempo
     do case
-        case (cte:tpHor == '0')
-            ::body += '                "semHora": {' + hb_eol()
-            ::body += '                    "tpHor": 0' + hb_eol()
-            ::body += '                },' + hb_eol()
-        case (cte:tpHor $ '1|2|3')
-            ::body += '                "comHora": {' + hb_eol()
-            ::body += '                    "tpHor": ' + cte:tpHor + ',' + hb_eol()
-            ::body += '                    "hProg": "' + cte:hProg + '"' + hb_eol()
-            ::body += '                },' + hb_eol()
-        case (cte:tpHor == '4')
-            ::body += '                "noInter": {' + hb_eol()
-            ::body += '                    "tpHor": ' + cte:tpHor + ',' + hb_eol()
-            ::body += '                    "hIni": "' + cte:hIni + '",' + hb_eol()
-            ::body += '                    "hFim": "' + cte:hFim + '"' + hb_eol()
-            ::body += '                },' + hb_eol()
+    case (cte:tpHor == 0)
+        entrega["semHora"] := {"tpHor" => 0}
+    case (hb_ntos(cte:tpHor) $ '1|2|3')
+        entrega["comHora"] := {"tpHor": => cte:tpHor, "hProg" => cte:hProg}
+    case (cte:tpHor == 4)
+        entrega["noInter"] := {"tpHor": => cte:tpHor, "hIni" => cte:hIni, "hFim" => cte:hFim}
     endcase
 
-    // Fecha Entrega
-    ::body += '            },' + hb_eol()
-    ::body += '            "origCalc": "' + cte:xMunIni + '",' + hb_eol()
-    ::body += '            "destCalc": "' + cte:xMunFim + '",' + hb_eol()
+    if !Empty(entrega)
+        compl["Entrega"] := entrega
+    endif
+    entrega := nil
+
+    compl["origCalc"] := cte:xMunIni
+    compl["destCalc"] := cte:xMunFim
 
     if !Empty(cte:xObs)
-        ::body += '            "xObs": "' + cte:xObs + '",' + hb_eol()
+        compl["xObs"] :=cte:xObs
     endif
 
     if !Empty(cte:obs_contr)
-        ::body += '            "ObsCont": [' + hb_eol()
+        ObsContFisco := {}
         for each obs in cte:obs_contr
-            ::body += '                {' + hb_eol()
-            ::body += '                    "xCampo": "' + obs["xCampo"] + '",' + hb_eol()
-            ::body += '                    "xTexto": "' + obs["xTexto"] + '"' + hb_eol()
-            ::body += '                },' + hb_eol()
+            AAdd(ObsContFisco, {"xCampo" => obs["xCampo"], "xTexto" => obs["xTexto"]})
         next
-        // Remove a última vírgula do objeto
-        ::body := hb_ULeft(::body, hmg_len(::body)-1)
-        ::body += '            ],' + hb_eol()
+        compl["ObsCont"] := ObsContFisco
+        ObsContFisco := nil
     endif
 
     if !Empty(cte:obs_fisco)
-        ::body += '            "ObsFisco": [' + hb_eol()
+        ObsContFisco := {}
         for each obs in cte:obs_fisco
-            ::body += '                {' + hb_eol()
-            ::body += '                    "xCampo": "' + obs["xCampo"] + '",' + hb_eol()
-            ::body += '                    "xTexto": "' + obs["xTexto"] + '"' + hb_eol()
-            ::body += '                },' + hb_eol()
+            AAdd(ObsContFisco, {"xCampo" => obs["xCampo"], "xTexto" => obs["xTexto"]})
         next
-        // Remove a última vírgula do objeto
-        ::body := hb_ULeft(::body, hmg_len(::body)-1)
-        ::body += '            ]' + hb_eol()    // Fecha ObsFisco
+        compl["ObsFisco"] := ObsContFisco
+        ObsContFisco := nil
     endif
 
-    // Fecha compl
-    ::body += '        },' + hb_eol()
-    ::body += '        "emit": {' + hb_eol()
-    ::body += '            "CNPJ": "' + cte:emitente:CNPJ + '",' + hb_eol()
-    // ::body += '            "CPF": "' + cte:rem_cpf + '",' + hb_eol()
-    ::body += '            "IE": "' + cte:emitente:IE + '",' + hb_eol()
-    // ::body += '            "IEST": "' + cte:emitente:CNPJ + '",' + hb_eol()
-    ::body += '            "xNome": "' + cte:emitente:xNome + '",' + hb_eol()
-    ::body += '            "xFant": "' + cte:emitente:xFant + '",' + hb_eol()
-    ::body += '            "enderEmit": {' + hb_eol()
-    ::body += '                "xLgr": "' + cte:emitente:xLgr + '",' + hb_eol()
-    ::body += '                "nro": "' + cte:emitente:nro + '",' + hb_eol()
-    ::body += '                "xCpl": "' + cte:emitente:xCpl + '",' + hb_eol()
-    ::body += '                "xBairro": "' + cte:emitente:xBairro + '",' + hb_eol()
-    ::body += '                "cMun": "' + cte:emitente:cMunEnv + '",' + hb_eol()
-    ::body += '                "xMun": "' + cte:emitente:xMunEnv + '",' + hb_eol()
-    ::body += '                "CEP": "' + cte:emitente:CEP + '",' + hb_eol()
-    ::body += '                "UF": "' + cte:emitente:UF + '",' + hb_eol()
-    ::body += '                "fone": "' + cte:emitente:fone + '"' + hb_eol()
-    ::body += '            },' + hb_eol()
+    // Tag emit
+    emite := {=>}
+    emite["CNPJ"] := cte:emitente:CNPJ
+    emite["IE"] := cte:emitente:IE
+    emite["xNome"] := cte:emitente:xNome
+    emite["xFant"] := cte:emitente:xFant
+
+    ender := {=>}
+    ender["xLgr"] := cte:emitente:xLgr
+    ender["nro"] := cte:emitente:nro
+    ender["xCpl"] := cte:emitente:xCpl
+    ender["xBairro"] := cte:emitente:xBairro
+    ender["cMun"] := cte:emitente:cMunEnv
+    ender["xMun"] := cte:emitente:xMunEnv
+    ender["CEP"] := cte:emitente:CEP
+    ender["UF"] := cte:emitente:UF
+    ender["fone"] :=cte:emitente:fone
+
+    emite["enderEmit"] := ender
+    ender := nil
 
     /*
         NT 2022.001v.1.00 - A partir de 01/07/22 nova tag obrigatória CRT - Código do Regime Tributário
@@ -315,417 +283,424 @@ method defineBody(cte) class TApiCTe
         ** Versão 3.00: Deveria ter entrado em 01/07 mas não entrou, Sefaz não seguiu data prevista no manual!
         ** Versão 4.00: Testar se aceita ou retorna erro como na versão 3.00 do CTe
     */
+    emite["CRT"] := cte:emitente:CRT
 
-    ::body += '            "CRT": ' + cte:emitente:CRT + hb_eol()
-    // Fecha emit
-    ::body += '        },' + hb_eol()
-    ::body += '        "rem": {' + hb_eol()
-
+    // Tag rem
+    remet := {=>}
     if Empty(cte:rem_cnpj)
-        ::body += '            "CPF": "' + cte:rem_cpf + '",' + hb_eol()
+        remet["CPF"] := cte:rem_cpf
     else
-        ::body += '            "CNPJ": "' + cte:rem_cnpj + '",' + hb_eol()
-        ::body += '            "IE": "",' + hb_eol()
+        remet["CNPJ"] := cte:rem_cnpj
+        remet["IE"] := cte:rem_ie
     endif
 
-    ::body += '            "xNome": "' + cte:rem_razao_social + '",' + hb_eol()
-    ::body += '            "xFant": "' + cte:rem_nome_fantasia + '",' + hb_eol()
-    ::body += '            "fone": "' + cte:rem_fone + '",' + hb_eol()
-    ::body += '            "enderReme": {' + hb_eol()
-    ::body += '                "xLgr": "' + cte:rem_end_logradouro + '",' + hb_eol()
-    ::body += '                "nro": "' + cte:rem_end_numero + '",' + hb_eol()
-    ::body += '                "xCpl": "' + cte:rem_end_complemento + '",' + hb_eol()
-    ::body += '                "xBairro": "' + cte:rem_end_bairro + '",' + hb_eol()
-    ::body += '                "cMun": "' + cte:rem_cid_codigo_municipio + '",' + hb_eol()
-    ::body += '                "xMun": "' + cte:rem_cid_municipio + '",' + hb_eol()
-    ::body += '                "CEP": "' + cte:rem_end_cep + '",' + hb_eol()
-    ::body += '                "UF": "' + cte:rem_cid_uf + '",' + hb_eol()
-    ::body += '                "cPais": "1058",' + hb_eol()
-    ::body += '                "xPais": "BRASIL"' + hb_eol()
+    remet["xNome"] := cte:rem_razao_social
+    remet["xFant"] := cte:rem_nome_fantasia
+    remet["fone"] :=cte:rem_fone
 
-    if Empty(cte:rem_email)
-        ::body += '            }' + hb_eol()
-    else
-        ::body += '            },' + hb_eol()
-        ::body += '            "email": "' + cte:rem_email + '"' + hb_eol()
+    ender := {=>}
+    ender["xLgr"] := cte:rem_end_logradouro
+    ender["nro"] := cte:rem_end_numero
+    ender["xCpl"] := cte:rem_end_complemento
+    ender["xBairro"] := cte:rem_end_bairro
+    ender["cMun"] := cte:rem_cid_codigo_municipio
+    ender["xMun"] := cte:rem_cid_municipio
+    ender["CEP"] := cte:rem_end_cep
+    ender["UF"] := cte:rem_cid_uf
+
+    remet["enderReme"] := ender
+    ender := nil
+
+    if !Empty(cte:rem_email)
+        remet["email"] := cte:rem_email
     endif
 
-    // Fechou rem
-    ::body += '        },' + hb_eol()
-
-    // Abre exped
-    ::body += '        "exped": {' + hb_eol()
+    // Tag exped
+    exped := {=>}
     if Empty(cte:exp_cnpj)
-        ::body += '            "CPF": "' + cte:exp_cpf + '",' + hb_eol()
+        exped["CPF"] := cte:exp_cpf
     else
-        ::body += '            "CNPJ": "' + cte:exp_cnpj + '",' + hb_eol()
-        ::body += '            "IE": "",' + hb_eol()
+        exped["CNPJ"] := cte:exp_cnpj
+        exped["IE"] := cte:exp_ie
     endif
 
-    ::body += '            "xNome": "' + cte:exp_razao_social + '",' + hb_eol()
-    ::body += '            "xFant": "' + cte:exp_nome_fantasia + '",' + hb_eol()
-    ::body += '            "fone": "' + cte:exp_fone + '",' + hb_eol()
-    ::body += '            "enderExped": {' + hb_eol()
-    ::body += '                "xLgr": "' + cte:exp_end_logradouro + '",' + hb_eol()
-    ::body += '                "nro": "' + cte:exp_end_numero + '",' + hb_eol()
-    ::body += '                "xCpl": "' + cte:exp_end_complemento + '",' + hb_eol()
-    ::body += '                "xBairro": "' + cte:exp_end_bairro + '",' + hb_eol()
-    ::body += '                "cMun": "' + cte:exp_cid_codigo_municipio + '",' + hb_eol()
-    ::body += '                "xMun": "' + cte:exp_cid_municipio + '",' + hb_eol()
-    ::body += '                "CEP": "' + cte:exp_end_cep + '",' + hb_eol()
-    ::body += '                "UF": "' + cte:exp_cid_uf + '",' + hb_eol()
-    ::body += '                "cPais": "1058",' + hb_eol()
-    ::body += '                "xPais": "BRASIL"' + hb_eol()
+    exped["xNome"] := cte:exp_razao_social
+    exped["fone"] :=cte:exp_fone
 
-    if Empty(cte:exp_email)
-        ::body += '            }' + hb_eol()
-    else
-        ::body += '            },' + hb_eol()
-        ::body += '            "email": "' + cte:exp_email + '"' + hb_eol()
+    ender := {=>}
+    ender["xLgr"] := cte:exp_end_logradouro
+    ender["nro"] := cte:exp_end_numero
+    ender["xCpl"] := cte:exp_end_complemento
+    ender["xBairro"] := cte:exp_end_bairro
+    ender["cMun"] := cte:exp_cid_codigo_municipio
+    ender["xMun"] := cte:exp_cid_municipio
+    ender["CEP"] := cte:exp_end_cep
+    ender["UF"] := cte:exp_cid_uf
+
+    exped["enderExped"] := ender
+    ender := nil
+
+    if !Empty(cte:exp_email)
+        exped["email"] := cte:exp_email
     endif
-    ::body += '            },' + hb_eol()
 
-    // Fecha exped
-    ::body += '        },' + hb_eol()
-    // Abre receb
-    ::body += '        "receb": {' + hb_eol()
-
+    // Tag receb
+    receb := {=>}
     if Empty(cte:rec_cnpj)
-        ::body += '            "CPF": "' + cte:rec_cpf + '",' + hb_eol()
+        receb["CPF"] := cte:rec_cpf
     else
-        ::body += '            "CNPJ": "' + cte:rec_cnpj + '",' + hb_eol()
-        ::body += '            "IE": "",' + hb_eol()
+        receb["CNPJ"] := cte:rec_cnpj
+        receb["IE"] := cte:rec_ie
     endif
 
-    ::body += '            "xNome": "' + cte:rec_razao_social + '",' + hb_eol()
-    ::body += '            "xFant": "' + cte:rec_nome_fantasia + '",' + hb_eol()
-    ::body += '            "fone": "' + cte:rec_fone + '",' + hb_eol()
-    ::body += '            "enderReceb": {' + hb_eol()
-    ::body += '                "xLgr": "' + cte:rec_end_logradouro + '",' + hb_eol()
-    ::body += '                "nro": "' + cte:rec_end_numero + '",' + hb_eol()
-    ::body += '                "xCpl": "' + cte:rec_end_complemento + '",' + hb_eol()
-    ::body += '                "xBairro": "' + cte:rec_end_bairro + '",' + hb_eol()
-    ::body += '                "cMun": "' + cte:rec_cid_codigo_municipio + '",' + hb_eol()
-    ::body += '                "xMun": "' + cte:rec_cid_municipio + '",' + hb_eol()
-    ::body += '                "CEP": "' + cte:rec_end_cep + '",' + hb_eol()
-    ::body += '                "UF": "' + cte:rec_cid_uf + '",' + hb_eol()
-    ::body += '                "cPais": "1058",' + hb_eol()
-    ::body += '                "xPais": "BRASIL"' + hb_eol()
+    receb["xNome"] := cte:rec_razao_social
+    receb["fone"] :=cte:rec_fone
 
-    if Empty(cte:rec_email)
-        ::body += '            }' + hb_eol()
-    else
-        ::body += '            },' + hb_eol()
-        ::body += '            "email": "' + cte:rec_email + '"' + hb_eol()
+    ender := {=>}
+    ender["xLgr"] := cte:rec_end_logradouro
+    ender["nro"] := cte:rec_end_numero
+    ender["xCpl"] := cte:rec_end_complemento
+    ender["xBairro"] := cte:rec_end_bairro
+    ender["cMun"] := cte:rec_cid_codigo_municipio
+    ender["xMun"] := cte:rec_cid_municipio
+    ender["CEP"] := cte:rec_end_cep
+    ender["UF"] := cte:rec_cid_uf
+
+    receb["enderExped"] := ender
+    ender := nil
+
+    if !Empty(cte:rec_email)
+        receb["email"] := cte:rec_email
     endif
 
-    // Fecho receb
-    ::body += '        },' + hb_eol()
-    // Abre dest
-    ::body += '        "dest": {' + hb_eol()
-
+    // Tag dest
+    desti := {=>}
     if Empty(cte:des_cnpj)
-        ::body += '            "CPF": "' + cte:des_cpf + '",' + hb_eol()
+        desti["CPF"] := cte:des_cpf
     else
-        ::body += '            "CNPJ": "' + cte:des_cnpj + '",' + hb_eol()
-        ::body += '            "IE": "",' + hb_eol()
+        desti["CNPJ"] := cte:des_cnpj
+        desti["IE"] := cte:des_ie
     endif
 
-    ::body += '            "xNome": "' + cte:des_razao_social + '",' + hb_eol()
-    ::body += '            "xFant": "' + cte:des_nome_fantasia + '",' + hb_eol()
-    ::body += '            "fone": "' + cte:des_fone + '",' + hb_eol()
-    ::body += '            "ISUF": "",' + hb_eol()
-    ::body += '            "enderDest": {' + hb_eol()
-    ::body += '                "xLgr": "' + cte:des_end_logradouro + '",' + hb_eol()
-    ::body += '                "nro": "' + cte:des_end_numero + '",' + hb_eol()
-    ::body += '                "xCpl": "' + cte:des_end_complemento + '",' + hb_eol()
-    ::body += '                "xBairro": "' + cte:des_end_bairro + '",' + hb_eol()
-    ::body += '                "cMun": "' + cte:des_cid_codigo_municipio + '",' + hb_eol()
-    ::body += '                "xMun": "' + cte:des_cid_municipio + '",' + hb_eol()
-    ::body += '                "CEP": "' + cte:des_end_cep + '",' + hb_eol()
-    ::body += '                "UF": "' + cte:des_cid_uf + '",' + hb_eol()
-    ::body += '                "cPais": "1058",' + hb_eol()
-    ::body += '                "xPais": "BRASIL"' + hb_eol()
+    desti["xNome"] := cte:des_razao_social
+    desti["fone"] :=cte:des_fone
 
-    if Empty(cte:des_email)
-        ::body += '            }' + hb_eol()
-    else
-        ::body += '            },' + hb_eol()
-        ::body += '            "email": "' + cte:des_email + '"' + hb_eol()
+    if !Empty(cte:des_ISUF)
+        desti["ISUF"] := cte:des_ISUF
     endif
 
-    // Fecha dest
-    ::body += '        },' + hb_eol()
-    // Abre vPrest
-    ::body += '        "vPrest": {' + hb_eol()
-    ::body += '            "vTPrest": ' + cte:vTPrest + ',' + hb_eol()
+    ender := {=>}
+    ender["xLgr"] := cte:des_end_logradouro
+    ender["nro"] := cte:des_end_numero
+    ender["xCpl"] := cte:des_end_complemento
+    ender["xBairro"] := cte:des_end_bairro
+    ender["cMun"] := cte:des_cid_codigo_municipio
+    ender["xMun"] := cte:des_cid_municipio
+    ender["CEP"] := cte:des_end_cep
+    ender["UF"] := cte:des_cid_uf
 
-    if Empty(cte:comp_calc)
-        ::body += '            "vRec": ' + cte:vTPrest + hb_eol()
-    else
-        ::body += '            "vRec": ' + cte:vTPrest + ',' + hb_eol()
-        ::body += '            "Comp": [' + hb_eol()
-        for each comp in cte:comp_calc
-            ::body += '                {' + hb_eol()
-            ::body += '                    "xNome": "' + comp['xNome'] + '",' + hb_eol()
-            ::body += '                    "vComp": ' + comp['vComp'] + hb_eol()
-            ::body += '                },' + hb_eol()
+    desti["enderExped"] := ender
+    ender := nil
+
+    if !Empty(cte:des_email)
+        desti["email"] := cte:des_email
+    endif
+
+    // infCte -------------------------
+    infCte["versao"] := "4.00"                     // Debug: mudar para -> //cte:versao_xml quando terminar os testes
+    infCte["ide"] := ide
+    infCte["compl"] := compl
+    infCte["emit"] := emite
+    infCte["rem"] := remet
+    infCte["exped"] := exped
+    infCte["receb"] := receb
+    infCte["dest"] := desti
+
+    // Libera as variáveis e deixa o Garbage Collector do Harbour limpar a memória
+    ide := compl := emite := remet := exped := receb := desti := nil
+
+    vPrest := {=>}
+    vPrest["vTprest"] := cte:vTPrest
+    vPrest["vRec"] := cte:vTPrest
+
+    if !Empty(cte:comp_calc)
+        Comp := {}
+        for each hComp in cte:comp_calc
+            AAdd(Comp, {"xNome" => hComp["xNome"], "vComp" => hComp["vComp"]})
         next
-        // Remove a última vírgula do objeto
-        ::body := hb_ULeft(::body, hmg_len(::body)-1)
-        ::body += '            ]' + hb_eol()
+        vPrest["Comp"] := Comp
+        Comp := nil
     endif
 
-    // Fecha vPrest
-    ::body += '        },' + hb_eol()
-    // Abre imp
-    ::body += '        "imp": {' + hb_eol()
-    ::body += '            "ICMS": {' + hb_eol()
+    infCte["vPrest"] := vPrest
+    vPrest := nil
+
+    ICMS := {=>}
 
     switch cte:codigo_sit_tributaria
         case "00 - Tributação normal do ICMS"
-            ::body += '                "ICMS00": {' + hb_eol()
-            ::body += '                    "CST": "00",' + hb_eol()
-            ::body += '                    "vBC": ' + cte:vBC + ',' + hb_eol()
-            ::body += '                    "pICMS": ' + cte:pICMS + ',' + hb_eol()
-            ::body += '                    "vICMS": ' + cte:vICMS + '' + hb_eol()
+            ICMS["ICMS00"] := {"CST" => "00", "vBC" => cte:vBC, "pICMS" => cte:pICMS, "vICMS" => cte:vICMS}
             exit
         case "20 - Tributação com redução de BC do ICMS"
-            ::body += '                "ICMS20": {' + hb_eol()
-            ::body += '                    "CST": "20",' + hb_eol()
-            ::body += '                    "pRedBC": ' + cte:pRedBC + ',' + hb_eol()
-            ::body += '                    "vBC": ' + cte:vBC + ',' + hb_eol()
-            ::body += '                    "pICMS": ' + cte:pICMS + ',' + hb_eol()
-            ::body += '                    "vICMS": ' + cte:vICMS + '' + hb_eol()
+            ICMS["ICMS20"] := {"CST" => "20", "pRedBC" => cte:pRedBC, "vBC" => cte:vBC, "pICMS" => cte:pICMS, "vICMS" => cte:vICMS}
             exit
         case "60 - ICMS cobrado anteriormente por substituição tributária"
-            ::body += '                "ICMS60": {' + hb_eol()
-            ::body += '                    "CST": "60",' + hb_eol()
-            ::body += '                    "vBCSTRet": ' + cte:vBC + ',' + hb_eol()
-            ::body += '                    "vICMSSTRet": ' + cte:vICMS + ',' + hb_eol()
-            ::body += '                    "pICMSSTRet": ' + cte:pICMS + ',' + hb_eol()
-            ::body += '                    "vCred": ' + cte:vCred + '' + hb_eol()
+            ICMS["ICMS60"] := {"CST" => "60", "vBCSTRet" => cte:vBC, "vICMSSTRet" => cte:vICMS, "pICMSSTRet" => cte:pICMS, "vCred" => cte:vCred}
             exit
         case "90 - ICMS outros"
-            ::body += '                "ICMS90": {
-                ::body += '                    "CST": "90",' + hb_eol()
-                ::body += '                    "pRedBC": ' + cte:pRedBC + ',' + hb_eol()
-                ::body += '                    "vBC": ' + cte:vBC + ',' + hb_eol()
-                ::body += '                    "pICMS": ' + cte:pICMS + ',' + hb_eol()
-                ::body += '                    "vICMS": ' + cte:vICMS + ',' + hb_eol()
-                ::body += '                    "vCred": ' + cte:vCred + hb_eol()
+            ICMS["ICMS90"] := {"CST" => "90", "pRedBC" => cte:pRedBC, "vBC" => cte:vBC, "pICMS" => cte:pICMS, "vICMS" => cte:vICMS, "vCred" => cte:vCred}
                 exit
         case "90 - ICMS devido à UF de origem da prestação, quando diferente da UF emitente"
-            ::body += '                "ICMSOutraUF": {' + hb_eol()
-            ::body += '                    "CST": "90",' + hb_eol()
-            ::body += '                    "pRedBCOutraUF": ' + cte:pRedBC + ',' + hb_eol()
-            ::body += '                    "vBCOutraUF": ' + cte:vBC + ',' + hb_eol()
-            ::body += '                    "pICMSOutraUF": ' + cte:pICMS + ',' + hb_eol()
-            ::body += '                    "vICMSOutraUF": ' + cte:vICMS + hb_eol()
+            ICMS["ICMSOutraUF"] := {"CST" => "90", "pRedBCOutraUF" => cte:pRedBC, "vBCOutraUF" => cte:vBC, "pICMSOutraUF" => cte:pICMS, "vICMSOutraUF" => cte:vICMS}
             exit
         case "SIMPLES NACIONAL"
-            ::body += '                "ICMSSN": {' + hb_eol()
-            ::body += '                    "CST": "90",' + hb_eol()
-            ::body += '                    "indSN": 1' + hb_eol()
+            ICMS["ICMSSN"] := {"CST" => "90", "indSN" => 1}
             exit
+        otherwise
+            if (hb_ULeft(cte:codigo_sit_tributaria, 2) $ "40|41|51")
+                // 45 - ICMS Isento, não Tributado ou diferido
+                ICMS["ICMS45"] := {"CST" => hb_ULeft(cte:codigo_sit_tributaria, 2)}
+            endif
     endswitch
 
-    if (cte:codigo_sit_tributaria $ "40|41|51")
-        // 45 - ICMS Isento, não Tributado ou diferido
-        ::body += '                "ICMS45": {' + hb_eol()
-        ::body += '                    "CST": "' + cte:codigo_sit_tributaria + '"' + hb_eol()
+    imp := {=>}
+    imp["ICMS"] := ICMS
+    imp["vTotTrib"] := cte:vTotTrib
+
+    if !Empty(cte:infAdFisco)
+        imp["infAdFisco"] := cte:infAdFisco
+    endif
+    if !Empty(cte:calc_difal)
+        imp["ICMSUFFim"] := {"vBCUFFim" => cte:vTPrest, ;
+                                 "pFCPUFFim" => cte:calc_difal["pFCPUFFim"], ;
+                                 "pICMSUFFim" => cte:calc_difal["pICMSUFFim"], ;
+                                 "pICMSInter" => cte:calc_difal["pICMSInter"], ;
+                                 "vFCPUFFim" => cte:calc_difal["vFCPUFFim"], ;
+                                 "vICMSUFFim" => cte:calc_difal["vICMSUFFim"], ;
+                                 "vICMSUFIni" => cte:calc_difal["vICMSUFIni"]}
+     endif
+
+    infCte["imp"] := imp
+    imp := ICMS := nil
+
+    if (hb_ntos(cte:tpCTe) $ "03")
+        // 0 - CT-e Normal e 3 - CT-e de Substituição
+
+        infCarga := {=>}
+        infCarga["vCarga"] := cte:vCarga
+        infCarga["proPred"] := cte:proPred
+        infCarga["xOutCat"] := cte:xOutCat
+        infCarga["infQ"] := {{"cUnid" => "01", "tpMed" => "PESO BRUTO", "qCarga" => number_format(cte:peso_bruto, 4)}, ;
+                             {"cUnid" => "01", "tpMed" => "PESO BC", "qCarga" => number_format(cte:peso_bc, 4)}, ;
+                                {"cUnid" => "01", "PESO CUBADO" => "PESO BC", "qCarga" => number_format(cte:peso_cubado, 4)}, ;
+                                    {"cUnid" => "00", "PESO CUBAGEM" => "PESO BC", "qCarga" => number_format(cte:cubagem_m3, 4)}, ;
+                             {"cUnid" => "03", "VOLS." => "PESO BC", "qCarga" => number_format(cte:qtde_volumes, 4)} ;
+                            }
+
+        // vCargaAverb // Não utilizado ou desnecessário
+
+        infCteNorm := {=>}
+        infCteNorm["infCarga"] := infCarga
+        infCarga := nil
+
+        infDoc := {=>}
+        docAnexos := {}
+
+        switch cte:tipo_doc_anexo
+            case 1 // 1-Nota Fiscal
+                tag := "infNF"
+                for each hDoc in cte:doc_anexo
+                    AAdd(docAnexos, {"mod" => PadL(hDoc["modelo"], 2, "0"), ;
+                                     "serie" => PadL(hDoc["serie"], 3, "0"), ;
+                                     "nDoc" => hDoc["nDoc"], ;
+                                     "dEmi" => hDoc["dEmi"], ;
+                                     "vBC" => hDoc["vBC"], ;
+                                     "vICMS" => hDoc["vICMS"], ;
+                                     "vBCST" => hDoc["vBCST"], ;
+                                     "vST" => hDoc["vST"], ;
+                                     "vProd" => hDoc["vProd"], ;
+                                     "vNF" => hDoc["vNF"], ;
+                                     "nCFOP" => hDoc["nCFOP"], ;
+                                     "nPeso" => hDoc["nPeso"], ;
+                                     "PIN" => hDoc["PIN"], ;
+                                     "dPrev" => hDoc["dPrev"] ;
+                                })
+                next
+                exit
+            case 2 // 2-NFe
+                tag := "infNFe"
+                for each hDoc in cte:doc_anexo
+                    if Empty(hDoc["PIN"])
+                        AAdd(docAnexos, {"chave" => hDoc["chave"]})
+                    else
+                        AAdd(docAnexos, {"chave" => hDoc["chave"], "PIN" => hDoc["PIN"]})
+                    endif
+                next
+                exit
+            case 3 // 3-Declarações, outros
+                tag := "infOutros"
+                for each hDoc in cte:doc_anexo
+                    AAdd(docAnexos, {"tpDoc" => hDoc["tpDoc"], ;
+                                        "descOutros" => hDoc["descOutros"], ;
+                                        "nDoc" => hDoc["nDoc"], ;
+                                        "dEmi" => hDoc["dEmi"], ;
+                                        "vDocFisc" => hDoc["vDocFisc"], ;
+                                    })
+                next
+                exit
+        endswitch
+        // infUnidCarga  -- Opcional. Informação indisponível na emissão do CTe
+        // infUnidTransp -- Opcional. Informação indisponível na emissão do CTe
+
+        infDoc[tag] := docAnexos
+        infCteNorm["infDoc"] := infDoc
+        infDoc := docAnexos := nil
+
+        if !Empty(cte:docAnt)
+            infCteNorm["docAnt"] := cte:docAnt
+        endif
+
+        infModal := {=>}
+        infModal["versaoModal"] := "4.00"   // Debug: mudar para -> //cte:versao_xml quando terminar os testes
+
+        if (cte:tpCTe == 0)
+            // tpCTe: 0 - Normal
+            if (cte:tpServ == 0)
+                // tpServ: 0 - Normal
+                if (cte:modal == "01")
+                    // Rodo: Informação do modal rodoviário
+
+                    rodo := {=>}
+                    rodo["RNTRC"] := cte:emitente:RNTRC
+
+                    if !Empty(cte:rodoOcc)
+                        // Ordens de Coletas
+                        rodo["occ"] := {}
+                        for each occ in cte:rodoOcc
+                            if Empty(occ["serie"])
+                                AAdd(rodo["occ"], ;
+                                    {"nOcc" => occ["nOcc"], ;
+                                     "dEmi" => occ["dEmi"], ;
+                                     "emiOcc" => {"CNPJ" => occ["CNPJ"], "IE" => occ["IE"], "UF" => occ["UF"]} ;
+                                    })
+                            else
+                                AAdd(rodo["occ"], ;
+                                    {"serie" => occ["serie"], ;
+                                     "nOcc" => occ["nOcc"], ;
+                                     "dEmi" => occ["dEmi"], ;
+                                     "emiOcc" => {"CNPJ" => occ["CNPJ"], "IE" => occ["IE"], "UF" => occ["UF"]} ;
+                                    })
+                            endif
+                        next
+                    endif
+                    infModal["rodo"] := rodo
+                    infCteNorm["infModal"] := infModal
+                    infModal := rodo := nil
+
+                else
+                    // Aéreo: Informação do modal Aéreo
+                    aereo := {=>}
+                    aereo["nMinu"] := cte:cCT
+                    aereo["nOCA"] := cte:nOCA
+                    aereo["dPrevAereo"] := cte:dPrevAereo
+                    aereo["natCarga"] := cte:aereo
+
+
+                    sql:add("ccc_titulo AS xNome, ")
+                    sql:add("ccc_valor AS vComp, ")
+                    sql:add("ccc_tipo_tarifa AS CL, ")
+                    sql:add("ccc_valor_tarifa_kg AS vTar ")
+                    sql:add("FROM ctes_comp_calculo ")
+
+                    tarifa := cte:comp_calc[1]
+                    aereo["tarifa"] := {"CL" => tarifa["CL"], ;
+                                        "cTar" => cte:cTar, ;
+                                        "vTar" => tarifa["vTar"] ;
+                                        }
+                    infModal["aereo"] := aereo
+                endif
+
+                infCteNorm["infModal"] := infModal
+                infModal := rodo := aereo := nil
+
+                // veicNovos, cobr, infCteSub: Não utilizados
+                if (cte:indGlobalizado == 1)
+                    infCteNorm["infGlobalizado"] := {"xObs" => "Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"}
+                endif
+            else
+                // tpServ: 1 - Subcontratação; 2 – Redespacho; 3 – Redespacho Intermediário; 4 – Serviço Vinculado à Multimodal
+                // infServVinc: Não utilizado
+            endif
+        endif
+        infCte["infCTeNorm"] := infCteNorm
+        infCteNorm := nil
+    elseif (cte:tpCTe == 1)
+        // tpCTe: 1 - CT-e de Complemento de Valores
+        // infCteComp: Não implementado
+    else
+      // 2 - CT-e de Anulação * Não implementado
+      // infCteAnu | Detalhamento do CT-e do tipo Anulação
     endif
 
-    ::body += '                }' + hb_eol()    // Fecha ICMS
-    ::body += '                "vTotTrib": ' + cte:vTotTrib + ',' + hb_eol()
-    ::body += '                "infAdFisco": "' + cte:infAdFisco + '",' + hb_eol()
+    autXML := {}
 
-    if !Empty(::calc_difal)
-
-       ::body += '                "ICMSUFFim": {' + hb_eol()
-       ::body += '                    "vBCUFFim": ' + cte:vTPrest + ',' + hb_eol()
-       ::body += '                    "pFCPUFFim": ' + cte:calc_difal["pFCPUFFim"] + ',' + hb_eol()
-       ::body += '                    "pICMSUFFim": ' + cte:calc_difal["pICMSUFFim"] + ',' + hb_eol()
-       ::body += '                    "pICMSInter": ' + cte:calc_difal["pICMSInter"] + ',' + hb_eol()
-       ::body += '                    "vFCPUFFim": ' + cte:calc_difal["vFCPUFFim"] + ',' + hb_eol()
-       ::body += '                    "vICMSUFFim": ' + cte:calc_difal["vICMSUFFim"] + ',' + hb_eol()
-       ::body += '                    "vICMSUFIni": ' + cte:calc_difal["vICMSUFIni"] + hb_eol()
-       ::body += '                }' + hb_eol()
-
+    if !Empty(cte:tom_email) .and. (cte:tomador == 4)
+        if Empty(cte:tom_cnpj)
+            AAdd(autXML, {"CPF" => cte:tom_cpf})
+        else
+            AAdd(autXML, {"CNPJ" => cte:tom_cnpj})
+        endif
+    endif
+    if !Empty(cte:rem_email)
+        if Empty(cte:rem_cnpj)
+            AAdd(autXML, {"CPF" => cte:rem_cpf})
+        else
+            AAdd(autXML, {"CNPJ" => cte:rem_cnpj})
+        endif
+    endif
+    if !Empty(cte:des_email)
+        if Empty(cte:des_cnpj)
+            AAdd(autXML, {"CPF" => cte:des_cpf})
+        else
+            AAdd(autXML, {"CNPJ" => cte:des_cnpj})
+        endif
+    endif
+    if !Empty(cte:exp_email)
+        if Empty(cte:exp_cnpj)
+            AAdd(autXML, {"CPF" => cte:exp_cpf})
+        else
+            AAdd(autXML, {"CNPJ" => cte:exp_cnpj})
+        endif
+    endif
+    if !Empty(cte:rec_email)
+        if Empty(cte:rec_cnpj)
+            AAdd(autXML, {"CPF" => cte:rec_cpf})
+        else
+            AAdd(autXML, {"CNPJ" => cte:rec_cnpj})
+        endif
     endif
 
-    ::body += '            },' + hb_eol()   // Fecha ICMS
-    ::body += '        },' + hb_eol()       // Fecha imp
-    ::body += '        "infCTeNorm": {' + hb_eol()
-    ::body += '            "infCarga": {' + hb_eol()
-    ::body += '                "vCarga": ' + cte:vCarga + ',' + hb_eol()
-    ::body += '                "proPred": "' + cte:proPred + '",' + hb_eol()
-    ::body += '                "xOutCat": "' + cte:xOutCat + '",' + hb_eol()
-    ::body += '                "infQ": [' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "cUnid": "01",' + hb_eol()
-    ::body += '                        "tpMed": "PESO BRUTO",' + hb_eol()
-    ::body += '                        "qCarga": ' + LTrim(Transform(Val(cte:peso_bruto), "99999999999.9999")) + hb_eol()
-    ::body += '                    },' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "cUnid": "01",' + hb_eol()
-    ::body += '                        "tpMed": "PESO BC",' + hb_eol()
-    ::body += '                        "qCarga": ' + LTrim(Transform(Val(cte:peso_bc), "99999999999.9999")) + hb_eol()
-    ::body += '                    },' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "cUnid": "01",' + hb_eol()
-    ::body += '                        "tpMed": "PESO CUBADO",' + hb_eol()
-    ::body += '                        "qCarga": ' + LTrim(Transform(Val(cte:peso_cubado), "99999999999.9999")) + hb_eol()
-    ::body += '                    },' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "cUnid": "00",' + hb_eol()
-    ::body += '                        "tpMed": "CUBAGEM",' + hb_eol()
-    ::body += '                        "qCarga": ' + LTrim(Transform(Val(cte:cubagem_m3), "99999999999.9999")) + hb_eol()
-    ::body += '                    },' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "cUnid": "03",' + hb_eol()
-    ::body += '                        "tpMed": "VOLS.",' + hb_eol()
-    ::body += '                        "qCarga": ' + LTrim(Transform(Val(cte:qtde_volumes), "99999999999.9999")) + hb_eol()
-    ::body += '                    },' + hb_eol()
-    ::body += '                ]' + hb_eol()
-    // ::body += '                "vCargaAverb": 0' + hb_eol()
-    ::body += '            },' + hb_eol()   // Fecha infCarga
-    ::body += '            "infDoc": {' + hb_eol()
-    ::body += '                "infNF": [' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "nRoma": "",' + hb_eol()
-    ::body += '                        "nPed": "",' + hb_eol()
-    ::body += '                        "mod": "",' + hb_eol()
-    ::body += '                        "serie": "",' + hb_eol()
-    ::body += '                        "nDoc": "",' + hb_eol()
-    ::body += '                        "dEmi": "2019-08-24",' + hb_eol()
-    ::body += '                        "vBC": 0,' + hb_eol()
-    ::body += '                        "vICMS": 0,' + hb_eol()
-    ::body += '                        "vBCST": 0,' + hb_eol()
-    ::body += '                        "vST": 0,' + hb_eol()
-    ::body += '                        "vProd": 0,' + hb_eol()
-    ::body += '                        "vNF": 0,' + hb_eol()
-    ::body += '                        "nCFOP": "",' + hb_eol()
-    ::body += '                        "nPeso": 0,' + hb_eol()
-    ::body += '                        "PIN": "",' + hb_eol()
-    ::body += '                        "dPrev": "2019-08-24",' + hb_eol()
-    ::body += '                    }' + hb_eol()
-    ::body += '                ],' + hb_eol()
-    ::body += '                "infNFe": [' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "chave": "string",' + hb_eol()
-    ::body += '                        "PIN": "string",' + hb_eol()
-    ::body += '                    }' + hb_eol()
-    ::body += '                ],' + hb_eol()
-    ::body += '                "infOutros": [' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "tpDoc": "string",' + hb_eol()
-    ::body += '                        "descOutros": "string",' + hb_eol()
-    ::body += '                        "nDoc": "string",' + hb_eol()
-    ::body += '                        "dEmi": "2019-08-24",' + hb_eol()
-    ::body += '                        "vDocFisc": 0' + hb_eol()
-    ::body += '                    }' + hb_eol()
-    ::body += '                ]' + hb_eol()
-    ::body += '            },' + hb_eol()
-    ::body += '            "docAnt": {' + hb_eol()
-    ::body += '                "emiDocAnt": [' + hb_eol()
-    ::body += '                    {' + hb_eol()
-    ::body += '                        "idDocAntPap": [' + hb_eol()
-    ::body += '                            {' + hb_eol()
-    ::body += '                                "tpDoc": null,' + hb_eol()
-    ::body += '                                "serie": null,' + hb_eol()
-    ::body += '                                "subser": null,' + hb_eol()
-    ::body += '                                "nDoc": null,' + hb_eol()
-    ::body += '                                "dEmi": null' + hb_eol()
-    ::body += '                            }' + hb_eol()
-    ::body += '                        ],' + hb_eol()
-    ::body += '                        "idDocAntEle": [' + hb_eol()
-    ::body += '                            {' + hb_eol()
-    ::body += '                                "chCTe": null' + hb_eol()
-    ::body += '                            }' + hb_eol()
-    ::body += '                        ]' + hb_eol()
-    ::body += '                    }' + hb_eol()
-    ::body += '                ]' + hb_eol()
-    ::body += '            },' + hb_eol()
-    ::body += '            "infModal": {' + hb_eol()
-    ::body += '                "versaoModal": "string",' + hb_eol()
-    ::body += '                "rodo": {' + hb_eol()
-    ::body += '                    "RNTRC": "string",' + hb_eol()
-    ::body += '                    "occ": [' + hb_eol()
-    ::body += '                        {' + hb_eol()
-    ::body += '                            "serie": "string",' + hb_eol()
-    ::body += '                            "nOcc": 0,' + hb_eol()
-    ::body += '                            "dEmi": "2019-08-24",' + hb_eol()
-    ::body += '                            "emiOcc": {}' + hb_eol()
-    ::body += '                        }' + hb_eol()
-    ::body += '                    ]' + hb_eol()
-    ::body += '                },' + hb_eol()
-    ::body += '                "aereo": {' + hb_eol()
-    ::body += '                    "nMinu": 0,' + hb_eol()
-    ::body += '                    "nOCA": "string",' + hb_eol()
-    ::body += '                    "dPrevAereo": "2019-08-24",' + hb_eol()
-    ::body += '                    "natCarga": {' + hb_eol()
-    ::body += '                        "xDime": "string",' + hb_eol()
-    ::body += '                        "cInfManu": ["string"]' + hb_eol()
-    ::body += '                    },' + hb_eol()
-    ::body += '                    "tarifa": {' + hb_eol()
-    ::body += '                        "CL": "string",' + hb_eol()
-    ::body += '                        "cTar": "string",' + hb_eol()
-    ::body += '                        "vTar": 0' + hb_eol()
-    ::body += '                    },' + hb_eol()
-    ::body += '                    "peri": [' + hb_eol()
-    ::body += '                        {' + hb_eol()
-    ::body += '                            "nONU": "string",' + hb_eol()
-    ::body += '                            "qTotEmb": "string",' + hb_eol()
-    ::body += '                            "infTotAP": {' + hb_eol()
-    ::body += '                                "qTotProd": 0,' + hb_eol()
-    ::body += '                                "uniAP": 0' + hb_eol()
-    ::body += '                            }' + hb_eol()
-    ::body += '                        }' + hb_eol()
-    ::body += '                    ]' + hb_eol()
-    ::body += '                },' + hb_eol()
-    // ::body += '             "ferrov": {},' + hb_eol()            // NÃO IMPLEMENTADO
-    // ::body += '             "aquav": {},' + hb_eol()             // NÃO IMPLEMENTADO
-    // ::body += '             "duto": {},' + hb_eol()              // NÃO IMPLEMENTADO
-    // ::body += '             "multimodal": {}' + hb_eol()         // NÃO IMPLEMENTADO
-    ::body += '            },' + hb_eol()
-    ::body += '            "veicNovos": [' + hb_eol()
-    ::body += '                {' + hb_eol()
-    ::body += '                    "chassi": "string",' + hb_eol()
-    ::body += '                    "cCor": "string",' + hb_eol()
-    ::body += '                    "xCor": "string",' + hb_eol()
-    ::body += '                    "cMod": "string",' + hb_eol()
-    ::body += '                    "vUnit": 0,' + hb_eol()
-    ::body += '                    "vFrete": 0' + hb_eol()
-    ::body += '                }' + hb_eol()
-    ::body += '            ],' + hb_eol()
-    // ::body += '            "cobr": {},' + hb_eol()               // NÃO IMPLEMENTADO
-    // ::body += '            "infCteSub": {},' + hb_eol()          // NÃO IMPLEMENTADO
-    ::body += '            "infGlobalizado": {' + hb_eol()
-    ::body += '                "xObs": ""' + hb_eol()
-    ::body += '            },' + hb_eol()
-    // ::body += '            "infServVinc": {}' + hb_eol()          // NÃO IMPLEMENTADO
-    ::body += '        },' + hb_eol()   // Fecha infCTeNorm
-    // ::body += '        "infCteComp": []' + hb_eol()              // NÃO IMPLEMENTADO
-    ::body += '        "autXML": [' + hb_eol()
-    ::body += '            {' + hb_eol()
-    ::body += '                "CNPJ": "string",' + hb_eol()
-    ::body += '                "CPF": "string"' + hb_eol()
-    ::body += '            }' + hb_eol()
-    ::body += '        ],' + hb_eol()
-    ::body += '        "infRespTec": {' + hb_eol()
-    ::body += '            "CNPJ": "string",' + hb_eol()
-    ::body += '            "xContato": "string",' + hb_eol()
-    ::body += '            "email": "string",' + hb_eol()
-    ::body += '            "fone": "string",' + hb_eol()
-    ::body += '            "idCSRT": 0,' + hb_eol()
-    ::body += '            "hashCSRT": "string"' + hb_eol()
-    ::body += '        },' + hb_eol()
-    // ::body += '        "infSolicNFF": {}' + hb_eol()     // NÃO É O CASO DOS AGENTES DE CARGA
-    ::body += '    }' + hb_eol()     // Fecha infCte
-    ::body += '    "infCTeSupl": {}' + hb_eol()     // NÃO IMPLEMENTADO
-    ::body += '    "ambiente": "",' + hb_eol()     // Fecha infCte
-    ::body += '    "referencia": ""' + hb_eol()     // Fecha infCte
-    ::body += '}'                    // Fecha json
+    if !Empty(autXML)
+        infCte["autXML"] := autXML
+    endif
+    autXML := nil
+
+    if !Empty(RegistryrRead(appData:winRegistryPath + "Host\respTec\CNPJ"))
+        infCte["respTec"] := {"CNPJ" => RegistryrRead(::winRegistryPath + "Host\respTec\CNPJ"), ;
+                              "xContato" => RegistryrRead(::winRegistryPath + "Host\respTec\xContato"), ;
+                              "email" => RegistryrRead(::winRegistryPath + "Host\respTec\email"), ;
+                              "fone" => RegistryrRead(::winRegistryPath + "Host\respTec\fone")}
+    endif
+
+    // infSolicNFF: Não utilizado
+    // infCteSupl: Gerado automaticamente pela nuvem fiscal
+
+    ambiente := "homologacao"   // Debug: Após encerrar os testes, alterar esta linha
+
+    // Cria o Body Hasht Table
+    hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => cte:referencia_uuid}
+    ::body := hb_jsonEncode(hBody, 4)
+
+    hb_MemoWrit(appData:systemPath + "tmp\CTe" + hb_ntos(cte:referencia_uuid) + ".json", ::body)
 
 return nil

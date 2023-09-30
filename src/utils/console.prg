@@ -2,7 +2,7 @@
 #include <fileio.ch>
 
 procedure consoleLog(text)
-   local path := Memvar->appData:systemPath + 'log\'
+   local path := appData:systemPath + 'log\'
    local dateFormat := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
    local logFile := 'console.log'
    local h
@@ -13,7 +13,7 @@ procedure consoleLog(text)
       FSeek(h, 0, FS_END)
    else
       h := hb_FCreate(path + logFile, FC_NORMAL)
-      FWrite(h, 'Console Log de Sistema ' + Memvar->appData:displayName + hb_eol())
+      FWrite(h, 'Console Log de Sistema ' + appData:displayName + hb_eol())
    endif
    if ValType(text) == 'A'
       for each t in text

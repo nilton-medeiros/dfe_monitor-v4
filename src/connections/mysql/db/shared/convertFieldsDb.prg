@@ -6,12 +6,8 @@ function convertFieldsDb(oRow)
         value := oRow:FieldGet(i)
         if ValType(value) == "C"
             value := ansi_to_unicode(value)
-        elseif ValType(value) == "N"
-            /*
-               Nenhum valor numérico será usado em cálculos matemáticos,
-               logo é tratado como string, facilita a criação de json
-            */
-            value := hb_ntos(value)
+        elseif ValType(value) == "D"
+            value := Transform(DToS(value), "@R 9999-99-99")
         endif
         hb_hSet(hRow, cKey, value)
     next

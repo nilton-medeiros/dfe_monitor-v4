@@ -259,7 +259,7 @@ procedure setup_Button_Submit_Certificado_action()
 
 		if tudoCerto
 
-			jsonResponse := jsonDecode(certificado:response)
+			jsonResponse := hb_jsonDecode(certificado:response)
 			SetProperty('setup', 'Text_RazaoSocial', 'value', jsonResponse['nome_razao_social'])
 			SetProperty('setup', 'Text_CNPJ_logotipo', 'value', jsonResponse['cpf_cnpj'])
 			SetProperty('setup', 'Text_Assunto', 'value', jsonResponse['subject_name'])
@@ -287,7 +287,7 @@ procedure setup_Button_Submit_Certificado_action()
 			// Response Schema
 			if certificado:ContentType == "json"
 				consoleLog(certificado:response)
-				jsonResponse := jsonDecode(certificado:response)
+				jsonResponse := hb_jsonDecode(certificado:response)
 				msgRetorno := "codigo: " + jsonResponse['error']['code'] + hb_eol()
 				msgRetorno += "Menssagem: " + jsonResponse['error']['message']
 			else

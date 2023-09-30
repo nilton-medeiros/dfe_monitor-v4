@@ -4,15 +4,19 @@
 class TDbConhecimentos
     data ctes
     data ok
+
     method new() constructor
     method count() setget
-    method getObsFisco(cteId)
     method getAnexosCTe(hCTe)
     method getEmails(hCTe)
+    method getDocAnteriores(id)
+    method getRodo(id)
+    method getAereo(id)
+
 end class
 
 method new() class TDbConhecimentos
-    local hCTe, hAnexos, emails
+    local hCTe, hAnexos, emails, docTransAnt, modalidade
     local dbCTes, empresa, sql := TSQLString():new()
 
     sql:setValue("SELECT cte_id AS id, ")
@@ -105,6 +109,7 @@ method new() class TDbConhecimentos
     sql:add("des_end_cep, ")
     sql:add("des_cid_uf, ")
     sql:add("des_icms, ")
+    sql:add("des_inscricao_suframa, ")
     sql:add("clie_expedidor_id, ")
     sql:add("exp_razao_social, ")
     sql:add("exp_nome_fantasia, ")
@@ -201,7 +206,11 @@ method new() class TDbConhecimentos
             hCTe := convertFieldsDb(dbCTes:db:GetRow())
             hAnexos := ::getAnexosCTe(hCTe)
             emails := ::getEmails(hCTe)
-            AAdd(::ctes, TConhecimento():new(hCTe, hAnexos, emails))
+            if (hb_ntos(hCTe['tpServ']) $ "123")
+                docTransAnt := ::getDocAnteriores(hCTe["id"])
+            endif
+            modalidade := iif(hCTe['modal'] == 1, ::getRodo(hCTe["id"]), ::getAereo(hCTe["id"]))
+            AAdd(::ctes, TConhecimento():new(hCTe, hAnexos, emails, docTransAnt, modalidade))
             dbCTes:db:Skip()
         enddo
     endif
@@ -221,7 +230,7 @@ method getAnexosCTe(hCTe) class TDbConhecimentos
 
     sql:setValue("SELECT cte_ocf_titulo AS xCampo, cte_ocf_texto AS xTexto, cte_ocf_interessado AS interessado ")
     sql:add("FROM ctes_obs_contr_fisco ")
-    sql:add("WHERE cte_id = " + hCTe['id']  + " ")
+    sql:add("WHERE cte_id = " + hb_ntos(hCTe['id'])  + " ")
     sql:add("ORDER BY cte_ocf_interessado, cte_ocf_id ")
     obsFisco := TQuery():new(sql:value)
 
@@ -242,7 +251,7 @@ method getAnexosCTe(hCTe) class TDbConhecimentos
     sql:add("ccc_tipo_tarifa AS CL, ")
     sql:add("ccc_valor_tarifa_kg AS vTar ")
     sql:add("FROM ctes_comp_calculo ")
-    sql:add("WHERE cte_id = " + hCTe['id'] + " ")
+    sql:add("WHERE cte_id = " + hb_ntos(hCTe['id']) + " ")
     sql:add("AND (ccc_exibir_valor_dacte = 1 OR ccc_valor > 0)")
     compCalc := TQuery():new(sql:value)
 
@@ -259,10 +268,10 @@ method getAnexosCTe(hCTe) class TDbConhecimentos
 
    // Documentos anexos ao CTe
    sql:setValue("SELECT ")
-   where:setValue("WHERE cte_id = " + hCTe['id'] + " ")
+   where:setValue("WHERE cte_id = " + hb_ntos(hCTe['id']) + " ")
 
    switch hCTe['tipo_doc_anexo']
-      case '1' // 1-Nota Fiscal
+      case 1 // 1-Nota Fiscal
          sql:add("cte_doc_modelo AS modelo, ")
          sql:add("cte_doc_serie AS serie, ")
          sql:add("cte_doc_bc_icms AS vBC, ")
@@ -277,11 +286,11 @@ method getAnexosCTe(hCTe) class TDbConhecimentos
          where:add("AND cte_doc_serie IS NOT NULL ")
 //       where:add("AND cte_doc_serie IS NOT NULL AND cte_doc_serie != '' ")                   // série = 0 é considerada '', acaba não entrando neste where
          exit
-      case '2' // 2-NFe
+      case 2 // 2-NFe
          sql:add("cte_doc_chave_nfe AS chave, ") // Continua com mais campos a baixo
          where:add("AND cte_doc_chave_nfe IS NOT NULL AND cte_doc_chave_nfe != '' ")
          exit
-      case '3' // 3-Declaração
+      case 3 // 3-Declaração
          sql:add("cte_doc_tipo_doc AS tpDoc, ")
          sql:add("cte_doc_descricao AS descOutros, ")
          sql:add("cte_doc_valor_nota AS vDocFisc, ") // Continua com mais campos a baixo
@@ -317,11 +326,11 @@ method getEmails(hCTe) class TDbConhecimentos
     local sql := TSQLString():new()
     local cliente, contato
     local clientes := {
-            {"name" => "tomador", "id" => hCTe['clie_tomador_id'], "email" => ""},;
-            {"name" => "remetente", "id" => hCTe['clie_remetente_id'], "email" => ""},;
-            {"name" => "destinatario", "id" => hCTe['clie_destinatario_id'], "email" => ""},;
-            {"name" => "expedidor", "id" => hCTe['clie_expedidor_id'], "email" => ""},;
-            {"name" => "recebedor", "id" => hCTe['clie_recebedor_id'], "email" => ""};
+            {"name" => "tomador", "id" => hb_ntos(hCTe['clie_tomador_id']), "email" => ""},;
+            {"name" => "remetente", "id" => hb_ntos(hCTe['clie_remetente_id']), "email" => ""},;
+            {"name" => "destinatario", "id" => hb_ntos(hCTe['clie_destinatario_id']), "email" => ""},;
+            {"name" => "expedidor", "id" => hb_ntos(hCTe['clie_expedidor_id']), "email" => ""},;
+            {"name" => "recebedor", "id" => hb_ntos(hCTe['clie_recebedor_id']), "email" => ""};
           }
 
     for each cliente in clientes
@@ -340,3 +349,131 @@ method getEmails(hCTe) class TDbConhecimentos
     next
 
 return clientes
+
+method getDocAnteriores(id) class TDbConhecimentos
+    local s := TSQLString():new("SELECT ")
+    local emiDocAnt := {}, emitentes, hEmitente
+
+    s:add("cte_eda_id, ")
+    s:add("cte_eda_tipo_doc AS tipoDoc, ")
+    s:add("cte_eda_cnpj AS CNPJ, ")
+    s:add("cte_eda_cpf AS CPF, ")
+    s:add("cte_eda_ie AS IE, ")
+    s:add("cte_eda_ie_uf AS UF, ")
+    s:add("cte_eda_raz_social_nome AS xNome ")
+    s:add("FROM ctes_emitentes_ant ")
+    s:add("WHERE cte_id = " + hb_ntos(id) + " ")
+    s:add("ORDER BY cte_eda_raz_social_nome")
+    emitentes := TQuery():new(s:value)
+
+    if emitentes:executed
+        do while !emitentes:eof()
+            hEmitente := {=>}
+            if (emitentes:FieldGet('tipoDoc') == "CNPJ")
+                hEmitente["CNPJ"] := emitentes:FieldGet('CNPJ')
+                hEmitente["IE"] := emitentes:FieldGet('IE')
+            else
+                hEmitente["CPF"] := emitentes:FieldGet('CPF')
+            endif
+
+            hEmitente["UF"] := emitentes:FieldGet('UF')
+            hEmitente["xNome"] := emitentes:FieldGet('xNome')
+            hEmitente["idDocAnt"] := {}
+
+            s:setValue("SELECT ")
+            s:add("cte_dta_tpdoc AS tpDoc, ")
+            s:add("cte_dta_serie AS serie, ")
+            s:add("cte_dta_sub_serie AS subser, ")
+            s:add("cte_dta_numero AS nDoc, ")
+            s:add("cte_dta_data_emissao AS dEmi, ")
+            s:add("cte_dta_chave AS chCTe ")
+            s:add("FROM ctes_doc_transp_ant ")
+            s:add("WHERE cte_eda_id = " + hb_ntos(emitentes:FieldGet('cte_eda_id'))+ " ")
+            s:add("ORDER BY cte_dta_chave, cte_dta_serie, cte_dta_sub_serie, cte_dta_numero")
+
+            docTransAnt := TQuery():new(s:value)
+            if docTransAnt:executed
+                do while !docTransAnt:eof()
+                    if !Empty(docTransAnt:FieldGet('chCTe'))
+                        // idDocAntEle
+                        AAdd(hEmitente["idDocAnt"], {"chCTe" => docTransAnt:FieldGet('chCTe')})
+                    elseif !Empty(docTransAnt:FieldGet('tpDoc'))
+                        // idDocAntPap
+                        AAdd(hEmitente["idDocAnt"], {"tpDoc" => docTransAnt:FieldGet('tpDoc'), ;
+                                        "serie" => docTransAnt:FieldGet('serie'), ;
+                                        "subser" => docTransAnt:FieldGet('subser'), ;
+                                        "nDoc" => docTransAnt:FieldGet('nDoc'), ;
+                                        "dEmi" =>  Transform(DToS(docTransAnt:FieldGet('dEmi')), "@R 9999-99-99") ;
+                                       })
+                    endif
+                    docTransAnt:Skip()
+                enddo
+            endif
+            docTransAnt:Destroy()
+            AAdd(emiDocAnt, hEmitente)
+            emitentes:Skip()
+        enddo
+    endif
+    emitentes:Destroy()
+    hEmitente := nil
+
+return emiDocAnt
+
+// OCC: Ordem de Coleta
+method getRodo(id) class TDbConhecimentos
+    local occ := {}, s := TSQLString():new("SELECT ")
+    local serie, coleta, coletas
+
+    s:add("oca_serie AS serie, ")
+    s:add("oca_numero AS nOcc, ")
+    s:add("oca_data_emissao AS dEmi, ")
+    s:add("oca_cnpj_emitente AS CNPJ, ")
+    s:add("oca_inscricao_estadual AS IE, ")
+    s:add("oca_uf_ie AS UF ")
+    s:add("FROM ctes_rod_coletas ")
+    s:add("WHERE cte_id = " + hb_ntos(id) + " ")
+    s:add("ORDER BY oca_data_emissao")
+    coletas := TSQLQuery():new(s:value)
+
+    if coletas:executed
+        do while !coletas:eof()
+
+            if Empty(coletas:FieldGet("serie"))
+                serie := ""
+            else
+                serie := hb_ntos(coletas:FieldGet("serie"))
+            endif
+            AAdd(occ, { ;
+                        "serie" => serie, ;
+                        "nOcc" => coletas:FieldGet("nOcc"), ;
+                        "dEmi" => Transform(coletas:FieldGet("dEmi"), "@R 9999-99-99"), ;
+                        "CNPJ" => coletas:FieldGet("CNPJ"), ;
+                        "IE" => coletas:FieldGet("IE"), ;
+                        "UF" => coletas:FieldGet("UF") ;
+                      })
+            coletas:Skip()
+        enddo
+    endif
+
+return occ
+
+method getAereo(id) class TDbConhecimentos
+    local s := TSQLString():new("SELECT ")
+    local dim, aereo := {=>}
+
+    s:add("cte_dim_cumprimento * 100 AS cumprimento, ")
+    s:add("cte_dim_altura * 100 AS altura, ")
+    s:add("cte_dim_largura * 100 AS largura, ")
+    s:add("cte_dim_cubagem_m3 ")
+    s:add("FROM ctes_dimensoes ")
+    s:add("WHERE cte_id = " + hb_ntos(id) + " ")
+    s:add("ORDER BY cte_dim_cubagem_m3 DESC LIMIT 1")
+
+    dim := TQuery():new(s:value)
+
+    if (dim:count == 1)
+        aereo["xDime"] := PadL(dim:FieldGet("cumprimento"), 4, "0") + "X" + PadL(dim:FieldGet("altura"), 4, "0") + "X" + PadL(dim:FieldGet("largura"), 4, "0")
+        aereo["cInfManu"] := {"99 - outro (especificar no campo observações)"}
+    endif
+
+return aereo

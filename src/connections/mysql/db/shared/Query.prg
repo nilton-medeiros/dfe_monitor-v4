@@ -13,6 +13,9 @@ class TQuery
     method new(cSql) constructor
     method runQuery(sql)
     method serverBusy()
+    method Skip() inline ::db:Skip()
+    method GoTop() inline ::db:GoTop()
+    method eof() inline ::db:eof()
     method Destroy()
 
 end class

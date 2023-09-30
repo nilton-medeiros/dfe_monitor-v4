@@ -21,7 +21,7 @@ function getMessageApiError(api)
 
 	if api:ContentType == "json"
 		consoleLog(api:response)
-		response := jsonDecode(api:response)
+		response := hb_jsonDecode(api:response)
 		msgError := "codigo: " + response['error']['code'] + hb_eol()
 		msgError += "Menssagem: " + response['error']['message']
 	else

@@ -99,6 +99,7 @@ class TConhecimento
     data des_end_cep readonly
     data des_cid_uf readonly
     data des_icms readonly
+    data des_ISUF readonly
     data des_email readonly
     data clie_expedidor_id readonly
     data exp_razao_social readonly
@@ -167,10 +168,16 @@ class TConhecimento
     data comp_calc readonly
     data doc_anexo readonly
     data emitente readonly
+    data tpImp readonly
     data clie_emails readonly
     data calc_difal readonly
+    data cUF readonly
+    data tpAmb readonly
+    data docAnt readonly
+    data rodoOcc readonly
+    data aereo readonly
 
-    method new(cte, hAnexos, clie_emails) constructor
+    method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) constructor
     method setSituacao(cteStatus)
     method setUpdateCte(key, value)
     method setUpdateEventos(key, value)
@@ -178,14 +185,14 @@ class TConhecimento
 
 end class
 
-method new(cte, hAnexos, clie_emails) class TConhecimento
+method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     local clie, obs, nValFCP, percDIFAL, valorDIFAL
 
     ::id := cte["id"]
     ::emp_id := cte["emp_id"]
     ::versao_xml := cte["versao_xml"]
     ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
-    ::modelo := cte["modelo"]
+    ::modelo := number_format(cte["modelo"])
     ::serie := cte["serie"]
     ::nCT := cte["nCT"] // Numero do CTe
     ::cCT := cte["cCT"] // Numero da Minuta
@@ -209,12 +216,12 @@ method new(cte, hAnexos, clie_emails) class TConhecimento
     ::clie_tomador_id := cte["clie_tomador_id"]
     ::tom_ie_isento := cte["tom_ie_isento"]
 
-    if cte["indIEToma"] == '0'  // 0 = false
-        ::indIEToma := '9'  // Não Contribuinte. Aplica-se ao tomador que for indicado no toma3 ou toma4
-    elseif ::tom_ie_isento == '1'  // 1 = true
-        ::indIEToma := '2'  // Contribuinte isento de inscrição
+    if cte["indIEToma"] == 0        // 0 = false
+        ::indIEToma := 9            // Não Contribuinte. Aplica-se ao tomador que for indicado no toma3 ou toma4
+    elseif ::tom_ie_isento == 1     // 1 = true
+        ::indIEToma := 2            // Contribuinte isento de inscrição
     else
-        ::indIEToma := '1'  // Contribuinte de ICMS
+        ::indIEToma := 1            // Contribuinte de ICMS
     endif
 
     ::tomador := cte["tomador"]
@@ -239,9 +246,9 @@ method new(cte, hAnexos, clie_emails) class TConhecimento
     ::xPass := iif(Empty(cte["xPass"]), "OACI", cte["xPass"])
     ::xDest := cte["xDest"]
     ::tpPer := cte["tpPer"]
-    ::dProg := date_as_string(cte["dProg"])
-    ::dIni := date_as_string(cte["dIni"])
-    ::dFim := date_as_string(cte["dFim"])
+    ::dProg := cte["dProg"]
+    ::dIni := cte["dIni"]
+    ::dFim := cte["dFim"]
     ::tpHor := cte["tpHor"]
     ::hProg := cte["hProg"]
     ::hIni := cte["hIni"]
@@ -279,6 +286,7 @@ method new(cte, hAnexos, clie_emails) class TConhecimento
     ::des_end_cep := getNumbers(cte["des_end_cep"])
     ::des_cid_uf := cte["des_cid_uf"]
     ::des_icms := cte["des_icms"]
+    ::des_ISUF := cte["des_inscricao_suframa"]
     ::clie_expedidor_id := cte["clie_expedidor_id"]
     ::exp_razao_social := cte["exp_razao_social"]
     ::exp_nome_fantasia := cte["exp_nome_fantasia"]
@@ -333,28 +341,31 @@ method new(cte, hAnexos, clie_emails) class TConhecimento
     ::qtde_volumes := cte["qtde_volumes"]
     ::tipo_doc_anexo := cte["tipo_doc_anexo"]
     ::nOCA := cte["nOCA"]
-    ::dPrevAereo := date_as_string(cte["dPrevAereo"])
+    ::dPrevAereo := cte["dPrevAereo"]
     ::referencia_uuid := cte["referencia_uuid"]
     ::nuvemfiscal_uuid := cte["nuvemfiscal_uuid"]
     ::monitor_action := cte["monitor_action"]
     ::updateCte := {}
     ::updateEventos := {}
-    ::indGlobalizado := ''
+    ::indGlobalizado := 0
     ::emitente := appEmpresas:getEmpresa(::emp_id)
-
+    ::tpImp := ::emitente:tpImp
+    ::cUF := ::emitente:cUF
+    ::tpAmb := ::emitente:tpAmb
     ::infIndGlobalizado()
 
-    if (::indGlobalizado == "1")
+    if (::indGlobalizado == 1)
         ::xObs := ::xObs + ";Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"
     endif
 
+    // Se o registro no DB ainda não tem uma chave UUID, é criado uma
     if Empty(::referencia_uuid)
         ::referencia_uuid :=  hb_UPadL(::serie, 3, "0") +;
                               hb_UPadL(::nCT, 9, "0") +;    // Numero CTe
                               hb_UPadL(::id, 9, "0") +;     // Id CTe
                               hb_UPadL(::cCT, 9, "0") +;    // Numero Minuta
                               hb_UPadL(::emp_id, 6, "0")    // Id Emitente
-        // Debug: Verifica se o método save() salvará todos os campos que estão no array ::updateCTe
+        // Debug: Verificar se o método save() salvará todos os campos que estão no array ::updateCTe
         AAdd(::updateCTe, {"key" => "referencia_uuid", "value" => referencia_uuid})
     endif
 
@@ -405,43 +416,45 @@ method new(cte, hAnexos, clie_emails) class TConhecimento
     ::calc_difal := {=>}
 
     // Informações do ICMS de partilha com a UF de término do serviço de transporte na operação interestadual
-    if (::tpCTe $ '013') .and.; // Tipo de CTe (tpCTe) = 0-Normal, 1-Complemento de Valores, 3-Substituto
-        !(::UFIni == ::UFFim') .and.; // e UF de término do serviço de transporte na operação interestadual
-        (::tpServ == '0') .and.; // e Tipo de Serviço = 0-Normal
-        (::des_icms == '0') .and.; // e consumidor (destinatário) não contribuinte do ICMS
-        (::cte_tomador == '3') .and.; // Tomador tem que ser o DESTINATÁRIO
+    if (hb_ntos(::tpCTe) $ '013') .and.;         // Tipo de CTe (tpCTe) = 0-Normal, 1-Complemento de Valores, 3-Substituto
+        !(::UFIni == ::UFFim) .and.;   // e UF de término do serviço de transporte na operação interestadual
+        (::tpServ == 0) .and.; // e Tipo de Serviço = 0-Normal
+        (::des_icms == 0) .and.; // e consumidor (destinatário) não contribuinte do ICMS
+        (::cte_tomador == 3) .and.; // Tomador tem que ser o DESTINATÁRIO
         !(::codigo_sit_tributaria == "SIMPLES NACIONAL") // O STF decidiu que essa cobrança do ICMS do Diferencial de Alíquota – DIFAL, para empresas Optantes pelo Simples é inconstitucional, pois seu recolhimento foi previsto pela Lei Complementar n° 123, de 14 de dezembro de 2006, e seu recolhimento é feito pela guia unificada do Simples Nacional – DAS
 
         saveLog("DIFAL CALCULADO")
 
         // DIFAL - Diferença de Alíquota | FCP - Fundo de Combate a Pobreza | Arquivo SeFaz: CTe_Nota_Tecnica_2015_004.pdf (Pagina 4)
         if (::UFFim $ "'AC|AL|AM|BA|CE|DF|ES|GO|MA|MG|MS|MT|PB|PE|PI|PR|RJ|RN|RO|RR|RS|SE|SP|TO")
-
             dbIcms := TDbIcms():new(::UFIni, ::UFFim)
-
             if (dbIcms:count == 2)
-
-                ::calc_difal := {'pFCPUFFim' => '0.00', 'pICMSUFFim' => '0.00', 'pICMSInter' => '0.00', 'vFCPUFFim' => '0.00', 'vICMSUFFim' => '0.00', 'vICMSUFIni' => '0.00', 'pDIFAL' => '0', 'vDIFAL' => '0'}
-
-                nValFCP := Val(::vTPrest) * 0.02
-
-                ::calc_difal["pFCPUFFim"] := "2.00"
-                ::calc_difal["vFCPUFFim"] := hb_ntos(nValFCP)
-                ::calc_difal["pICMSInter"] := hb_ntos(dbIcms:pIni)
-                ::calc_difal["pICMSUFFim"] := hb_ntos(dbIcms:pFim)
-
+                ::calc_difal := {'pFCPUFFim' => 0.00, 'pICMSUFFim' => 0.00, 'pICMSInter' => 0.00, 'vFCPUFFim' => 0.00, 'vICMSUFFim' => 0.00, 'vICMSUFIni' => 0.00, 'pDIFAL' => 0, 'vDIFAL' => 0}
+                nValFCP := ::vTPrest * 0.02
+                ::calc_difal["pFCPUFFim"] := 2.00
+                ::calc_difal["vFCPUFFim"] := nValFCP
+                ::calc_difal["pICMSInter"] := dbIcms:pIni
+                ::calc_difal["pICMSUFFim"] := dbIcms:pFim
                 if (dbIcms:pFim > dbIcms:pIni)
                     percDIFAL := dbIcms:pFim - dbIcms:pIni
-                    valorDIFAL := Val(::vTPrest) * (percDIFAL/100)
-                    ::calc_difal["pDIFAL"] := hb_ntos(percDIFAL)
-                    ::calc_difal["vDIFAL"] := hb_ntos(valorDIFAL)
-                    ::calc_difal["vICMSUFFim"] := hb_ntos(valorDIFAL + nValFCP)
+                    valorDIFAL := ::vTPrest * (percDIFAL/100)
+                    ::calc_difal["pDIFAL"] := percDIFAL
+                    ::calc_difal["vDIFAL"] := valorDIFAL
+                    ::calc_difal["vICMSUFFim"] := valorDIFAL + nValFCP
                 endif
-
             endif
-
         endif
+    endif
 
+    ::docAnt := {=>}
+    if !Empty(emiDocAnt)
+        ::docAnt["emiDocAnt"] := emiDocAnt
+    endif
+
+    if (::modal == "01")
+        ::rodoOcc := modalidade
+    else
+        ::aereo := modalidade
     endif
 
 return self
@@ -475,14 +488,14 @@ return lSet
 method infIndGlobalizado() class TConhecimento
     local nfe, cnpj, rem := {}, des := {}, docs := 0
 
-    if (::tipo_doc_anexo == '2')
+    if (::tipo_doc_anexo == 2)
         // NFe
         docs := hmg_len(::doc_anexo)
     endif
 
-    ::indGlobalizado := ''
+    ::indGlobalizado := 0
 
-    if (::tpCTe == '0') .and. (::tpServ == '0') .and. (docs > 4) .and. (::UFIni == ::UFFim)
+    if (::tpCTe == 0) .and. (::tpServ == 0) .and. (docs > 4) .and. (::UFIni == ::UFFim)
 
         for each nfe in ::doc_anexo
             cnpj := hb_USubStr(nfe['chave'], 7, 14)
@@ -493,10 +506,10 @@ method infIndGlobalizado() class TConhecimento
             endif
         next
 
-        if ((::tomador == '3') .and. (hmg_len(rem) > 4)) .or. ((::tomador == '0') .and. (hmg_len(rem) == 1) .and. ::des_razao_social == 'DIVERSOS' .and. (::des_cnpj == ::emitente:CNPJ))
+        if ((::tomador == 3) .and. (hmg_len(rem) > 4)) .or. ((::tomador == 0) .and. (hmg_len(rem) == 1) .and. ::des_razao_social == 'DIVERSOS' .and. (::des_cnpj == ::emitente:CNPJ))
             // Tomador: 3 - Destinatário, o número de CNPJ diferentes nas chaves emitidas pelos Remententes são maior ou igual a 5 ou
             // Tomador: 0 - Remetente, tem mais de 4 NFes (docs > 4), todas as NFes são do mesmo emitente (remetente) e tem vários destinatários
-            ::indGlobalizado := '1'
+            ::indGlobalizado := 1
         endif
 
     endif

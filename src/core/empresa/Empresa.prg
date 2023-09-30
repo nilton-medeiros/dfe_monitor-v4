@@ -52,7 +52,7 @@ method new(empresa) class TEmpresa
     ::nro := empresa['nro']
     ::xCpl := empresa['xCpl']
     ::xBairro := empresa['xBairro']
-    ::cUF := empresa['cUF']
+    ::cUF := number_format(empresa['cUF'])
     ::xMunEnv := empresa['xMunEnv']
     ::cMunEnv := empresa['cMunEnv']
     ::UF := empresa['UF']

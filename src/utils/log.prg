@@ -2,7 +2,7 @@
 #include <fileio.ch>
 
 procedure saveLog(text, lEncrypt)
-   local path := Memvar->appData:systemPath + 'log\'
+   local path := appData:systemPath + 'log\'
    local dateFormat := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
    local logFile := 'dfe_log' + hb_ULeft(DToS(Date()),6) + '.txt'
    local h
@@ -15,7 +15,7 @@ procedure saveLog(text, lEncrypt)
       FSeek(h, 0, FS_END)
    else
       h := hb_FCreate(path + logFile, FC_NORMAL)
-      FWrite(h, 'Log de Sistema ' + Memvar->appData:displayName + hb_eol())
+      FWrite(h, 'Log de Sistema ' + appData:displayName + hb_eol())
    endif
    if ValType(text) == 'A'
       for each t in text

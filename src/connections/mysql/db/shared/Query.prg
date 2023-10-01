@@ -1,8 +1,6 @@
 #include "hmg.ch"
 #include <hbclass.ch>
 
-#define ENCRYPTED .T.
-
 class TQuery
 
     data db as object readonly
@@ -97,10 +95,10 @@ method runQuery() class TQuery
 
     if ::db:NetErr()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
-            saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql), ENCRYPTED)
+            saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))
         else
             saveLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + db:Error() +;
-                    hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery), ENCRYPTED)
+                    hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery))
         endif
         ::db:Destroy()
         msgNotify({'notifyTooltip' => "Rejeição de SQL" + hb_eol() + "Ver Log do sistema"})
@@ -115,7 +113,7 @@ method runQuery() class TQuery
         if (mysql_affected_rows(::db:nSocket) <= 0)
             saveLog("Não foi possível " + mode + " na tabela de " + table + hb_eol() + "Registros afetados: " +;
                 hb_ntos(mysql_affected_rows(::db:nSocket)) + hb_eol() + hb_eol() + mysql_error(::db:nSocket) + hb_eol() + hb_eol() +;
-                ansi_to_unicode(::db:cQuery), ENCRYPTED)
+                ansi_to_unicode(::db:cQuery))
             msgNotify({'notifyTooltip' => "Não foi possível " + mode + " na tabela de " + table + hb_eol() + "Ver Log do sistema"})
             ::db:Destroy()
         else

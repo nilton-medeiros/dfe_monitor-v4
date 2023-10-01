@@ -157,7 +157,7 @@ method isRunning() class TAppData
 return isTrue(RegistryRead(::winRegistryPath + "Monitoring\Running"))
 
 method registerDatabase() class TAppData
-    local hEnv, mysql, port, db, ftp
+    local hEnv, mysql, port, db, ftp, respTec
 
     ::TimerStart := RegistryRead(::winRegistryPath + "Monitoring\TimerStart")
     ::TimerEnd := RegistryRead(::winRegistryPath + "Monitoring\TimerEnd")
@@ -186,10 +186,11 @@ method registerDatabase() class TAppData
             RegistryWrite(::winRegistryPath + "Host\ftp_password", CharXor(ftp["password"], "SysWeb2023"))
         endif
         if hb_HGetRef(hEnv, "respTec")
-            RegistryWrite(::winRegistryPath + "Host\respTec\CNPJ", hEnv["respTec"])
-            RegistryWrite(::winRegistryPath + "Host\respTec\xContato", hEnv["xContato"])
-            RegistryWrite(::winRegistryPath + "Host\respTec\email", hEnv["email"])
-            RegistryWrite(::winRegistryPath + "Host\respTec\fone", hEnv["fone"])
+            respTec := hEnv["respTec"]
+            RegistryWrite(::winRegistryPath + "Host\respTec\CNPJ", respTec["CNPJ"])
+            RegistryWrite(::winRegistryPath + "Host\respTec\xContato", respTec["xContato"])
+            RegistryWrite(::winRegistryPath + "Host\respTec\email", respTec["email"])
+            RegistryWrite(::winRegistryPath + "Host\respTec\fone", respTec["fone"])
         endif
 
         hb_FileDelete(".env.json", "H")

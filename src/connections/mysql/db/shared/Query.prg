@@ -92,7 +92,7 @@ method runQuery() class TQuery
     if !Empty(table)
         table := Capitalize(table)
     endif
-    consoleLog(MsgDebug({command, talbe, ::db::NetErr(), mysql_affected_rows(::db:nSocket)}))
+    consoleLog(MsgDebug(command, talbe, ::db::NetErr(), mysql_affected_rows(::db:nSocket)))
     if ::db:NetErr()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))

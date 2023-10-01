@@ -23,7 +23,7 @@ CLASS TComboBox
 END CLASS
 
 METHOD NEW( cForm, comboBox, clear ) CLASS TComboBox
-			DEFAULT clear := True
+			DEFAULT clear := true
 			::form := cForm
 			::combo := comboBox
 			if clear

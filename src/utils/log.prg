@@ -25,7 +25,7 @@ procedure saveLog(text, lEncrypt)
             elseif (ValType(t) == 'D')
                t := hb_DToC(t)
             elseif (ValType(t) == 'L')
-               t := iif(t, 'True', 'False')
+               t := iif(t, 'true', 'false')
             endif
          endif
          msg += t

@@ -93,7 +93,7 @@ method runQuery() class TQuery
         table := Capitalize(table)
     endif
     nSocket := mysql_affected_rows(::db:nSocket)
-    consoleLog(MsgDebug(command, talbe, ::db:NetErr(), nSocket))
+    consoleLog(MsgDebug(command, table, ::db:NetErr(), nSocket))
     if ::db:NetErr()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))

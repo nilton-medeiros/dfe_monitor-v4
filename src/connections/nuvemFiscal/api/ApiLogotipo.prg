@@ -47,7 +47,7 @@ method Baixar() class TApiLogotipo
     endif
 
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // else
@@ -79,7 +79,7 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
     default cExt := ".png"
 
     // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // else
@@ -114,7 +114,7 @@ return !res['error']
 method Deletar() class TApiLogotipo
     local apiUrl, res
     // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // else

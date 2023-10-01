@@ -60,7 +60,7 @@ method Emitir(cte) class TApiCTe
     endif
 
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if cte:tpAmb == "1"
+    // if cte:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/cte"
     // else

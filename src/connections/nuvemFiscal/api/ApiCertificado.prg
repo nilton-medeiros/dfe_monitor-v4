@@ -47,7 +47,7 @@ method Consultar() class TApiCertificado
     endif
 
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     // else
@@ -77,7 +77,7 @@ method Cadastrar(certificado, password) class TApiCertificado
     endif
 
     // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     // else
@@ -109,7 +109,7 @@ return !res['error']
 method Deletar() class TApiCertificado
     local apiUrl, res
     // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     // else

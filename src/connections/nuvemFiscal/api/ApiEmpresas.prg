@@ -47,7 +47,7 @@ method Cadastrar(empresa) class TApiEmpresas
     endif
 
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas"
     // else
@@ -69,7 +69,7 @@ method Cadastrar(empresa) class TApiEmpresas
         saveLog({"Erro ao cadastrar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
     endif
-    
+
 return !res['error']
 
 
@@ -81,7 +81,7 @@ method Consultar(empresa) class TApiEmpresas
     endif
 
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
     // else
@@ -112,7 +112,7 @@ method Alterar(empresa) class TApiEmpresas
     endif
 
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == "1"
+    // if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
     // else

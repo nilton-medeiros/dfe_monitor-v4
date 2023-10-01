@@ -27,7 +27,7 @@ procedure setup_form_oninit()
 	DoMethod( 'setup', 'Grid_Empresas', "DeleteAllItems" )
 
     for each empresa in appEmpresas:empresas
-		DoMethod('setup', 'Grid_Empresas', "AddItem", {empresa:id, empresa:xNome, iif(empresa:tpAmb == '1','Produção', 'Homologação')})
+		DoMethod('setup', 'Grid_Empresas', "AddItem", {empresa:id, empresa:xNome, iif(empresa:tpAmb == 1,'Produção', 'Homologação')})
     next
 
 	SetProperty('setup', 'Tab_Setup', 'value', 1)

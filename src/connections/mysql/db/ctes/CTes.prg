@@ -173,7 +173,7 @@ method new() class TDbConhecimentos
     if (appEmpresas:count == 1)
         // Apenas uma empresa emitente
         empresa := appEmpresas:empresas[1]
-        sql:add("WHERE emp_id = " + empresa:id)
+        sql:add("WHERE emp_id = " + hb_ntos(empresa:id))
     else
         // Mais de uma empresa emitente
         sql:add("WHERE emp_id IN (")
@@ -182,7 +182,7 @@ method new() class TDbConhecimentos
             if !primeiro
                 sql:add(",")
             endif
-            sql:add(empresa:id)
+            sql:add(hb_ntos(empresa:id))
             primeiro := false
         next
         sql:add(")")

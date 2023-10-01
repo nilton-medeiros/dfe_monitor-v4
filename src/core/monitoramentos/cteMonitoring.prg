@@ -12,9 +12,9 @@ procedure cteMonitoring()
         // Testes: remover esta variável "emTeste" e o "if emTeste" após testes
         if emTeste
             // Os CTes de 44501 à 44506 são dados reais e vem do banco de dados e serao processados no ambiente de homologação
-            if cte:id < "44503"
+            if cte:id < 44503
                 cteSubmit(cte)
-            elseif cte:id < "44505"
+            elseif cte:id < 44505
                 cteGetFiles(cte)
             else
                 cteCancel(cte)

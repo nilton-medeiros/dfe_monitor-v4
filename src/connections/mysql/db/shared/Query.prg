@@ -88,7 +88,7 @@ method runQuery() class TQuery
         table := Capitalize(table)
     endif
 
-    if ::db:NetErr() .and. !serverBusy()
+    if ::db:NetErr() .and. !::serverBusy()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))
         else

@@ -71,7 +71,8 @@ method runQuery() class TQuery
     endif
 
     command := hmg_upper(firstString(hb_utf8StrTran(::db:cQuery, ";")))
-
+    consoleLog({"cQuery: ", ::db:cQuery, hb_eol(), "command: ", command})
+    //MsgDebug(command)
     do case
         case command $ "SELECT|DELETE"
             table := hb_USubStr(::db:cQuery, hb_UAt(' FROM ', ::db:cQuery))

@@ -71,8 +71,8 @@ method new(empresa) class TEmpresa
     ::tpImp := empresa['tpImp']
     ::nuvemfiscal_client_id := empresa['nuvemfiscal_client_id']
     ::nuvemfiscal_client_secret := empresa['nuvemfiscal_client_secret']
-    ::nuvemfiscal_cadastrar := iif(empresa['nuvemfiscal_cadastrar'] == '1', true, false)
-    ::nuvemfiscal_alterar := iif(empresa['nuvemfiscal_alterar'] == '1', true, false)
+    ::nuvemfiscal_cadastrar := iif(empresa['nuvemfiscal_cadastrar'] == 1, true, false)
+    ::nuvemfiscal_alterar := iif(empresa['nuvemfiscal_alterar'] == 1, true, false)
 
 return self
 

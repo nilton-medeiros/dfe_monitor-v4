@@ -21,7 +21,7 @@ class TApiCTe
 
     method new() constructor
     method Emitir()
-    method Consultar()
+    // method Consultar()
     method defineBody(cte)
 
 end class
@@ -685,11 +685,11 @@ method defineBody(cte) class TApiCTe
     endif
     autXML := nil
 
-    if !Empty(RegistryrRead(appData:winRegistryPath + "Host\respTec\CNPJ"))
-        infCte["respTec"] := {"CNPJ" => RegistryrRead(::winRegistryPath + "Host\respTec\CNPJ"), ;
-                              "xContato" => RegistryrRead(::winRegistryPath + "Host\respTec\xContato"), ;
-                              "email" => RegistryrRead(::winRegistryPath + "Host\respTec\email"), ;
-                              "fone" => RegistryrRead(::winRegistryPath + "Host\respTec\fone")}
+    if !Empty(RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"))
+        infCte["respTec"] := {"CNPJ" => RegistryRead(::winRegistryPath + "Host\respTec\CNPJ"), ;
+                              "xContato" => RegistryRead(::winRegistryPath + "Host\respTec\xContato"), ;
+                              "email" => RegistryRead(::winRegistryPath + "Host\respTec\email"), ;
+                              "fone" => RegistryRead(::winRegistryPath + "Host\respTec\fone")}
     endif
 
     // infSolicNFF: Não utilizado

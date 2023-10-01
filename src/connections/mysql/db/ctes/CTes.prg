@@ -433,7 +433,7 @@ method getRodo(id) class TDbConhecimentos
     s:add("FROM ctes_rod_coletas ")
     s:add("WHERE cte_id = " + hb_ntos(id) + " ")
     s:add("ORDER BY oca_data_emissao")
-    coletas := TSQLQuery():new(s:value)
+    coletas := TQuery():new(s:value)
 
     if coletas:executed
         do while !coletas:eof()

@@ -63,9 +63,9 @@ method runQuery() class TQuery
         msgLog += ProcName(1) + "(" + hb_ntos(ProcLine(1)) + ")" + hb_eol()
         msgLog += ProcName(0) + "(" + hb_ntos(ProcLine(0)) + ")" + hb_eol() + hb_eol()
         saveLog(msgLog)
-        msgDebugInfo({'Servidor do Banco de Dados ocupado, tente mais tarde!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), ::db:Error()})
-        ::db:Destroy()
-        return false
+        // msgDebugInfo({'Servidor do Banco de Dados ocupado, tente mais tarde!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), ::db:Error()})
+        // ::db:Destroy()
+        // return false
     endif
 
     command := hmg_upper(firstString(hb_utf8StrTran(::db:cQuery, ";")))
@@ -92,8 +92,7 @@ method runQuery() class TQuery
     if !Empty(table)
         table := Capitalize(table)
     endif
-    nSocket := mysql_affected_rows(::db:nSocket)
-    consoleLog(MsgDebug(command, table, ::db:NetErr(), nSocket))
+
     if ::db:NetErr()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))

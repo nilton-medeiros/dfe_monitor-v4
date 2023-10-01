@@ -69,8 +69,8 @@ method runQuery() class TQuery
     endif
 
     command := hmg_upper(firstString(hb_utf8StrTran(::db:cQuery, ";")))
-    consoleLog({"cQuery: ", ::db:cQuery, hb_eol(), "command: ", command})
-    //MsgDebug(command)
+    command := AllTrim(command)
+
     do case
         case command $ "SELECT|DELETE"
             table := hb_USubStr(::db:cQuery, hb_UAt(' FROM ', ::db:cQuery))
@@ -92,7 +92,7 @@ method runQuery() class TQuery
     if !Empty(table)
         table := Capitalize(table)
     endif
-
+    consoleLog(MsgDebug({command, talbe, ::db::NetErr(), mysql_affected_rows(::db:nSocket)}))
     if ::db:NetErr()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))

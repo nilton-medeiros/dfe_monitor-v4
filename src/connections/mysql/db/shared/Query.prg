@@ -48,20 +48,15 @@ method runQuery() class TQuery
         if (::db == nil)
             msgNotify({'notifyTooltip' => "Erro de SQL!"})
             msgLog := "Erro ao executar Query! [Query is NIL]" + hb_eol() + hb_eol()
-            msgLog += ProcName(2) + "(" + hb_ntos(ProcLine(2)) + ")" + hb_eol()
-            msgLog += ProcName(1) + "(" + hb_ntos(ProcLine(1)) + ")" + hb_eol()
-            msgLog += ProcName(0) + "(" + hb_ntos(ProcLine(0)) + ")" + hb_eol() + hb_eol()
             saveLog(msgLog)
             msgDebugInfo({'Erro ao executar ::db, avise ao suporte!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), 'Erro: Query is NIL'})
             return false
         endif
     endif
 
+    // Servidor ocupado não causa um erro na execução de comandos
     if ::serverBusy()
         msgLog := "Servidor do Banco de Dados ocupado, tente mais tarde!" + hb_eol() + hb_eol()
-        msgLog += ProcName(2) + "(" + hb_ntos(ProcLine(2)) + ")" + hb_eol()
-        msgLog += ProcName(1) + "(" + hb_ntos(ProcLine(1)) + ")" + hb_eol()
-        msgLog += ProcName(0) + "(" + hb_ntos(ProcLine(0)) + ")" + hb_eol() + hb_eol()
         saveLog(msgLog)
         // msgDebugInfo({'Servidor do Banco de Dados ocupado, tente mais tarde!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), ::db:Error()})
         // ::db:Destroy()
@@ -93,7 +88,7 @@ method runQuery() class TQuery
         table := Capitalize(table)
     endif
 
-    if ::db:NetErr()
+    if ::db:NetErr() .and. !serverBusy()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))
         else

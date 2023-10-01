@@ -141,7 +141,7 @@ procedure setup_Grid_Empresas_onChange()
 		REGISTRY_PATH := appData:winRegistryPath + "nuvemFiscal\Emp0\"
 	else
 		empresa := appEmpresas:empresas[index]
-		REGISTRY_PATH := appData:winRegistryPath + "nuvemFiscal\Emp" + empresa:id + "\"
+		REGISTRY_PATH := appData:winRegistryPath + "nuvemFiscal\Emp" + hb_ntos(empresa:id) + "\"
 		// Certificado
 		if  (RegistryRead(REGISTRY_PATH + "certificado\nome_razao_social") == NIL)
 			RegistryWrite(REGISTRY_PATH + "certificado\nome_razao_social", empresa:xNome)

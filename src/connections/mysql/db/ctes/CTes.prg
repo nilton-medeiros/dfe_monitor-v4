@@ -325,8 +325,8 @@ return hResult
 method getEmails(hCTe) class TDbConhecimentos
     local sql := TSQLString():new()
     local cliente, contato
-    local clientes := {
-            {"name" => "tomador", "id" => hb_ntos(hCTe['clie_tomador_id']), "email" => ""},;
+    local clientes := { ;
+name" => "tomador", "id" => hb_ntos(hCTe['clie_tomador_id']), "email" => ""},;
             {"name" => "remetente", "id" => hb_ntos(hCTe['clie_remetente_id']), "email" => ""},;
             {"name" => "destinatario", "id" => hb_ntos(hCTe['clie_destinatario_id']), "email" => ""},;
             {"name" => "expedidor", "id" => hb_ntos(hCTe['clie_expedidor_id']), "email" => ""},;

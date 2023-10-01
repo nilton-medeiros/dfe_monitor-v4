@@ -165,8 +165,8 @@ method defineBody(cte) class TApiCTe
         ender["xMun"] := cte:tom_cid_municipio
         ender["CEP"] := cte:tom_end_cep
         ender["UF"] := cte:tom_cid_uf
-        ender["cPais"] := "cPais": "1058"
-        ender["xPais"] := "xPais": "BRASIL"
+        ender["cPais"] := "1058"
+        ender["xPais"] := "BRASIL"
 
         toma["enderToma"] := ender
         ender := nil
@@ -208,18 +208,18 @@ method defineBody(cte) class TApiCTe
     case (cte:tpPer == 0)
         entrega["semData"] := {"tpPer" => 0}
     case (hb_ntos(cte:tpPer) $ '1|2|3')
-        entrega["comData"] := {"tpPer": => cte:tpPer, "dProg" => cte:dProg}
+        entrega["comData"] := {"tpPer" => cte:tpPer, "dProg" => cte:dProg}
     case (cte:tpPer == 4)
-        entrega["noPeriodo"] := {"tpPer": => cte:tpPer, "dIni" => cte:dIni, "dFim" => cte:dFim}
+        entrega["noPeriodo"] := {"tpPer" => cte:tpPer, "dIni" => cte:dIni, "dFim" => cte:dFim}
     endcase
     // Tipo de hora/período programado para a entrega: 0 - Sem hora definida; 1 - Na hora; 2 - Até a hora; 3 - A partir da hora; 4 – No intervalo de tempo
     do case
     case (cte:tpHor == 0)
         entrega["semHora"] := {"tpHor" => 0}
     case (hb_ntos(cte:tpHor) $ '1|2|3')
-        entrega["comHora"] := {"tpHor": => cte:tpHor, "hProg" => cte:hProg}
+        entrega["comHora"] := {"tpHor" => cte:tpHor, "hProg" => cte:hProg}
     case (cte:tpHor == 4)
-        entrega["noInter"] := {"tpHor": => cte:tpHor, "hIni" => cte:hIni, "hFim" => cte:hFim}
+        entrega["noInter"] := {"tpHor" => cte:tpHor, "hIni" => cte:hIni, "hFim" => cte:hFim}
     endcase
 
     if !Empty(entrega)
@@ -544,7 +544,7 @@ method defineBody(cte) class TApiCTe
                                         "descOutros" => hDoc["descOutros"], ;
                                         "nDoc" => hDoc["nDoc"], ;
                                         "dEmi" => hDoc["dEmi"], ;
-                                        "vDocFisc" => hDoc["vDocFisc"], ;
+                                        "vDocFisc" => hDoc["vDocFisc"] ;
                                     })
                 next
                 exit

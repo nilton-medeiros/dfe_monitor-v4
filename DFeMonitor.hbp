@@ -38,3 +38,4 @@ src\utils\msgDebugInfo.prg
 src\utils\msgNotify.prg
 src\utils\SysWait.prg
 src\utils\timersForms.prg
+tests\db\dfeGetNumber.prg

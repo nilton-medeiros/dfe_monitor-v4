@@ -43,7 +43,7 @@ procedure cteMonitoring()
 
 return
 
-// Debug: Para converter o binary DACTE-PDF e XML Usar: hb_MemoWrit( <cFileName>, <cString>) ➜ lSuccess
+// Debug: Para converter o binary DACTE-PDF e XML recebidos no Json, Usar: hb_MemoWrit( <cFileName>, <cString>) ➜ lSuccess
 
 procedure cteSubmit(cte)
     local apiCTe := TApiCTe():new()

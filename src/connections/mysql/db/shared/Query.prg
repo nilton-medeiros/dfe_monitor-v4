@@ -53,16 +53,14 @@ method runQuery() class TQuery
             return false
         endif
     endif
-
+/*
     // Servidor ocupado não causa um erro na execução de comandos
     if ::serverBusy()
-        msgLog := "Servidor do Banco de Dados ocupado, tente mais tarde!" + hb_eol() + hb_eol()
-        saveLog(msgLog)
         // msgDebugInfo({'Servidor do Banco de Dados ocupado, tente mais tarde!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), ::db:Error()})
         // ::db:Destroy()
         // return false
     endif
-
+*/
     command := hmg_upper(firstString(hb_utf8StrTran(::db:cQuery, ";")))
     command := AllTrim(command)
 
@@ -119,7 +117,11 @@ method runQuery() class TQuery
 return ::executed
 
 method serverBusy() class TQuery
-return (::db:NetErr() .and. 'server has gone away' $ ::db:Error())
+    local ocupado := (::db:NetErr() .and. 'server has gone away' $ ::db:Error())
+    if ocupado
+        saveLog("Servidor ocupado... Fluxo continua! Erro: " + ::db:Error())
+    endif
+return ocupado
 
 method Destroy() class TQuery
     if !(::db == nil)

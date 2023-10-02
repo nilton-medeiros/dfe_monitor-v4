@@ -90,7 +90,7 @@ method runQuery() class TQuery
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))
         else
-            saveLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + db:Error() +;
+            saveLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + ::db:Error() +;
                     hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery))
         endif
         ::db:Destroy()

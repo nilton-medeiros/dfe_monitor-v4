@@ -407,7 +407,7 @@ method defineBody(cte) class TApiCTe
         desti["email"] := cte:des_email
     endif
 
-    // infCte -------------------------
+    infCte := {=>}
     infCte["versao"] := "4.00"                     // Debug: mudar para -> //cte:versao_xml quando terminar os testes
     infCte["ide"] := ide
     infCte["compl"] := compl

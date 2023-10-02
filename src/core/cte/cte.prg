@@ -352,12 +352,6 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::tpImp := ::emitente:tpImp
     ::cUF := ::emitente:cUF
     ::tpAmb := ::emitente:tpAmb
-    ::infIndGlobalizado()
-
-    if (::indGlobalizado == 1)
-        ::xObs := ::xObs + ";Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"
-    endif
-
     // Se o registro no DB ainda não tem uma chave UUID, é criado uma
     if Empty(::referencia_uuid)
         ::referencia_uuid :=  hb_UPadL(::serie, 3, "0") +;
@@ -392,6 +386,11 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
 
     ::comp_calc := hAnexos['comp_calc']
     ::doc_anexo := hAnexos['doc']
+    ::infIndGlobalizado()
+
+    if (::indGlobalizado == 1)
+        ::xObs := ::xObs + ";Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"
+    endif
 
     for each clie in clie_emails
         switch clie["name"]

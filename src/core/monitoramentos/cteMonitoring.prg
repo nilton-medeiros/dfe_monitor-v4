@@ -47,11 +47,13 @@ return
 
 procedure cteSubmit(cte)
     local apiCTe := TApiCTe():new()
-    local startTimer, consultouCTe, empresa
+    local startTimer, consultouCTe := false, empresa
     local targetFile, anoEmes, directory
 
+    consoleLog("Processando...")    // Debug
     if apiCTe:Emitir(cte)
 
+        consoleLog("Processando Emitir(cte) | apiCTe:status " + apiCTe:status)   // Debug
         if apiCTe:status == 'pendente'
             sysWait(2)  // Aguarda 2 segundos para obter autorizado ou erro
             consultouCTe := apiCTe:Consultar()
@@ -66,6 +68,7 @@ procedure cteSubmit(cte)
 
         cte:setSituacao(apiCTe:status)
 
+        consoleLog("consultouCTe: " + iif(consultouCTe, "SIM", "NÃO"))  // Debug
         if consultouCTe
 
             // Prepara os campos da tabela ctes para receber os updates
@@ -109,6 +112,8 @@ procedure cteSubmit(cte)
             // apiCte:xml_cte
 
         else
+            // Debug
+            consoleLog("apiCte:response" + apiCTe:response + hb_eol() + "API Conectado: " + iif(apiCTe:connected, "SIM", "NÃO"))
         endif
     else
     endif

@@ -338,7 +338,7 @@ method getEmails(hCTe) class TDbConhecimentos
             sql:setValue("SELECT con_email_cte as email FROM clientes_contatos ")
             sql:add("WHERE clie_id = " + cliente["id"] + " AND ")
             sql:add("NOT ISNULL(con_email_cte) AND con_email_cte != '' AND ")
-            sql:add("LOCATE('.', con_email_cte, LCOATE('@', con_email_cte)) > 0 ")
+            sql:add("LOCATE('.', con_email_cte, LOCATE('@', con_email_cte)) > 0 ")
             sql:add("LIMIT 1")
             contato := TQuery():new(sql:value)
             if !(contato:count == 0)

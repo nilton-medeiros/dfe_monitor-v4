@@ -360,7 +360,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
                               hb_UPadL(::cCT, 9, "0") +;    // Numero Minuta
                               hb_UPadL(::emp_id, 6, "0")    // Id Emitente
         // Debug: Verificar se o método save() salvará todos os campos que estão no array ::updateCTe
-        AAdd(::updateCTe, {"key" => "referencia_uuid", "value" => referencia_uuid})
+        AAdd(::updateCTe, {"key" => "referencia_uuid", "value" => ::referencia_uuid})
     endif
 
     ::obs_contr := {}

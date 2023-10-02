@@ -14,6 +14,7 @@ class TQuery
     method Skip() inline ::db:Skip()
     method GoTop() inline ::db:GoTop()
     method eof() inline ::db:eof()
+    method FieldGet(cnField) inline ::db:FieldGet(cnField)
     method Destroy()
 
 end class

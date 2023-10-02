@@ -330,7 +330,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::vCOFINS := cte["vCOFINS"]
     ::vTotTrib := cte["vTotTrib"]
     ::infAdFisco := cte["infAdFisco"]
-    ::vCarga := cte["vCarga"]
+    ::vCarga := number_format(cte["vCarga"], 2)
     ::proPred := cte["proPred"]
     ::cTar := cte["cTar"]
     ::xOutCat := cte["xOutCat"]

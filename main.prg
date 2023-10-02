@@ -136,7 +136,7 @@ procedure main_form_oninit()
         endif
     next
 
-    SetProperty("main", "notifyIcon", "ntfyICON")
+    SetProperty("main", "notifyIcon", "serverON")
     startTimer()
 
 return

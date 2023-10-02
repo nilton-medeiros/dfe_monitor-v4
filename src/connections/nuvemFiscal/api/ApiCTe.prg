@@ -189,9 +189,15 @@ method defineBody(cte) class TApiCTe
 
     // Tag compl
     compl := {=>}
-    compl["xCaracAd"] := cte:xCaracAd
-    compl["xCaracSer"] := cte:xCaracSer
-    compl["xEmi"] := cte:xEmi
+    if !Empty(cte:xCaracAd)
+        compl["xCaracAd"] := cte:xCaracAd
+    endif
+    if !Empty(cte:xCaracSer)
+        compl["xCaracSer"] := cte:xCaracSer
+    endif
+    if !Empty(cte:xEmi)
+        compl["xEmi"] := cte:xEmi
+    endif
 
     if (cte:modal == "02")
         // Tag fluxo para modal Aéreo
@@ -288,123 +294,131 @@ method defineBody(cte) class TApiCTe
 
     // Tag rem
     remet := {=>}
-    if Empty(cte:rem_cnpj)
-        remet["CPF"] := cte:rem_cpf
-    else
-        remet["CNPJ"] := cte:rem_cnpj
-        remet["IE"] := cte:rem_ie
-    endif
+    if !Empty(cte:rem_cnpj) .or. !Empty(cte:rem_cpf)
+        if Empty(cte:rem_cnpj)
+            remet["CPF"] := cte:rem_cpf
+        else
+            remet["CNPJ"] := cte:rem_cnpj
+            remet["IE"] := cte:rem_ie
+        endif
 
-    remet["xNome"] := cte:rem_razao_social
-    remet["xFant"] := cte:rem_nome_fantasia
-    remet["fone"] :=cte:rem_fone
+        remet["xNome"] := cte:rem_razao_social
+        remet["xFant"] := cte:rem_nome_fantasia
+        remet["fone"] :=cte:rem_fone
 
-    ender := {=>}
-    ender["xLgr"] := cte:rem_end_logradouro
-    ender["nro"] := cte:rem_end_numero
-    ender["xCpl"] := cte:rem_end_complemento
-    ender["xBairro"] := cte:rem_end_bairro
-    ender["cMun"] := cte:rem_cid_codigo_municipio
-    ender["xMun"] := cte:rem_cid_municipio
-    ender["CEP"] := cte:rem_end_cep
-    ender["UF"] := cte:rem_cid_uf
+        ender := {=>}
+        ender["xLgr"] := cte:rem_end_logradouro
+        ender["nro"] := cte:rem_end_numero
+        ender["xCpl"] := cte:rem_end_complemento
+        ender["xBairro"] := cte:rem_end_bairro
+        ender["cMun"] := cte:rem_cid_codigo_municipio
+        ender["xMun"] := cte:rem_cid_municipio
+        ender["CEP"] := cte:rem_end_cep
+        ender["UF"] := cte:rem_cid_uf
 
-    remet["enderReme"] := ender
-    ender := nil
+        remet["enderReme"] := ender
+        ender := nil
 
-    if !Empty(cte:rem_email)
-        remet["email"] := cte:rem_email
+        if !Empty(cte:rem_email)
+            remet["email"] := cte:rem_email
+        endif
     endif
 
     // Tag exped
     exped := {=>}
-    if Empty(cte:exp_cnpj)
-        exped["CPF"] := cte:exp_cpf
-    else
-        exped["CNPJ"] := cte:exp_cnpj
-        exped["IE"] := cte:exp_ie
-    endif
+    if !Empty(cte:exp_cnpj) .or. !Empty(cte:exp_cpf)
+        if Empty(cte:exp_cnpj)
+            exped["CPF"] := cte:exp_cpf
+        else
+            exped["CNPJ"] := cte:exp_cnpj
+            exped["IE"] := cte:exp_ie
+        endif
 
-    exped["xNome"] := cte:exp_razao_social
-    exped["fone"] :=cte:exp_fone
+        exped["xNome"] := cte:exp_razao_social
+        exped["fone"] :=cte:exp_fone
 
-    ender := {=>}
-    ender["xLgr"] := cte:exp_end_logradouro
-    ender["nro"] := cte:exp_end_numero
-    ender["xCpl"] := cte:exp_end_complemento
-    ender["xBairro"] := cte:exp_end_bairro
-    ender["cMun"] := cte:exp_cid_codigo_municipio
-    ender["xMun"] := cte:exp_cid_municipio
-    ender["CEP"] := cte:exp_end_cep
-    ender["UF"] := cte:exp_cid_uf
+        ender := {=>}
+        ender["xLgr"] := cte:exp_end_logradouro
+        ender["nro"] := cte:exp_end_numero
+        ender["xCpl"] := cte:exp_end_complemento
+        ender["xBairro"] := cte:exp_end_bairro
+        ender["cMun"] := cte:exp_cid_codigo_municipio
+        ender["xMun"] := cte:exp_cid_municipio
+        ender["CEP"] := cte:exp_end_cep
+        ender["UF"] := cte:exp_cid_uf
 
-    exped["enderExped"] := ender
-    ender := nil
+        exped["enderExped"] := ender
+        ender := nil
 
-    if !Empty(cte:exp_email)
-        exped["email"] := cte:exp_email
+        if !Empty(cte:exp_email)
+            exped["email"] := cte:exp_email
+        endif
     endif
 
     // Tag receb
     receb := {=>}
-    if Empty(cte:rec_cnpj)
-        receb["CPF"] := cte:rec_cpf
-    else
-        receb["CNPJ"] := cte:rec_cnpj
-        receb["IE"] := cte:rec_ie
-    endif
+    if !Empty(cte:rec_cnpj) .or. !Empty(cte:rec_cpf)
+        if Empty(cte:rec_cnpj)
+            receb["CPF"] := cte:rec_cpf
+        else
+            receb["CNPJ"] := cte:rec_cnpj
+            receb["IE"] := cte:rec_ie
+        endif
 
-    receb["xNome"] := cte:rec_razao_social
-    receb["fone"] :=cte:rec_fone
+        receb["xNome"] := cte:rec_razao_social
+        receb["fone"] :=cte:rec_fone
 
-    ender := {=>}
-    ender["xLgr"] := cte:rec_end_logradouro
-    ender["nro"] := cte:rec_end_numero
-    ender["xCpl"] := cte:rec_end_complemento
-    ender["xBairro"] := cte:rec_end_bairro
-    ender["cMun"] := cte:rec_cid_codigo_municipio
-    ender["xMun"] := cte:rec_cid_municipio
-    ender["CEP"] := cte:rec_end_cep
-    ender["UF"] := cte:rec_cid_uf
+        ender := {=>}
+        ender["xLgr"] := cte:rec_end_logradouro
+        ender["nro"] := cte:rec_end_numero
+        ender["xCpl"] := cte:rec_end_complemento
+        ender["xBairro"] := cte:rec_end_bairro
+        ender["cMun"] := cte:rec_cid_codigo_municipio
+        ender["xMun"] := cte:rec_cid_municipio
+        ender["CEP"] := cte:rec_end_cep
+        ender["UF"] := cte:rec_cid_uf
 
-    receb["enderExped"] := ender
-    ender := nil
+        receb["enderExped"] := ender
+        ender := nil
 
-    if !Empty(cte:rec_email)
-        receb["email"] := cte:rec_email
+        if !Empty(cte:rec_email)
+            receb["email"] := cte:rec_email
+        endif
     endif
 
     // Tag dest
     desti := {=>}
-    if Empty(cte:des_cnpj)
-        desti["CPF"] := cte:des_cpf
-    else
-        desti["CNPJ"] := cte:des_cnpj
-        desti["IE"] := cte:des_ie
-    endif
+    if !Empty(cte:des_cnpj) .or. !Empty(cte:des_cpf)
+        if Empty(cte:des_cnpj)
+            desti["CPF"] := cte:des_cpf
+        else
+            desti["CNPJ"] := cte:des_cnpj
+            desti["IE"] := cte:des_ie
+        endif
 
-    desti["xNome"] := cte:des_razao_social
-    desti["fone"] :=cte:des_fone
+        desti["xNome"] := cte:des_razao_social
+        desti["fone"] :=cte:des_fone
 
-    if !Empty(cte:des_ISUF)
-        desti["ISUF"] := cte:des_ISUF
-    endif
+        if !Empty(cte:des_ISUF)
+            desti["ISUF"] := cte:des_ISUF
+        endif
 
-    ender := {=>}
-    ender["xLgr"] := cte:des_end_logradouro
-    ender["nro"] := cte:des_end_numero
-    ender["xCpl"] := cte:des_end_complemento
-    ender["xBairro"] := cte:des_end_bairro
-    ender["cMun"] := cte:des_cid_codigo_municipio
-    ender["xMun"] := cte:des_cid_municipio
-    ender["CEP"] := cte:des_end_cep
-    ender["UF"] := cte:des_cid_uf
+        ender := {=>}
+        ender["xLgr"] := cte:des_end_logradouro
+        ender["nro"] := cte:des_end_numero
+        ender["xCpl"] := cte:des_end_complemento
+        ender["xBairro"] := cte:des_end_bairro
+        ender["cMun"] := cte:des_cid_codigo_municipio
+        ender["xMun"] := cte:des_cid_municipio
+        ender["CEP"] := cte:des_end_cep
+        ender["UF"] := cte:des_cid_uf
 
-    desti["enderExped"] := ender
-    ender := nil
+        desti["enderExped"] := ender
+        ender := nil
 
-    if !Empty(cte:des_email)
-        desti["email"] := cte:des_email
+        if !Empty(cte:des_email)
+            desti["email"] := cte:des_email
+        endif
     endif
 
     infCte := {=>}
@@ -412,10 +426,18 @@ method defineBody(cte) class TApiCTe
     infCte["ide"] := ide
     infCte["compl"] := compl
     infCte["emit"] := emite
-    infCte["rem"] := remet
-    infCte["exped"] := exped
-    infCte["receb"] := receb
-    infCte["dest"] := desti
+    if !Empty(remet)
+        infCte["rem"] := remet
+    endif
+    if !Empty(exped)
+        infCte["exped"] := exped
+    endif
+    if !Empty(receb)
+        infCte["receb"] := receb
+    endif
+    if !Empty(desti)
+        infCte["dest"] := desti
+    endif
 
     // Libera as variáveis e deixa o Garbage Collector do Harbour limpar a memória
     ide := compl := emite := remet := exped := receb := desti := nil
@@ -490,7 +512,11 @@ method defineBody(cte) class TApiCTe
         infCarga := {=>}
         infCarga["vCarga"] := cte:vCarga
         infCarga["proPred"] := cte:proPred
-        infCarga["xOutCat"] := cte:xOutCat
+        if !Empty(cte:xOutCat)
+            infCarga["xOutCat"] := cte:xOutCat
+        endif
+        // Debug: Verificando porque number_format não tem efeito aqui
+        consoleLog({"Type peso_bruto: ", ValType(cte:peso_bruto), " | Value: ", cte:peso_bruto, " | Return number_format: ", number_format(cte:peso_bruto, 4)})
         infCarga["infQ"] := {{"cUnid" => "01", "tpMed" => "PESO BRUTO", "qCarga" => number_format(cte:peso_bruto, 4)}, ;
                              {"cUnid" => "01", "tpMed" => "PESO BC", "qCarga" => number_format(cte:peso_bc, 4)}, ;
                                 {"cUnid" => "01", "PESO CUBADO" => "PESO BC", "qCarga" => number_format(cte:peso_cubado, 4)}, ;
@@ -595,8 +621,6 @@ method defineBody(cte) class TApiCTe
                         next
                     endif
                     infModal["rodo"] := rodo
-                    infCteNorm["infModal"] := infModal
-                    infModal := rodo := nil
 
                 else
                     // Aéreo: Informação do modal Aéreo
@@ -702,6 +726,7 @@ method defineBody(cte) class TApiCTe
     hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => cte:referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
 
-    hb_MemoWrit(appData:systemPath + "tmp\CTe" + hb_ntos(cte:referencia_uuid) + ".json", ::body)
+    // Debug, remover a linha abaixo após testes
+    hb_MemoWrit(appData:systemPath + "tmp\CTe" + cte:referencia_uuid + ".json", ::body)
 
 return nil

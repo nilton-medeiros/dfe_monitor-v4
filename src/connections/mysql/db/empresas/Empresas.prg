@@ -90,7 +90,7 @@ method count() class TDbEmpresas
 return hmg_len(::empresas)
 
 method getEmpresa(id) class TDbEmpresas
-    local pos := hb_AScan(::empresas, {|oEmp| oEmp:FieldGet("id") == id})
+    local pos := hb_AScan(::empresas, {|oEmp| oEmp:id == id})
 return ::empresas[pos]
 
 method update(id) class TDbEmpresas

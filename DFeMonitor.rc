@@ -21,7 +21,7 @@ AppIcon ICON "resources\\sistrom48x.ico"
 ICONE ICON resources\sistrom48x.ico
 mainICON ICON resources\sistrom48x.ico
 ntfyICON ICON resources\serverON48x.ico
-serverON ICON resources\database.png
+serverON PNG resources\database.png
 serverOFF ICON resources\serverOFF48x.ico
 serverWAIT ICON resources\serverWAIT48x.ico
 serverFAILED ICON resources\serverFailed48x.ico

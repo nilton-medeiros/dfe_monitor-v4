@@ -80,7 +80,7 @@ method Emitir(cte) class TApiCTe
 
     if res['error']
         saveLog({"Erro ao emitir CTe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-            "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
     else
         jsonRes := hb_jsonDecode(::response)

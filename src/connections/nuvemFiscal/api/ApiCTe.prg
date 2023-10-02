@@ -118,7 +118,7 @@ method defineBody(cte) class TApiCTe
     // ide["nCT"] := cte:nCT        |  Debug: Após testes, descomentar esta linha eremover a debaixo
     ide["nCT"] := dfeGetNumber("cte")
     ide["dhEmi"] := cte:dhEmi
-    ide["tpImp"] :=  cte:tpEmp
+    ide["tpImp"] :=  cte:tpImp
     ide["tpEmis"] := cte:tpEmis
     ide["tpAmb"] := 2                       // Debug: 2- Homologação, mudar para -> cte:tpAmb quando terminar os testes
     ide["tpCTe"] := cte:tpCTe

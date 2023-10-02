@@ -687,10 +687,10 @@ method defineBody(cte) class TApiCTe
     autXML := nil
 
     if !Empty(RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"))
-        infCte["respTec"] := {"CNPJ" => RegistryRead(::winRegistryPath + "Host\respTec\CNPJ"), ;
-                              "xContato" => RegistryRead(::winRegistryPath + "Host\respTec\xContato"), ;
-                              "email" => RegistryRead(::winRegistryPath + "Host\respTec\email"), ;
-                              "fone" => RegistryRead(::winRegistryPath + "Host\respTec\fone")}
+        infCte["respTec"] := {"CNPJ" => RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"), ;
+                              "xContato" => RegistryRead(appData:winRegistryPath + "Host\respTec\xContato"), ;
+                              "email" => RegistryRead(appData:winRegistryPath + "Host\respTec\email"), ;
+                              "fone" => RegistryRead(appData:winRegistryPath + "Host\respTec\fone")}
     endif
 
     // infSolicNFF: Não utilizado

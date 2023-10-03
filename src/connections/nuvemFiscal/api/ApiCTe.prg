@@ -515,16 +515,19 @@ method defineBody(cte) class TApiCTe
         if !Empty(cte:xOutCat)
             infCarga["xOutCat"] := cte:xOutCat
         endif
+        SET DECIMAL TO 4
         // Debug: Verificando porque number_format não tem efeito aqui
-        consoleLog({"Type peso_bruto: ", ValType(cte:peso_bruto), " | Value: ", cte:peso_bruto, " | Return number_format: ", number_format(cte:peso_bruto, 4)})
-        infCarga["infQ"] := {{"cUnid" => "01", "tpMed" => "PESO BRUTO", "qCarga" => number_format(cte:peso_bruto, 4)}, ;
-                             {"cUnid" => "01", "tpMed" => "PESO BC", "qCarga" => number_format(cte:peso_bc, 4)}, ;
-                                {"cUnid" => "01", "PESO CUBADO" => "PESO BC", "qCarga" => number_format(cte:peso_cubado, 4)}, ;
-                                    {"cUnid" => "00", "PESO CUBAGEM" => "PESO BC", "qCarga" => number_format(cte:cubagem_m3, 4)}, ;
-                             {"cUnid" => "03", "VOLS." => "PESO BC", "qCarga" => number_format(cte:qtde_volumes, 4)} ;
+        // consoleLog({"Type peso_bruto: ", ValType(cte:peso_bruto), " | Value: ", cte:peso_bruto, " | Return number_format: ", number_format(cte:peso_bruto, 4)})
+        infCarga["infQ"] := {{"cUnid" => "01", "tpMed" => "PESO BRUTO", "qCarga" => cte:peso_bruto}, ;
+                             {"cUnid" => "01", "tpMed" => "PESO BC", "qCarga" => cte:peso_bc}, ;
+                             {"cUnid" => "01", "tpMed" => "PESO CUBADO", "qCarga" => cte:peso_cubado}, ;
+                             {"cUnid" => "00", "tpMed" => "PESO CUBAGEM", "qCarga" => cte:cubagem_m3}, ;
+                             {"cUnid" => "03", "tpMed" => "VOLS.", "qCarga" => cte:qtde_volumes} ;
                             }
 
         // vCargaAverb // Não utilizado ou desnecessário
+
+        SET DECIMAL TO 2
 
         infCteNorm := {=>}
         infCteNorm["infCarga"] := infCarga

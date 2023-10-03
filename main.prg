@@ -44,6 +44,8 @@ procedure main
     SET DATE BRITISH
     SET CENTURY ON
     SET EPOCH TO Year(date()) - 20
+    SET FIXED ON
+    SET DECIMAL TO 2
 
     appData:registerSystem()
 
@@ -71,7 +73,7 @@ procedure main_form_oninit()
     // Paraliza o timer de monitoramento enquanto faz as configurações iniciais
     StopTimer()
 
-    if (win_regread(appData:winRegistryPath + "Monitoring\DontRun") == 1)
+    if (win_regRead(appData:winRegistryPath + "Monitoring\DontRun") == 1)
         saveLog("Parada forçada: O parâmetro DontRun está ativo")
         MessageBoxTimeout("O parâmetro DontRun está ativo!", "Parada forçada", MB_ICONEXCLAMATION, 5000)
         turnOFF()
@@ -88,16 +90,16 @@ procedure main_form_oninit()
             #include 'hmg.ch' está ok, tanto que curiosamente a função RegistryWrite() é reconhecida
             pela compilação neste main.prg.
         */
-        dbServer := CharXor(win_regread(:winRegistryPath + "Host\db_ServerName"), "SysWeb2023")
-        dbUser := CharXor(win_regread(:winRegistryPath + "Host\db_UserName"), "SysWeb2023")
-        dbPassword := CharXor(win_regread(:winRegistryPath + "Host\db_Password"), "SysWeb2023")
-        dbPort := CharXor(win_regread(:winRegistryPath + "Host\db_Port"), "SysWeb2023")
-        dbDatabase := CharXor(win_regread(:winRegistryPath + "Host\db_Database"), "SysWeb2023")
+        dbServer := CharXor(win_regRead(:winRegistryPath + "Host\db_ServerName"), "SysWeb2023")
+        dbUser := CharXor(win_regRead(:winRegistryPath + "Host\db_UserName"), "SysWeb2023")
+        dbPassword := CharXor(win_regRead(:winRegistryPath + "Host\db_Password"), "SysWeb2023")
+        dbPort := CharXor(win_regRead(:winRegistryPath + "Host\db_Port"), "SysWeb2023")
+        dbDatabase := CharXor(win_regRead(:winRegistryPath + "Host\db_Database"), "SysWeb2023")
 
-        ftpUrl := CharXor(win_regread(:winRegistryPath + "Host\ftp_url"), "SysWeb2023")
-        ftpServer := CharXor(win_regread(:winRegistryPath + "Host\ftp_server"), "SysWeb2023")
-        ftpUser := CharXor(win_regread(:winRegistryPath + "Host\ftp_user"), "SysWeb2023")
-        ftpPassword := CharXor(win_regread(:winRegistryPath + "Host\ftp_password"), "SysWeb2023")
+        ftpUrl := CharXor(win_regRead(:winRegistryPath + "Host\ftp_url"), "SysWeb2023")
+        ftpServer := CharXor(win_regRead(:winRegistryPath + "Host\ftp_server"), "SysWeb2023")
+        ftpUser := CharXor(win_regRead(:winRegistryPath + "Host\ftp_user"), "SysWeb2023")
+        ftpPassword := CharXor(win_regRead(:winRegistryPath + "Host\ftp_password"), "SysWeb2023")
 
     endwith
 
@@ -159,7 +161,7 @@ procedure main_Timer_dfe_action()
         return
     endif
 
-    if (win_regread(appData:winRegistryPath + "Monitorin\Stop_Execution") == 1)
+    if (win_regRead(appData:winRegistryPath + "Monitorin\Stop_Execution") == 1)
         saveLog("Parada forçada para atualização")
         turnOFF()
     endif

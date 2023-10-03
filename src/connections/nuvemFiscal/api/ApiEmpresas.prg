@@ -17,6 +17,7 @@ class TApiEmpresas
     method Cadastrar(empresa)
     method Consultar(empresa)
     method defineBody(empresa)
+    method putSetupCTe(empresa)
 
 end class
 
@@ -68,6 +69,8 @@ method Cadastrar(empresa) class TApiEmpresas
     if res['error']
         saveLog({"Erro ao cadastrar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+    else
+        ::putSetupCTe(empresa)
     endif
 
 return !res['error']
@@ -132,12 +135,15 @@ method Alterar(empresa) class TApiEmpresas
     if res['error']
         saveLog({"Erro ao alterar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+    else
+        ::putSetupCTe(empresa)
     endif
 
 return !res['error']
 
 // Request Body
 method defineBody(empresa) class TApiEmpresas
+    // Refatorar para Hash Table e depois usar hb_jsonEncode(hBody, 4)
     ::body := '{' + hb_eol()
     ::body += '  "cpf_cnpj": "' + empresa:cnpj + '",' + hb_eol()
     ::body += '  "inscricao_estadual": "' + empresa:IE + '",' + hb_eol()
@@ -158,3 +164,39 @@ method defineBody(empresa) class TApiEmpresas
     ::body += '  }' + hb_eol()
     ::body += '}'
 return nil
+
+method putSetupCTe(empresa) class TApiEmpresas
+    local res, apiUrl, hBody
+
+    if !::connected
+        return false
+    endif
+
+    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
+    // if empresa:tpAmb == 1
+        // API de Produção
+        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
+    // else
+        // API de Teste
+        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
+    // endif
+    // Request Body
+
+    hBody := {=>}
+    hBody["CRT"] := empresa:CRT
+    hBody["ambiente"] := "homologacao"     // Debug: Após testes, substituir por iif(empresa:tpAmb == 1, "producao", "homologacao")
+    ::body := hb_jsonEncode(hBody, 4)
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar configurações de CT-e", ::body)
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao alterar configuração de CT-e na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+                 "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+    endif
+
+return !res['error']

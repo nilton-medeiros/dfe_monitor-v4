@@ -195,7 +195,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::modelo := number_format(cte["modelo"])
     ::serie := cte["serie"]
     ::nCT := cte["nCT"] // Numero do CTe
-    ::cCT := cte["cCT"] // Numero da Minuta
+    ::cCT := hb_ntos(cte["cCT"]) // Numero da Minuta
     ::situacao := cte["situacao"]
     ::chCTe := cte["chCTe"]
     ::nProt := cte["nProt"]

@@ -142,7 +142,7 @@ method defineBody(cte) class TApiCTe
     ide["UFFim"] := cte:UFFim
     ide["retira"] := cte:retira
 
-    if !Emlpty(cte:xDetRetira)
+    if !Empty(cte:xDetRetira)
         ide["xDetRetira"] := cte:xDetRetira
     endif
 

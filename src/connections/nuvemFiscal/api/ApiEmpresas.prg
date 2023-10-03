@@ -28,7 +28,7 @@ method new() class TApiEmpresas
     ::response := ""
     ::httpStatus := 0
     ::ContentType := ""
-    MsgDebug(appNuvemFiscal:token, valtype(appNuvemFiscal:token))
+    MsgDebug(appNuvemFiscal)
     ::token := appNuvemFiscal:token
 
     if Empty(::token)

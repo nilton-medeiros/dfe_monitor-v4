@@ -633,13 +633,6 @@ method defineBody(cte) class TApiCTe
                     aereo["dPrevAereo"] := cte:dPrevAereo
                     aereo["natCarga"] := cte:aereo
 
-
-                    sql:add("ccc_titulo AS xNome, ")
-                    sql:add("ccc_valor AS vComp, ")
-                    sql:add("ccc_tipo_tarifa AS CL, ")
-                    sql:add("ccc_valor_tarifa_kg AS vTar ")
-                    sql:add("FROM ctes_comp_calculo ")
-
                     tarifa := cte:comp_calc[1]
                     aereo["tarifa"] := {"CL" => tarifa["CL"], ;
                                         "cTar" => cte:cTar, ;

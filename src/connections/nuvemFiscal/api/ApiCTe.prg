@@ -272,7 +272,7 @@ method defineBody(cte) class TApiCTe
     emite["CNPJ"] := cte:emitente:CNPJ
 
     if !Empty(cte:emitente:IE)
-        toma["IE"] := cte:emitente:IE
+        emite["IE"] := cte:emitente:IE
     endif
 
     emite["xNome"] := cte:emitente:xNome

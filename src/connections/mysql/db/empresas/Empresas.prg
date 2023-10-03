@@ -100,7 +100,7 @@ method update(id) class TDbEmpresas
     sql:setValue("UPDATE empresas SET ")
     sql:add("nuvemfiscal_alterar = 0, ")
     sql:add("nuvemfiscal_cadastrar = 0 ")
-    sql:add("WHERE emp_id = " + id)
+    sql:add("WHERE emp_id = " + hb_ntos(id))
 
     updated := TQuery():new(sql:value)
     changed := updated:executed

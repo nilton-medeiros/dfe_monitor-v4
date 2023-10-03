@@ -211,6 +211,8 @@ method new() class TDbConhecimentos
             endif
             modalidade := iif(hCTe['modal'] == 1, ::getRodo(hCTe["id"]), ::getAereo(hCTe["id"]))
             AAdd(::ctes, TConhecimento():new(hCTe, hAnexos, emails, docTransAnt, modalidade))
+            // Debug: Deletar linha abaixo após testes.
+            consoleLog({"Type modalidade: ", ValType(modalide), " |Vazio: ", Empty(modalidade), " |hCTe['modal'] = ", hCTe["modal"]})
             dbCTes:db:Skip()
         enddo
     endif
@@ -474,6 +476,8 @@ method getAereo(id) class TDbConhecimentos
     if (dim:count == 1)
         aereo["xDime"] := PadL(dim:FieldGet("cumprimento"), 4, "0") + "X" + PadL(dim:FieldGet("altura"), 4, "0") + "X" + PadL(dim:FieldGet("largura"), 4, "0")
         aereo["cInfManu"] := {"99 - outro (especificar no campo observações)"}
+    else
+        consoleLog({"dim:count = ", dim:count, hb_eol(), s:value})
     endif
 
 return aereo

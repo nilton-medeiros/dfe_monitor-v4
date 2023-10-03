@@ -110,7 +110,7 @@ method defineBody(cte) class TApiCTe
     // Tag ide
     ide := {=>}
     ide["cUF"] := cte:cUF
-    ide["cCT"] := cte:cCT
+    ide["cCT"] := hb_ntos(cte:cCT)
     ide["CFOP"] := cte:CFOP
     ide["natOp"] := cte:natOp
     ide["mod"] := cte:modelo
@@ -124,10 +124,12 @@ method defineBody(cte) class TApiCTe
     ide["tpCTe"] := cte:tpCTe
     ide["procEmi"] := 0                     // 0 - Emissão de CT-e com aplicativo do contribuinte
     ide["verProc"] := Left(appData:version, hb_RAt('.', appData:version)) + '0'
+
     if (cte:indGlobalizado == 1)
         ide["indGlobalizado"] := 1
     endif
-    ide["cMunEnv"] := cte:emitente:cMunEnv
+
+    ide["cMunEnv"] := hb_ntos(cte:emitente:cMunEnv)
     ide["xMunEnv"] := cte:emitente:xMunEnv
     ide["UFEnv"] := cte:emitente:UF
     ide["modal"] := cte:modal
@@ -139,7 +141,11 @@ method defineBody(cte) class TApiCTe
     ide["xMunFim"] := cte:xMunFim
     ide["UFFim"] := cte:UFFim
     ide["retira"] := cte:retira
-    ide["xDetRetira"] := cte:xDetRetira
+
+    if !Emlpty(cte:xDetRetira)
+        ide["xDetRetira"] := cte:xDetRetira
+    endif
+
     ide["indIEToma"] := cte:indIEToma
 
     // Tag toma3 ou toma4
@@ -152,7 +158,9 @@ method defineBody(cte) class TApiCTe
         else
             toma["CNPJ"] := cte:tom_cnpj
         endif
-        toma["IE"] := cte:tom_ie
+        if !Empty(cte:tom_ie)
+            toma["IE"] := cte:tom_ie
+        endif
         toma["xNome"] := cte:tom_xNome
         toma["xFant"] := cte:tom_xFant
         toma["fone"] := cte:tom_fone
@@ -162,7 +170,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:tom_end_numero
         ender["xCpl"] := cte:tom_end_complemento
         ender["xBairro"] := cte:tom_end_bairro
-        ender["cMun"] := cte:tom_cid_codigo_municipio
+        ender["cMun"] := hb_ntos(cte:tom_cid_codigo_municipio)
         ender["xMun"] := cte:tom_cid_municipio
         ender["CEP"] := cte:tom_end_cep
         ender["UF"] := cte:tom_cid_uf
@@ -262,7 +270,11 @@ method defineBody(cte) class TApiCTe
     // Tag emit
     emite := {=>}
     emite["CNPJ"] := cte:emitente:CNPJ
-    emite["IE"] := cte:emitente:IE
+
+    if !Empty(cte:emitente:IE)
+        toma["IE"] := cte:emitente:IE
+    endif
+
     emite["xNome"] := cte:emitente:xNome
     emite["xFant"] := cte:emitente:xFant
 
@@ -271,7 +283,7 @@ method defineBody(cte) class TApiCTe
     ender["nro"] := cte:emitente:nro
     ender["xCpl"] := cte:emitente:xCpl
     ender["xBairro"] := cte:emitente:xBairro
-    ender["cMun"] := cte:emitente:cMunEnv
+    ender["cMun"] := hb_ntos(cte:emitente:cMunEnv)
     ender["xMun"] := cte:emitente:xMunEnv
     ender["CEP"] := cte:emitente:CEP
     ender["UF"] := cte:emitente:UF
@@ -299,7 +311,9 @@ method defineBody(cte) class TApiCTe
             remet["CPF"] := cte:rem_cpf
         else
             remet["CNPJ"] := cte:rem_cnpj
-            remet["IE"] := cte:rem_ie
+            if !Empty(cte:rem_ie)
+                remet["IE"] := cte:rem_ie
+            endif
         endif
 
         remet["xNome"] := cte:rem_razao_social
@@ -311,7 +325,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:rem_end_numero
         ender["xCpl"] := cte:rem_end_complemento
         ender["xBairro"] := cte:rem_end_bairro
-        ender["cMun"] := cte:rem_cid_codigo_municipio
+        ender["cMun"] := hb_ntos(cte:rem_cid_codigo_municipio)
         ender["xMun"] := cte:rem_cid_municipio
         ender["CEP"] := cte:rem_end_cep
         ender["UF"] := cte:rem_cid_uf
@@ -331,7 +345,9 @@ method defineBody(cte) class TApiCTe
             exped["CPF"] := cte:exp_cpf
         else
             exped["CNPJ"] := cte:exp_cnpj
-            exped["IE"] := cte:exp_ie
+            if !Empty(cte:exp_ie)
+                exped["IE"] := cte:exp_ie
+            endif
         endif
 
         exped["xNome"] := cte:exp_razao_social
@@ -342,7 +358,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:exp_end_numero
         ender["xCpl"] := cte:exp_end_complemento
         ender["xBairro"] := cte:exp_end_bairro
-        ender["cMun"] := cte:exp_cid_codigo_municipio
+        ender["cMun"] := hb_ntos(cte:exp_cid_codigo_municipio)
         ender["xMun"] := cte:exp_cid_municipio
         ender["CEP"] := cte:exp_end_cep
         ender["UF"] := cte:exp_cid_uf
@@ -362,7 +378,9 @@ method defineBody(cte) class TApiCTe
             receb["CPF"] := cte:rec_cpf
         else
             receb["CNPJ"] := cte:rec_cnpj
-            receb["IE"] := cte:rec_ie
+            if !Empty(cte:rec_ie)
+                receb["IE"] := cte:rec_ie
+            endif
         endif
 
         receb["xNome"] := cte:rec_razao_social
@@ -373,7 +391,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:rec_end_numero
         ender["xCpl"] := cte:rec_end_complemento
         ender["xBairro"] := cte:rec_end_bairro
-        ender["cMun"] := cte:rec_cid_codigo_municipio
+        ender["cMun"] := hb_ntos(cte:rec_cid_codigo_municipio)
         ender["xMun"] := cte:rec_cid_municipio
         ender["CEP"] := cte:rec_end_cep
         ender["UF"] := cte:rec_cid_uf
@@ -393,7 +411,9 @@ method defineBody(cte) class TApiCTe
             desti["CPF"] := cte:des_cpf
         else
             desti["CNPJ"] := cte:des_cnpj
-            desti["IE"] := cte:des_ie
+            if !Empty(cte:des_ie)
+                desti["IE"] := cte:des_ie
+            endif
         endif
 
         desti["xNome"] := cte:des_razao_social
@@ -408,7 +428,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:des_end_numero
         ender["xCpl"] := cte:des_end_complemento
         ender["xBairro"] := cte:des_end_bairro
-        ender["cMun"] := cte:des_cid_codigo_municipio
+        ender["cMun"] := hb_ntos(cte:des_cid_codigo_municipio)
         ender["xMun"] := cte:des_cid_municipio
         ender["CEP"] := cte:des_end_cep
         ender["UF"] := cte:des_cid_uf
@@ -629,7 +649,9 @@ method defineBody(cte) class TApiCTe
                     // Aéreo: Informação do modal Aéreo
                     aereo := {=>}
                     aereo["nMinu"] := cte:cCT
-                    aereo["nOCA"] := cte:nOCA
+                    if !Empty(cte:nOCA)
+                        aereo["nOCA"] := cte:nOCA
+                    endif
                     aereo["dPrevAereo"] := cte:dPrevAereo
                     aereo["natCarga"] := cte:aereo
 

@@ -121,7 +121,7 @@ procedure main_form_oninit()
     endif
 
     appNuvemFiscal := TAuthNuvemFiscal():new()
-
+    MsgDebug(appNuvemFiscal)
     if !appNuvemFiscal:Authorized
         turnOFF()
     endif

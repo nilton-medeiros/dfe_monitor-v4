@@ -5,13 +5,13 @@
 
 class TAuthNuvemFiscal
 
-    data regPath protected
+    data regPath readonly
     data token readonly
     data expires_in readonly
     data Authorized readonly
 
     method new() constructor
-    method getNewToken() protected
+    method getNewToken() 
 
 end class
 

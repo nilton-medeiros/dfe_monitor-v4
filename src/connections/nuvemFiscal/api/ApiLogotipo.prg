@@ -5,8 +5,8 @@
 class TApiLogotipo
 
     data cnpj readonly
-    data token protected
-    data connection protected
+    data token readonly
+    data connection readonly
     data connected readonly
     data response readonly
     data httpStatus readonly

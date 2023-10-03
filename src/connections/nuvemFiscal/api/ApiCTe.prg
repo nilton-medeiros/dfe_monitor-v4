@@ -2,8 +2,8 @@
 #include <hbclass.ch>
 
 class TApiCTe
-    data token protected
-    data connection protected
+    data token readonly
+    data connection readonly
     data connected readonly
     data body readonly
     data response readonly

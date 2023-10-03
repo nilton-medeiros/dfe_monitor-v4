@@ -44,8 +44,6 @@ procedure main
     SET DATE BRITISH
     SET CENTURY ON
     SET EPOCH TO Year(date()) - 20
-    SET FIXED ON
-    SET DECIMALS TO 2
 
     appData:registerSystem()
 

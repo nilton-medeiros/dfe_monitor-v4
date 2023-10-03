@@ -332,7 +332,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::infAdFisco := cte["infAdFisco"]
     ::vCarga := number_format(cte["vCarga"], 2)
     ::proPred := cte["proPred"]
-    ::cTar := cte["cTar"]
+    ::cTar := hb_ntos(cte["cTar"])
     ::xOutCat := cte["xOutCat"]
     ::peso_bruto := cte["peso_bruto"]
     ::peso_cubado := cte["peso_cubado"]

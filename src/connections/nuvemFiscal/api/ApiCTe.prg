@@ -535,7 +535,8 @@ method defineBody(cte) class TApiCTe
         if !Empty(cte:xOutCat)
             infCarga["xOutCat"] := cte:xOutCat
         endif
-        SET DECIMAL TO 4
+        SET FIXED ON
+        SET DECIMALS TO 4
         // Debug: Verificando porque number_format não tem efeito aqui
         // consoleLog({"Type peso_bruto: ", ValType(cte:peso_bruto), " | Value: ", cte:peso_bruto, " | Return number_format: ", number_format(cte:peso_bruto, 4)})
         infCarga["infQ"] := {{"cUnid" => "01", "tpMed" => "PESO BRUTO", "qCarga" => cte:peso_bruto}, ;
@@ -547,7 +548,8 @@ method defineBody(cte) class TApiCTe
 
         // vCargaAverb // Não utilizado ou desnecessário
 
-        SET DECIMAL TO 2
+        SET DECIMALS TO
+        SET FIXED OFF
 
         infCteNorm := {=>}
         infCteNorm["infCarga"] := infCarga

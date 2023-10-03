@@ -5,11 +5,17 @@
 */
 
 function dfeGetNumber(dfeKey)
-    local nextNumbers := hb_jsonDecode(hb_MemoRead(appData:systemPath + 'tests\db\' + "dfeNumbers.json"))
-    local numeroDFe := hb_HGetDef(nextNumbers, dfeKey, 1)
+    local nextNumbers, numeroDFe, jsonFile := appData:systemPath + 'tests\db\' + "dfeNumbers.json"
 
+    if hb_FileExists(jsonFile)
+        nextNumbers := hb_jsonDecode(hb_MemoRead(jsonFile))
+    else
+        nextNumbers := {"cte" => 1, "mdfe" => 1}
+    endif
+
+    numeroDFe := hb_HGetDef(nextNumbers, dfeKey, 1)
     nextNumbers[dfeKey] := numeroDFe + 1
 
-    hb_MemoWrit(appData:systemPath + "tests\db\dfeNumbers.json", hb_jsonEncode(nextNumbers, 4))
+    hb_MemoWrit(jsonFile, hb_jsonEncode(nextNumbers, 4))
 
 return numeroDFe

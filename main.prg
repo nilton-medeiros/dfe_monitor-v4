@@ -105,7 +105,15 @@ procedure main_form_oninit()
     appFTP := TFtp():new(ftpUrl, ftpServer, ftpUser, ftpPassword)
 
     if appDataSource:connect()
+
+        appNuvemFiscal := TAuthNuvemFiscal():new()
+
+        if !appNuvemFiscal:Authorized
+            turnOFF()
+        endif
+
         appEmpresas := TDbEmpresas():new()
+
         if !appEmpresas:ok
             saveLog("Nenhuma empresa foi retornada do banco de dados")
             MessageBoxTimeout('Nenhuma empresa foi retornada do banco de dados' + hb_eol() + 'Avise ao suporte!', 'Parada forçada', MB_ICONEXCLAMATION, 300000)
@@ -117,12 +125,6 @@ procedure main_form_oninit()
             saveLog("Nenhum usuario admin foi retornado do banco de dados")
         endif
     else
-        turnOFF()
-    endif
-
-    appNuvemFiscal := TAuthNuvemFiscal():new()
-    MsgDebug(appNuvemFiscal)
-    if !appNuvemFiscal:Authorized
         turnOFF()
     endif
 

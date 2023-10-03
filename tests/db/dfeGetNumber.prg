@@ -9,6 +9,7 @@ function dfeGetNumber(dfeKey)
     local numeroDFe := hb_HGetDef(nextNumbers, dfeKey, 1)
 
     nextNumbers[dfeKey] := numeroDFe + 1
-    hb_MemoWrit(appData:systemPath + "tests\db\dfeNumbers.json", nextNumbers)
+
+    hb_MemoWrit(appData:systemPath + "tests\db\dfeNumbers.json", hb_jsonEncode(nextNumbers, 4))
 
 return numeroDFe

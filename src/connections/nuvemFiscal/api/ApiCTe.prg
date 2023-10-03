@@ -3,7 +3,7 @@
 
 class TApiCTe
     data token
-    data connection 
+    data connection
     data connected readonly
     data body readonly
     data response readonly
@@ -129,7 +129,7 @@ method defineBody(cte) class TApiCTe
         ide["indGlobalizado"] := 1
     endif
 
-    ide["cMunEnv"] := hb_ntos(cte:emitente:cMunEnv)
+    ide["cMunEnv"] := cte:emitente:cMunEnv
     ide["xMunEnv"] := cte:emitente:xMunEnv
     ide["UFEnv"] := cte:emitente:UF
     ide["modal"] := cte:modal
@@ -170,7 +170,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:tom_end_numero
         ender["xCpl"] := cte:tom_end_complemento
         ender["xBairro"] := cte:tom_end_bairro
-        ender["cMun"] := hb_ntos(cte:tom_cid_codigo_municipio)
+        ender["cMun"] := cte:tom_cid_codigo_municipio
         ender["xMun"] := cte:tom_cid_municipio
         ender["CEP"] := cte:tom_end_cep
         ender["UF"] := cte:tom_cid_uf
@@ -283,7 +283,7 @@ method defineBody(cte) class TApiCTe
     ender["nro"] := cte:emitente:nro
     ender["xCpl"] := cte:emitente:xCpl
     ender["xBairro"] := cte:emitente:xBairro
-    ender["cMun"] := hb_ntos(cte:emitente:cMunEnv)
+    ender["cMun"] := cte:emitente:cMunEnv
     ender["xMun"] := cte:emitente:xMunEnv
     ender["CEP"] := cte:emitente:CEP
     ender["UF"] := cte:emitente:UF
@@ -325,7 +325,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:rem_end_numero
         ender["xCpl"] := cte:rem_end_complemento
         ender["xBairro"] := cte:rem_end_bairro
-        ender["cMun"] := hb_ntos(cte:rem_cid_codigo_municipio)
+        ender["cMun"] := cte:rem_cid_codigo_municipio
         ender["xMun"] := cte:rem_cid_municipio
         ender["CEP"] := cte:rem_end_cep
         ender["UF"] := cte:rem_cid_uf
@@ -358,7 +358,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:exp_end_numero
         ender["xCpl"] := cte:exp_end_complemento
         ender["xBairro"] := cte:exp_end_bairro
-        ender["cMun"] := hb_ntos(cte:exp_cid_codigo_municipio)
+        ender["cMun"] := cte:exp_cid_codigo_municipio
         ender["xMun"] := cte:exp_cid_municipio
         ender["CEP"] := cte:exp_end_cep
         ender["UF"] := cte:exp_cid_uf
@@ -391,7 +391,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:rec_end_numero
         ender["xCpl"] := cte:rec_end_complemento
         ender["xBairro"] := cte:rec_end_bairro
-        ender["cMun"] := hb_ntos(cte:rec_cid_codigo_municipio)
+        ender["cMun"] := cte:rec_cid_codigo_municipio
         ender["xMun"] := cte:rec_cid_municipio
         ender["CEP"] := cte:rec_end_cep
         ender["UF"] := cte:rec_cid_uf
@@ -428,7 +428,7 @@ method defineBody(cte) class TApiCTe
         ender["nro"] := cte:des_end_numero
         ender["xCpl"] := cte:des_end_complemento
         ender["xBairro"] := cte:des_end_bairro
-        ender["cMun"] := hb_ntos(cte:des_cid_codigo_municipio)
+        ender["cMun"] := cte:des_cid_codigo_municipio
         ender["xMun"] := cte:des_cid_municipio
         ender["CEP"] := cte:des_end_cep
         ender["UF"] := cte:des_cid_uf

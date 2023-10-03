@@ -19,7 +19,7 @@ method new() class TAuthNuvemFiscal
     ::regPath := appData:winRegistryPath
     ::token := CharXor(RegistryRead(::regPath + "nuvemFiscal\token"), "SysWeb2023")
     ::expires_in := StoD(RegistryRead(::regPath + "nuvemFiscal\expires_in"))
-    MsgDebug(ValType(::token), ::token)
+    
     if Empty(::expires_in) .or. (::expires_in < Date())
         // Ainda não tem token ou garante o novo token 2 dias antes de expirar
         ::Authorized := ::getNewToken()

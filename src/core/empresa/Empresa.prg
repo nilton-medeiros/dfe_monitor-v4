@@ -54,7 +54,7 @@ method new(empresa) class TEmpresa
     ::xBairro := empresa['xBairro']
     ::cUF := number_format(empresa['cUF'])
     ::xMunEnv := empresa['xMunEnv']
-    ::cMunEnv := empresa['cMunEnv']
+    ::cMunEnv := hb_ntos(empresa['cMunEnv'])
     ::UF := empresa['UF']
     ::CEP := getNumbers(empresa['CEP'])
     ::fone := getNumbers(empresa['fone'])

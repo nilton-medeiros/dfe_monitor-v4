@@ -235,7 +235,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::tom_end_numero := cte["tom_end_numero"]
     ::tom_end_complemento := cte["tom_end_complemento"]
     ::tom_end_bairro := cte["tom_end_bairro"]
-    ::tom_cid_codigo_municipio := cte["tom_cid_codigo_municipio"]
+    ::tom_cid_codigo_municipio := hb_ntos(cte["tom_cid_codigo_municipio"])
     ::tom_cid_municipio := cte["tom_cid_municipio"]
     ::tom_end_cep := getNumbers(cte["tom_end_cep"])
     ::tom_cid_uf := cte["tom_cid_uf"]
@@ -265,7 +265,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::rem_end_numero := cte["rem_end_numero"]
     ::rem_end_complemento := cte["rem_end_complemento"]
     ::rem_end_bairro := cte["rem_end_bairro"]
-    ::rem_cid_codigo_municipio := cte["rem_cid_codigo_municipio"]
+    ::rem_cid_codigo_municipio := hb_ntos(cte["rem_cid_codigo_municipio"])
     ::rem_cid_municipio := cte["rem_cid_municipio"]
     ::rem_end_cep := getNumbers(cte["rem_end_cep"])
     ::rem_cid_uf := cte["rem_cid_uf"]
@@ -281,7 +281,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::des_end_numero := cte["des_end_numero"]
     ::des_end_complemento := cte["des_end_complemento"]
     ::des_end_bairro := cte["des_end_bairro"]
-    ::des_cid_codigo_municipio := cte["des_cid_codigo_municipio"]
+    ::des_cid_codigo_municipio := hb_ntos(cte["des_cid_codigo_municipio"])
     ::des_cid_municipio := cte["des_cid_municipio"]
     ::des_end_cep := getNumbers(cte["des_end_cep"])
     ::des_cid_uf := cte["des_cid_uf"]
@@ -298,7 +298,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::exp_end_numero := cte["exp_end_numero"]
     ::exp_end_complemento := cte["exp_end_complemento"]
     ::exp_end_bairro := cte["exp_end_bairro"]
-    ::exp_cid_codigo_municipio := cte["exp_cid_codigo_municipio"]
+    ::exp_cid_codigo_municipio := hb_ntos(cte["exp_cid_codigo_municipio"])
     ::exp_cid_municipio := cte["exp_cid_municipio"]
     ::exp_end_cep := getNumbers(cte["exp_end_cep"])
     ::exp_cid_uf := cte["exp_cid_uf"]
@@ -314,7 +314,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::rec_end_numero := cte["rec_end_numero"]
     ::rec_end_complemento := cte["rec_end_complemento"]
     ::rec_end_bairro := cte["rec_end_bairro"]
-    ::rec_cid_codigo_municipio := cte["rec_cid_codigo_municipio"]
+    ::rec_cid_codigo_municipio := hb_ntos(cte["rec_cid_codigo_municipio"])
     ::rec_cid_municipio := cte["rec_cid_municipio"]
     ::rec_end_cep := getNumbers(cte["rec_end_cep"])
     ::rec_cid_uf := cte["rec_cid_uf"]

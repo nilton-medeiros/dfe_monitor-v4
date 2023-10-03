@@ -212,7 +212,7 @@ method new() class TDbConhecimentos
             modalidade := iif(hCTe['modal'] == 1, ::getRodo(hCTe["id"]), ::getAereo(hCTe["id"]))
             AAdd(::ctes, TConhecimento():new(hCTe, hAnexos, emails, docTransAnt, modalidade))
             // Debug: Deletar linha abaixo após testes.
-            consoleLog({"Type modalidade: ", ValType(modalide), " |Vazio: ", Empty(modalidade), " |hCTe['modal'] = ", hCTe["modal"]})
+            consoleLog({"Type modalidade: ", ValType(modalidade), " |Vazio: ", Empty(modalidade), " |hCTe['modal'] = ", hCTe["modal"]})
             dbCTes:db:Skip()
         enddo
     endif

@@ -45,7 +45,7 @@ procedure main
     SET CENTURY ON
     SET EPOCH TO Year(date()) - 20
     SET FIXED ON
-    SET DECIMAL TO 2
+    SET DECIMALS TO 2
 
     appData:registerSystem()
 

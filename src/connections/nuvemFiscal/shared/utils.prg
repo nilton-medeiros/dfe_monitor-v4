@@ -16,16 +16,38 @@ return connection
 
 
 // Função utilizada para obter resposta de erros retornados, deve ser refatorada para ler o array de errors
-function getMessageApiError(api)
-	local response, msgError
+function getMessageApiError(api, lAsText)
+	local response, textError := "", aError := {}, error, n := 0
+
+	default lAsText := true
 
 	if api:ContentType == "json"
 		consoleLog(api:response)
 		response := hb_jsonDecode(api:response)
-		msgError := "codigo: " + response['error']['code'] + hb_eol()
-		msgError += "Menssagem: " + response['error']['message']
+		if hb_HGetRef("errors")
+			response := response["errors"]
+			for each error in response
+				AAdd(aError, error)
+			next
+		else
+			AAdd(aError, response["error"])
+		endif
+		if lAsText
+			for each error in aError
+				if (++n > 1)
+					textError += hb_eol()
+				endif
+				textError += "Código: " + error["code"] + hb_eol()
+				textError += "Menssagem: " + error["message"]
+			next
+		endif
 	else
-		msgError := api:response
+		if lAsText
+			textError := api:response
+		else
+			AAdd(aError, {"code" => "sem código", "message" => api:response})
+		endif
 	endif
-	saveLog(msgError)
-return msgError
+
+
+return iif(lAsText, textError, aError)

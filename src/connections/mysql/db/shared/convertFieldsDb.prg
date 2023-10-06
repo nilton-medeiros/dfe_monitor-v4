@@ -13,3 +13,12 @@ function convertFieldsDb(oRow)
     next
 
 return hRow
+
+function DateTime_to_mysql(stringDateTime)
+    local dateTime := StrTran(stringDateTime, "T", " ")
+    dateTime := StrTran(dateTime, "/", "-")
+    dateTime := Left(dateTime, 19)
+return dateTime
+
+function string_hb_to_mysql(stringSQL)
+Return HMG_UNICODE_TO_ANSI(mysql_escape_string(AllTrim(stringSQL)))

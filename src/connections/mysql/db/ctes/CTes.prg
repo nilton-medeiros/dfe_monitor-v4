@@ -3,19 +3,25 @@
 
 class TDbConhecimentos
     data ctes
-    data ok
 
     method new() constructor
     method count() setget
+    method getListCTes()
     method getAnexosCTe(hCTe)
     method getEmails(hCTe)
     method getDocAnteriores(id)
     method getRodo(id)
     method getAereo(id)
+    method updateCTe(id, hFields)
+    method insertEventos(hEvent)
 
 end class
 
 method new() class TDbConhecimentos
+    ::ctes := {}
+return self
+
+method getListCTes() class TDbConhecimentos
     local hCTe, hAnexos, emails, docTransAnt, modalidade
     local dbCTes, empresa, sql := TSQLString():new()
 
@@ -198,7 +204,6 @@ method new() class TDbConhecimentos
     sql:add("ORDER BY cte_monitor_action, emp_id, cte_numero")
 
     ::ctes := {}
-    ::ok := false
     dbCTes := TQuery():new(sql:value)
 
     if dbCTes:executed
@@ -217,10 +222,9 @@ method new() class TDbConhecimentos
         enddo
     endif
 
-    ::ok := !(hmg_len(::ctes) == 0)
     dbCTes:Destroy()
 
-return self
+return nil
 
 method count() class TDbConhecimentos
 return hmg_len(::ctes)
@@ -477,7 +481,73 @@ method getAereo(id) class TDbConhecimentos
         aereo["xDime"] := PadL(dim:FieldGet("cumprimento"), 4, "0") + "X" + PadL(dim:FieldGet("altura"), 4, "0") + "X" + PadL(dim:FieldGet("largura"), 4, "0")
         aereo["cInfManu"] := {"99 - outro (especificar no campo observações)"}
     else
+        // Debug: Após testes, trocar por saveLog() e não passar o s:value
         consoleLog({"dim:count = ", dim:count, hb_eol(), s:value})
     endif
 
 return aereo
+
+method updateCTe(id, aFields) class TDbConhecimentos
+    local updated, cte, sql := TSQLString():new()
+    local hField, field, value, n := 0
+
+    sql:setValue("UPDATE ctes SET ")
+
+    for each hField in aFields
+        n++
+        if !(n == 1)
+            sql:add(", ")
+        endif
+        field := hField["key"]
+        value := hField["value"]
+
+        switch ValType(value)
+            case "C"
+                value := string_hb_to_mysql(value)
+                sql:add(field + " = '" + value + "'")
+                exit
+            case "N"
+                sql:add(field + " = " + hb_ntos(value))
+                exit
+            case "D"
+                sql:add(field + " = '" + Transform(DToS(value), "@R 9999-99-99") + "'")
+                exit
+        endswitch
+    next
+
+    sql:add(" WHERE cte_id = " + id)
+
+    // cte := TQuery():new(sql)
+    // updated := cte:executed
+
+    // Debug: Remover esta e a linha de baixo após testes
+    consoleLog({"SQL Executado: ", iif(updated, "SIM", "NÃO-EM TESTE"), " |SQL: " + hb_eol() , sql:value})
+    // cte:Destroy()
+
+return updated
+
+method insertEventos(aEvents) class TDbConhecimentos
+    local inserted, ctes_eventos, sql := TSQLString():new()
+    local hEvent, n := 0
+
+    sql:setValue("INSERT INTO ctes_eventos (cte_id, cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_ev_detalhe) VALUES ")
+
+    for each hEvent in aEvents
+        n++
+        sql:AAdd(iif((n==1), "(", ", ("))
+        sql:add(hEvent["cte_id"] + ", ")
+        sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_protocolo"]) + "', ")
+        sql:add("'" + hEvent["cte_ev_data_hora"] + "', ")
+        sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_evento"]) + "', ")
+        sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_detalhe"]) + "')")
+    next
+    // Debug: Descomentar esta linha em ambiente de produção
+    // ctes_eventos := TQuery():new(sql)
+    // inserted := ctes_eventos:executed
+    inserted := false // Debug: Remover esta linha em ambiente de produção
+
+    // Debug: Remover esta e a linha de baixo e descomentar a linha 551 Destroy(), após testes
+    consoleLog({"SQL Executado: ", iif(inserted, "SIM", "NÃO-EM TESTE"), " |SQL: " + hb_eol() , sql:value})
+    // ctes_eventos:Destroy()
+
+return inserted

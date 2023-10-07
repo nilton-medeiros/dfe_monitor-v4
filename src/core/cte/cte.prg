@@ -397,19 +397,19 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     for each clie in clie_emails
         switch clie["name"]
             case "tomador"
-                ::tom_email := clie['email']
+                ::tom_email := AllTrim(clie['email'])
                 exit
             case "remetente"
-                ::rem_email := clie['email']
+                ::rem_email := AllTrim(clie['email'])
                 exit
             case "destinatario"
-                ::des_email := clie['email']
+                ::des_email := AllTrim(clie['email'])
                 exit
             case "expedidor"
-                ::exp_email := clie['email']
+                ::exp_email := AllTrim(clie['email'])
                 exit
             case "recebedor"
-                ::rec_email := clie['email']
+                ::rec_email := AllTrim(clie['email'])
                 exit
         endswitch
     next

@@ -62,7 +62,7 @@ method new(cte) class TApiCTe
 return self
 
 method Emitir() class TApiCTe
-    local res, apiUrl, hRes
+    local res, apiUrl, hRes, hAutorizacao
 
     if !::connected
         return false
@@ -100,19 +100,23 @@ method Emitir() class TApiCTe
         ::status := hRes['status']
         ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
         ::chave := hRes['chave']
-        ::numero_protocolo := hb_HGetDef(hRes['autorizacao']['numero_protocolo'], hRes['autorizacao']['id'])
-        ::data_evento := DateTime_to_mysql(hRes['autorizacao']['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hRes['autorizacao']['data_recebimento'])
-        if hb_HGetRef(hRes['autorizacao']['codigo_status'])
-            ::codigo_status := hRes['autorizacao']['codigo_status']
-            ::motivo_status := hRes['autorizacao']['motivo_status']
+
+        hAutorizacao := hRes['autorizacao']
+
+        ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
+        ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
+        ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+
+        if hb_HGetRef(hAutorizacao, 'codigo_status')
+            ::codigo_status := hAutorizacao['codigo_status']
+            ::motivo_status := hAutorizacao['motivo_status']
         else
-            if hb_HGetRef(hRes['autorizacao']['codigo_mensagem'])
-                ::codigo_status := hRes['autorizacao']['codigo_mensagem']
-                ::motivo_status := hRes['autorizacao']['mensagem']
+            if hb_HGetRef(hAutorizacao, 'codigo_mensagem')
+                ::codigo_status := hAutorizacao['codigo_mensagem']
+                ::motivo_status := hAutorizacao['mensagem']
             endif
         endif
-        ::tipo_evento := hRes['autorizacao']['tipo_evento']
+        ::tipo_evento := hAutorizacao['tipo_evento']
     endif
 
 return !res['error']

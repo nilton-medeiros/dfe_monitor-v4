@@ -26,7 +26,7 @@ function getMessageApiError(api, lAsText)
 	if api:ContentType == "json"
 		consoleLog(api:response)
 		response := hb_jsonDecode(api:response)
-		if hb_HGetRef("errors")
+		if hb_HGetRef(response, "errors")
 			response := response["errors"]
 			for each error in response
 				AAdd(aError, error)

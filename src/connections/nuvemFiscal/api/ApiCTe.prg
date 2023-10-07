@@ -13,9 +13,10 @@ class TApiCTe
     data nuvemfiscal_uuid readonly
     data ambiente readonly
     data created_at readonly
-    data data_evento readonly
-    data status readonly
     data data_emissao readonly
+    data data_evento readonly
+    data data_recebimento readonly
+    data status readonly
     data chave readonly
     data codigo_status readonly
     data motivo_status readonly
@@ -295,7 +296,9 @@ method defineBody() class TApiCTe
         ender := {=>}
         ender["xLgr"] := ::cte:tom_end_logradouro
         ender["nro"] := ::cte:tom_end_numero
-        ender["xCpl"] := ::cte:tom_end_complemento
+        if !Empty(::cte:tom_end_complemento)
+            ender["xCpl"] := ::cte:tom_end_complemento
+        endif
         ender["xBairro"] := ::cte:tom_end_bairro
         ender["cMun"] := ::cte:tom_cid_codigo_municipio
         ender["xMun"] := ::cte:tom_cid_municipio
@@ -408,7 +411,9 @@ method defineBody() class TApiCTe
     ender := {=>}
     ender["xLgr"] := ::cte:emitente:xLgr
     ender["nro"] := ::cte:emitente:nro
-    ender["xCpl"] := ::cte:emitente:xCpl
+    if !Empty(::cte:emitente:xCpl)
+        ender["xCpl"] := ::cte:emitente:xCpl
+    endif
     ender["xBairro"] := ::cte:emitente:xBairro
     ender["cMun"] := ::cte:emitente:cMunEnv
     ender["xMun"] := ::cte:emitente:xMunEnv
@@ -450,7 +455,9 @@ method defineBody() class TApiCTe
         ender := {=>}
         ender["xLgr"] := ::cte:rem_end_logradouro
         ender["nro"] := ::cte:rem_end_numero
-        ender["xCpl"] := ::cte:rem_end_complemento
+        if !Empty(::cte:rem_end_complemento)
+            ender["xCpl"] := ::cte:rem_end_complemento
+        endif
         ender["xBairro"] := ::cte:rem_end_bairro
         ender["cMun"] := ::cte:rem_cid_codigo_municipio
         ender["xMun"] := ::cte:rem_cid_municipio
@@ -483,7 +490,9 @@ method defineBody() class TApiCTe
         ender := {=>}
         ender["xLgr"] := ::cte:exp_end_logradouro
         ender["nro"] := ::cte:exp_end_numero
-        ender["xCpl"] := ::cte:exp_end_complemento
+        if !Empty(::cte:exp_end_complemento)
+            ender["xCpl"] := ::cte:exp_end_complemento
+        endif
         ender["xBairro"] := ::cte:exp_end_bairro
         ender["cMun"] := ::cte:exp_cid_codigo_municipio
         ender["xMun"] := ::cte:exp_cid_municipio
@@ -516,7 +525,9 @@ method defineBody() class TApiCTe
         ender := {=>}
         ender["xLgr"] := ::cte:rec_end_logradouro
         ender["nro"] := ::cte:rec_end_numero
-        ender["xCpl"] := ::cte:rec_end_complemento
+        if !Empty(::cte:rec_end_complemento)
+            ender["xCpl"] := ::cte:rec_end_complemento
+        endif
         ender["xBairro"] := ::cte:rec_end_bairro
         ender["cMun"] := ::cte:rec_cid_codigo_municipio
         ender["xMun"] := ::cte:rec_cid_municipio
@@ -553,7 +564,9 @@ method defineBody() class TApiCTe
         ender := {=>}
         ender["xLgr"] := ::cte:des_end_logradouro
         ender["nro"] := ::cte:des_end_numero
-        ender["xCpl"] := ::cte:des_end_complemento
+        if !Empty(::cte:des_end_complemento)
+            ender["xCpl"] := ::cte:des_end_complemento
+        endif
         ender["xBairro"] := ::cte:des_end_bairro
         ender["cMun"] := ::cte:des_cid_codigo_municipio
         ender["xMun"] := ::cte:des_cid_municipio

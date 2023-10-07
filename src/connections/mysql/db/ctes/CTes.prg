@@ -502,13 +502,13 @@ method updateCTe(cId, aFields) class TDbConhecimentos
         switch ValType(valor)
             case "C"
                 valor := string_hb_to_mysql(valor)
-                sql:add(field + " = '" + valor + "'")
+                sql:add(campo + " = '" + valor + "'")
                 exit
             case "N"
-                sql:add(field + " = " + hb_ntos(valor))
+                sql:add(campo + " = " + hb_ntos(valor))
                 exit
             case "D"
-                sql:add(field + " = '" + Transform(DToS(valor), "@R 9999-99-99") + "'")
+                sql:add(campo + " = '" + Transform(DToS(valor), "@R 9999-99-99") + "'")
                 exit
         endswitch
     next
@@ -532,7 +532,7 @@ method insertEventos(aEvents) class TDbConhecimentos
 
     for each hEvent in aEvents
         n++
-        sql:AAdd(iif((n==1), "(", ", ("))
+        sql:add(iif((n==1), "(", ", ("))
         sql:add(hEvent["cte_id"] + ", ")
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_protocolo"]) + "', ")
         sql:add("'" + hEvent["cte_ev_data_hora"] + "', ")

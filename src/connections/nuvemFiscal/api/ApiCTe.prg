@@ -44,7 +44,7 @@ method new(cte) class TApiCTe
     ::token := appNuvemFiscal:token
     ::nuvemfiscal_uuid := cte:nuvemfiscal_uuid
     ::status := cte:situacao
-    // Debug: Descomentar a linha abaixo e remover a linha posterior após testes 
+    // Debug: Descomentar a linha abaixo e remover a linha posterior após testes
     // ::data_emissao := cte:dhEmi
     ::data_emissao := Transform(DToS(Date()), "@R 9999-99-99")
     ::chave := ""

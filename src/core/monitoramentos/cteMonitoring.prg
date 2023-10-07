@@ -77,8 +77,12 @@ procedure cteSubmit(cte)
             cte:setUpdateCte('nuvemfiscal_uuid', apiCTe:nuvemfiscal_uuid)
 
             // Prepara os campos da tabela ctes_eventos para receber os updates
-            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_recebimento, apiCTe:codigo_mensagem, apiCTe:mensagem)
-            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
+            if !Empty(apiCTe:motivo_status)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
+            endif
+            if !Empty(apiCTe:mensagem)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_recebimento, apiCTe:codigo_mensagem, apiCTe:mensagem)
+            endif
 
             empresa := appEmpresas:getEmpresa(cte:emp_id)
 

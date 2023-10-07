@@ -156,6 +156,7 @@ class TConhecimento
     data cubagem_m3 readonly
     data qtde_volumes readonly
     data tipo_doc_anexo readonly
+    data doc_anexo readonly
     data nOCA readonly
     data dPrevAereo readonly
     data monitor_action readonly
@@ -164,7 +165,6 @@ class TConhecimento
     data obs_fisco readonly
     data obs_contr readonly
     data comp_calc readonly
-    data doc_anexo readonly
     data emitente readonly
     data tpImp readonly
     data clie_emails readonly
@@ -343,7 +343,9 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::peso_bc := cte["peso_bc"]
     ::cubagem_m3 := cte["cubagem_m3"]
     ::qtde_volumes := cte["qtde_volumes"]
-    ::tipo_doc_anexo := cte["tipo_doc_anexo"]
+    // Debug: Após testes descomentar a linha abaixo e excluir a próxima linha
+    // ::tipo_doc_anexo := cte["tipo_doc_anexo"]
+    ::tipo_doc_anexo := 3
     ::nOCA := cte["nOCA"]
     ::dPrevAereo := cte["dPrevAereo"]
     ::referencia_uuid := cte["referencia_uuid"]
@@ -389,7 +391,10 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     endif
 
     ::comp_calc := hAnexos['comp_calc']
-    ::doc_anexo := hAnexos['doc']
+    // Debug: Forçando anexo do tipo 3
+    // ::doc_anexo := hAnexos['doc']
+    ::doc_anexo := {{"tpDoc" => 99, "descOutros" => "Teste de doc anexo do tipo 3", "nDoc" => 123456, "dEmi" => "2023-10-06", "vDocFisc" => 189.54}}
+
     ::infIndGlobalizado()
 
     if (::indGlobalizado == 1)

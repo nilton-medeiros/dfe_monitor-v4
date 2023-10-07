@@ -97,16 +97,22 @@ method Emitir() class TApiCTe
         ::nuvemfiscal_uuid := hRes['id']
         ::ambiente := hRes['ambiente']
         ::created_at := DateTime_to_mysql(hRes['created_at'])
-        ::data_evento := DateTime_to_mysql(hRes['autorizacao']['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hRes['autorizacao']['data_recebimento'])
+        ::status := hRes['status']
         ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
         ::chave := hRes['chave']
-        ::codigo_status := hRes['autorizacao']['codigo_status']
-        ::motivo_status := hRes['autorizacao']['motivo_status']
-        ::numero_protocolo := hRes['autorizacao']['numero_protocolo']
-        ::mensagem := hRes['autorizacao']['mensagem']
+        ::numero_protocolo := hb_HGetDef(hRes['autorizacao']['numero_protocolo'], hRes['autorizacao']['id'])
+        ::data_evento := DateTime_to_mysql(hRes['autorizacao']['data_evento'])
+        ::data_recebimento := DateTime_to_mysql(hRes['autorizacao']['data_recebimento'])
+        if hb_HGetRef(hRes['autorizacao']['codigo_status'])
+            ::codigo_status := hRes['autorizacao']['codigo_status']
+            ::motivo_status := hRes['autorizacao']['motivo_status']
+        else
+            if hb_HGetRef(hRes['autorizacao']['codigo_mensagem'])
+                ::codigo_status := hRes['autorizacao']['codigo_mensagem']
+                ::motivo_status := hRes['autorizacao']['mensagem']
+            endif
+        endif
         ::tipo_evento := hRes['autorizacao']['tipo_evento']
-        ::status := hRes['status']
     endif
 
 return !res['error']

@@ -193,7 +193,9 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::id := cte["id"]
     ::emp_id := cte["emp_id"]
     ::versao_xml := cte["versao_xml"]
-    ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
+    // Debug: Remover a linha abaixo e descomentar a próxima linha
+    ::dhEmi := string_as_DateTime(Left(hb_TSToStr(hb_DateTime()), 19), TDZ_TRUE)
+    // ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
     ::modelo := number_format(cte["modelo"])
     ::serie := cte["serie"]
     ::nCT := cte["nCT"] // Numero do CTe

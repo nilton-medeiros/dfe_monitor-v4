@@ -10,9 +10,9 @@ class TDbConhecimentos
     method getAnexosCTe(hCTe)
     method getEmails(hCTe)
     method getDocAnteriores(id)
-    method getRodo(id)
-    method getAereo(id)
-    method updateCTe(id, hFields)
+    method getRodoOCC(id)
+    method getAereoCub3(id)
+    method updateCTe(cId, aFields)
     method insertEventos(hEvent)
 
 end class
@@ -214,10 +214,8 @@ method getListCTes() class TDbConhecimentos
             if (hb_ntos(hCTe['tpServ']) $ "123")
                 docTransAnt := ::getDocAnteriores(hCTe["id"])
             endif
-            modalidade := iif(hCTe['modal'] == 1, ::getRodo(hCTe["id"]), ::getAereo(hCTe["id"]))
+            modalidade := iif(hCTe['modal'] == 1, ::getRodoOCC(hCTe["id"]), ::getAereoCub3(hCTe["id"]))
             AAdd(::ctes, TConhecimento():new(hCTe, hAnexos, emails, docTransAnt, modalidade))
-            // Debug: Deletar linha abaixo após testes.
-            consoleLog({"Type modalidade: ", ValType(modalidade), " |Vazio: ", Empty(modalidade), " |hCTe['modal'] = ", hCTe["modal"]})
             dbCTes:db:Skip()
         enddo
     endif
@@ -426,7 +424,7 @@ method getDocAnteriores(id) class TDbConhecimentos
 return emiDocAnt
 
 // OCC: Ordem de Coleta
-method getRodo(id) class TDbConhecimentos
+method getRodoOCC(id) class TDbConhecimentos
     local occ := {}, s := TSQLString():new("SELECT ")
     local serie, coleta, coletas
 
@@ -463,7 +461,7 @@ method getRodo(id) class TDbConhecimentos
 
 return occ
 
-method getAereo(id) class TDbConhecimentos
+method getAereoCub3(id) class TDbConhecimentos
     local s := TSQLString():new("SELECT ")
     local dim, aereo := {=>}
 
@@ -487,9 +485,9 @@ method getAereo(id) class TDbConhecimentos
 
 return aereo
 
-method updateCTe(id, aFields) class TDbConhecimentos
+method updateCTe(cId, aFields) class TDbConhecimentos
     local updated, cte, sql := TSQLString():new()
-    local hField, field, value, n := 0
+    local hField, campo, valor, n := 0
 
     sql:setValue("UPDATE ctes SET ")
 
@@ -498,30 +496,30 @@ method updateCTe(id, aFields) class TDbConhecimentos
         if !(n == 1)
             sql:add(", ")
         endif
-        field := hField["key"]
-        value := hField["value"]
+        campo := hField["key"]
+        valor := hField["value"]
 
-        switch ValType(value)
+        switch ValType(valor)
             case "C"
-                value := string_hb_to_mysql(value)
-                sql:add(field + " = '" + value + "'")
+                valor := string_hb_to_mysql(valor)
+                sql:add(field + " = '" + valor + "'")
                 exit
             case "N"
-                sql:add(field + " = " + hb_ntos(value))
+                sql:add(field + " = " + hb_ntos(valor))
                 exit
             case "D"
-                sql:add(field + " = '" + Transform(DToS(value), "@R 9999-99-99") + "'")
+                sql:add(field + " = '" + Transform(DToS(valor), "@R 9999-99-99") + "'")
                 exit
         endswitch
     next
 
-    sql:add(" WHERE cte_id = " + id)
+    sql:add(" WHERE cte_id = " + cId)
 
     // cte := TQuery():new(sql)
     // updated := cte:executed
-
+    updated := false
     // Debug: Remover esta e a linha de baixo após testes
-    consoleLog({"SQL Executado: ", iif(updated, "SIM", "NÃO-EM TESTE"), " |SQL: " + hb_eol() , sql:value})
+    consoleLog({"SQL Executado: ", "NÃO-EM TESTE", " |SQL: " + hb_eol(), sql:value})
     // cte:Destroy()
 
 return updated

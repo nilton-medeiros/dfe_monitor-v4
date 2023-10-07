@@ -88,6 +88,9 @@ method registerSystem() class TAppData
     else
         ::dfePath := RegistryRead(::winRegistryPath + "InstallPath\dfePath")
     endif
+    if !hb_DirExists(::dfePath)
+        hb_DirBuild(::dfePath)
+    endif
     if (RegistryRead(::winRegistryPath + "Host\db_ServerName") == NIL)
         RegistryWrite(::winRegistryPath + "Host\db_ServerName", "")
     endif

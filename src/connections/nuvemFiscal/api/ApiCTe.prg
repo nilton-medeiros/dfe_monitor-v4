@@ -43,7 +43,7 @@ method new(cte) class TApiCTe
     ::token := appNuvemFiscal:token
     ::nuvemfiscal_uuid := cte:nuvemfiscal_uuid
     ::status := cte:situacao
-    ::data_emissao := cte:data_emissao
+    ::data_emissao := cte:dhEmi
     ::chave := ""
     ::codigo_status := 0
     ::motivo_status := ""
@@ -590,7 +590,7 @@ method defineBody() class TApiCTe
     ide := compl := emite := remet := exped := receb := desti := nil
 
     vPrest := {=>}
-    vPrest["vTprest"] := ::cte:vTPrest
+    vPrest["vTPrest"] := ::cte:vTPrest
     vPrest["vRec"] := ::cte:vTPrest
 
     if !Empty(::cte:comp_calc)

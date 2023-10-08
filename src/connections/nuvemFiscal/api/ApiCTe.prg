@@ -183,8 +183,10 @@ method BaixarPDFdoDACTE() class TApiCTe
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::cte:nuvemfiscal_uuid + "/pdf"
     // endif
 
+    ::body := "logotipo=true"
+
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do DACTE")
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do DACTE", ::body)
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']

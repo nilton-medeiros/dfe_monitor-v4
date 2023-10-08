@@ -181,8 +181,8 @@ method putSetupCTe(empresa) class TApiEmpresas
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
     // endif
-    // Request Body
 
+    // Request Body
     hBody := {=>}
     hBody["CRT"] := empresa:CRT
     hBody["ambiente"] := "homologacao"     // Debug: Após testes, substituir por iif(empresa:tpAmb == 1, "producao", "homologacao")

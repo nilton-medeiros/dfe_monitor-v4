@@ -194,11 +194,11 @@ method getListCTes() class TDbConhecimentos
         sql:add(")")
     endif
 
-    // Real em produção: Remover estes comentários em produção ----------------------------
+    // Real em produção: Remover estes comentários em produção e descomentar a linha abaixo ----------------------------
     // sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
 
     // Debug: Testes em homologação: Remover este comando abaixo ---------------------------------
-    sql:add(" AND cte_id BETWEEN 44501 AND 44506 ")
+    sql:add(" AND cte_id = 44501 ")
     // Testes em homologação --------------------------------------------------------------
 
     sql:add("ORDER BY cte_monitor_action, emp_id, cte_numero")

@@ -14,13 +14,9 @@ procedure cteMonitoring()
         // Testes: remover esta variável "emTeste" e o "if emTeste" após testes
         if emTeste
             // Os CTes de 44501 à 44506 são dados reais e vem do banco de dados e serao processados no ambiente de homologação
-            if cte:id < 44503
-                cteSubmit(cte)
-            elseif cte:id < 44505
-                cteGetFiles(cte)
-            else
-                cteCancel(cte)
-            endif
+            // cteSubmit(cte)
+            cteGetFiles(cte)
+            // cteCancel(cte)
         else
             switch cte:monitor_action
                 case "SUBMIT"
@@ -56,17 +52,20 @@ procedure cteSubmit(cte)
 
         consoleLog("Processando Emitir(cte) | apiCTe:status " + apiCTe:status)   // Debug
 
-        sysWait(2)  // Aguarda 2 segundos para obter autorizado ou erro
-        consultouCTe := apiCTe:Consultar()
-        startTimer := Seconds()
-
-        do while consultouCTe .and. (apiCTe:status == 'pendente') .and. (Seconds() - startTimer < 10)
-            // Situação pouco provável, porem não impossível: Insiste obter informações por até 10 segundos
-            sysWait(2)
+        if (apiCTe:status == "autorizado")
+            consultouCTe := true
+        else
+            sysWait(2)  // Aguarda 2 segundos para obter autorizado ou erro
             consultouCTe := apiCTe:Consultar()
-        enddo
+            startTimer := Seconds()
 
-        consoleLog("consultouCTe: " + iif(consultouCTe, "SIM", "NÃO"))  // Debug
+            do while consultouCTe .and. (apiCTe:status == 'pendente') .and. (Seconds() - startTimer < 10)
+                // Situação pouco provável, porem não impossível: Insiste obter informações por até 10 segundos
+                sysWait(2)
+                consultouCTe := apiCTe:Consultar()
+            enddo
+
+            consoleLog("consultouCTe: " + iif(consultouCTe, "SIM", "NÃO"))  // Debug
 
         if consultouCTe
 
@@ -149,7 +148,7 @@ procedure cteSubmit(cte)
 
 return
 
-procedure cteGetFiles()
+procedure cteGetFiles(cte)
 return
 
 procedure cteCancel()

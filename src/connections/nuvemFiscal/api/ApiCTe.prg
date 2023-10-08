@@ -10,7 +10,7 @@ class TApiCTe
     data response readonly
     data httpStatus readonly
     data ContentType readonly
-    data nuvemfiscal_uuid readonly
+    data nuvemfiscal_uuid
     data ambiente readonly
     data created_at readonly
     data data_emissao readonly
@@ -122,7 +122,7 @@ method Emitir() class TApiCTe
 return !res['error']
 
 method Consultar() class TApiCTe
-    local res, apiUrl, hRes
+    local res, apiUrl, hRes, hAutorizacao
 
     if !::connected
         return false
@@ -151,18 +151,29 @@ method Consultar() class TApiCTe
         ::mensagem := res["response"]
     else
         hRes := hb_jsonDecode(::response)
+        ::nuvemfiscal_uuid := hRes['id']
         ::ambiente := hRes['ambiente']
         ::created_at := DateTime_to_mysql(hRes['created_at'])
-        ::data_evento := DateTime_to_mysql(hRes['autorizacao']['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hRes['autorizacao']['data_recebimento'])
+        ::status := hRes['status']
         ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
         ::chave := hRes['chave']
-        ::codigo_status := hRes['autorizacao']['codigo_status']
-        ::motivo_status := hRes['autorizacao']['motivo_status']
-        ::numero_protocolo := hRes['autorizacao']['numero_protocolo']
-        ::mensagem := hRes['autorizacao']['mensagem']
-        ::tipo_evento := hRes['autorizacao']['tipo_evento']
-        ::status := hRes['status']
+
+        hAutorizacao := hRes['autorizacao']
+
+        ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
+        ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
+        ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+
+        if hb_HGetRef(hAutorizacao, 'codigo_status')
+            ::codigo_status := hAutorizacao['codigo_status']
+            ::motivo_status := hAutorizacao['motivo_status']
+        else
+            if hb_HGetRef(hAutorizacao, 'codigo_mensagem')
+                ::codigo_status := hAutorizacao['codigo_mensagem']
+                ::motivo_status := hAutorizacao['mensagem']
+            endif
+        endif
+        ::tipo_evento := hAutorizacao['tipo_evento']
     endif
 
 return !res['error']
@@ -239,7 +250,7 @@ return !res['error']
 
 // Request Body
 method defineBody() class TApiCTe
-    local hBody, infCte,ide, toma, doc, autores
+    local hBody, infCte,ide, toma
     local compl, fluxo, entrega, ObsContFisco
     local emite, remet, exped, receb, desti, ender
     local vPrest, Comp, imp, ICMS
@@ -250,7 +261,7 @@ method defineBody() class TApiCTe
     // Tag ide
     ide := {=>}
     ide["cUF"] := ::cte:cUF
-    ide["cCT"] := hb_ntos(::cte:cCT)
+    ide["cCT"] := ::cte:cCT
     ide["CFOP"] := ::cte:CFOP
     ide["natOp"] := ::cte:natOp
     ide["mod"] := ::cte:modelo
@@ -802,7 +813,7 @@ method defineBody() class TApiCTe
                 else
                     // Aéreo: Informação do modal Aéreo
                     aereo := {=>}
-                    aereo["nMinu"] := ::cte:cCT
+                    aereo["nMinu"] := Val(::cte:cCT)
                     if !Empty(::cte:nOCA)
                         aereo["nOCA"] := ::cte:nOCA
                     endif
@@ -847,7 +858,7 @@ method defineBody() class TApiCTe
         endif
         autXML := nil
     */
-    
+
     if !Empty(RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"))
         infCte["respTec"] := {"CNPJ" => RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"), ;
                               "xContato" => RegistryRead(appData:winRegistryPath + "Host\respTec\xContato"), ;

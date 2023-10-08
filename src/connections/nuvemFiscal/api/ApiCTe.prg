@@ -239,7 +239,7 @@ return !res['error']
 
 // Request Body
 method defineBody() class TApiCTe
-    local hBody, infCte,ide, toma
+    local hBody, infCte,ide, toma, doc, autores
     local compl, fluxo, entrega, ObsContFisco
     local emite, remet, exped, receb, desti, ender
     local vPrest, Comp, imp, ICMS
@@ -839,49 +839,15 @@ method defineBody() class TApiCTe
       // infCteAnu | Detalhamento do CT-e do tipo Anulação
     endif
 
-    autXML := {}
-
-    if !Empty(::cte:tom_email) .and. (::cte:tomador == 4)
-        if Empty(::cte:tom_cnpj)
-            AAdd(autXML, {"CPF" => ::cte:tom_cpf})
-        else
-            AAdd(autXML, {"CNPJ" => ::cte:tom_cnpj})
+    /*
+        TMS.Cloud não tem informação de autores diferentes do tom, rem, des, exp e rec
+        autXML := {}
+        if !Empty(autXML)
+            infCte["autXML"] := autXML
         endif
-    endif
-    if !Empty(::cte:rem_email)
-        if Empty(::cte:rem_cnpj)
-            AAdd(autXML, {"CPF" => ::cte:rem_cpf})
-        else
-            AAdd(autXML, {"CNPJ" => ::cte:rem_cnpj})
-        endif
-    endif
-    if !Empty(::cte:des_email)
-        if Empty(::cte:des_cnpj)
-            AAdd(autXML, {"CPF" => ::cte:des_cpf})
-        else
-            AAdd(autXML, {"CNPJ" => ::cte:des_cnpj})
-        endif
-    endif
-    if !Empty(::cte:exp_email)
-        if Empty(::cte:exp_cnpj)
-            AAdd(autXML, {"CPF" => ::cte:exp_cpf})
-        else
-            AAdd(autXML, {"CNPJ" => ::cte:exp_cnpj})
-        endif
-    endif
-    if !Empty(::cte:rec_email)
-        if Empty(::cte:rec_cnpj)
-            AAdd(autXML, {"CPF" => ::cte:rec_cpf})
-        else
-            AAdd(autXML, {"CNPJ" => ::cte:rec_cnpj})
-        endif
-    endif
-
-    if !Empty(autXML)
-        infCte["autXML"] := autXML
-    endif
-    autXML := nil
-
+        autXML := nil
+    */
+    
     if !Empty(RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"))
         infCte["respTec"] := {"CNPJ" => RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"), ;
                               "xContato" => RegistryRead(appData:winRegistryPath + "Host\respTec\xContato"), ;

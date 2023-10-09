@@ -17,7 +17,7 @@ class TApiCTe
     data data_evento readonly
     data data_recebimento readonly
     data status readonly
-    data chave 
+    data chave
     data codigo_status readonly
     data motivo_status readonly
     data numero_protocolo readonly
@@ -224,10 +224,10 @@ method BaixarXMLdoCTe() class TApiCTe
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
     // if ::cte:tpAmb == 1
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml/conhecimento"
+        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml"
     // else
         // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml/conhecimento"
+        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml"
     // endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept

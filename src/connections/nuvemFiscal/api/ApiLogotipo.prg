@@ -6,7 +6,7 @@ class TApiLogotipo
 
     data cnpj readonly
     data token
-    data connection 
+    data connection
     data connected readonly
     data response readonly
     data httpStatus readonly
@@ -55,7 +55,7 @@ method Baixar() class TApiLogotipo
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar Logotipo")
 
     ::httpStatus := res['status']
@@ -96,7 +96,7 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
         content_type := "image/jpeg"
     endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "PUT", apiUrl, ::token, "Enviar Logotipo", body, content_type)
 
     ::httpStatus := res['status']
@@ -122,7 +122,7 @@ method Deletar() class TApiLogotipo
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "DELETE", apiUrl, ::token, "Deletar Logotipo")
 
     ::httpStatus := res['status']

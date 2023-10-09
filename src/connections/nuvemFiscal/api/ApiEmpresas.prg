@@ -60,8 +60,8 @@ method Cadastrar(empresa) class TApiEmpresas
     // Request Body
     ::defineBody(empresa)
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "POST", apiUrl, ::token, "Cadastrar Empresa", ::body)
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "POST", apiUrl, ::token, "Cadastrar Empresa", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -93,7 +93,7 @@ method Consultar(empresa) class TApiEmpresas
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
     // endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar Empresa")
 
     ::httpStatus := res['status']
@@ -126,8 +126,8 @@ method Alterar(empresa) class TApiEmpresas
     // Request Body
     ::defineBody(empresa)
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar Empresa", ::body)
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar Empresa", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -188,8 +188,8 @@ method putSetupCTe(empresa) class TApiEmpresas
     hBody["ambiente"] := "homologacao"     // Debug: Após testes, substituir por iif(empresa:tpAmb == 1, "producao", "homologacao")
     ::body := hb_jsonEncode(hBody, 4)
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar configurações de CT-e", ::body)
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar configurações de CT-e", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']

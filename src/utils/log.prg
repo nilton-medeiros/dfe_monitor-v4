@@ -46,7 +46,7 @@ procedure saveLog(text, lEncrypt)
       msg := "[ENCRYPT START =>]" + hb_eol() + auxEncrypt(msg) + hb_eol() + [<= ENCRYPT END]
    endif
 
-   msg := hb_eol() + DtoC(Date()) + ' ' + Time() + ' [' + processos + '] ' + msg
+   msg := hb_eol() + DtoC(Date()) + ' ' + Time() + ' [' + processos + '] ' + msg + hb_eol()
 
    SET(_SET_DATEFORMAT, dateFormat)
 

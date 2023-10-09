@@ -5,17 +5,21 @@
     Transmite à API da Nuvem Fiscal a solicitação (endpoint) e json
     (body) de acordo com o método http solicitado.
 */
-function Broadcast(connection, httpMethod, apiUrl, token, operation, body, content_type)
+function Broadcast(connection, httpMethod, apiUrl, token, operation, body, content_type, accept)
     local objError
     local resposta := {"error" => false, "status" => 0, "ContentType" => "", "response" => ""}
-
-    default content_type := "application/json"
 
     begin sequence
 
         connection:Open(httpMethod, apiUrl, false)
         connection:SetRequestHeader("Authorization", "Bearer " + token)
-        connection:SetRequestHeader("Content-Type", content_type)   // Request Body Schema
+
+        if !Empty(content_type)
+            connection:SetRequestHeader("Content-Type", content_type)   // Request Body Schema
+        endif
+        if !Empty(accept)
+            connection:SetRequestHeader("Accept", accept)
+        endif
 
         if Empty(body)
             connection:Send()

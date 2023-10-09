@@ -6,7 +6,7 @@ class TApiCertificado
 
     data cnpj readonly
     data token
-    data connection 
+    data connection
     data connected readonly
     data response readonly
     data httpStatus readonly
@@ -55,7 +55,7 @@ method Consultar() class TApiCertificado
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     // endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar Certificado")
 
     ::httpStatus := res['status']
@@ -91,8 +91,8 @@ method Cadastrar(certificado, password) class TApiCertificado
     body += '  "password": "' + password + '"' + hb_eol()
     body += '}'
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Cadastrar Certificado", body)
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Cadastrar Certificado", body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -117,7 +117,7 @@ method Deletar() class TApiCertificado
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     // endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "DELETE", apiUrl, ::token, "Deletar Certificado")
 
     ::httpStatus := res['status']

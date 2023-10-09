@@ -80,8 +80,8 @@ method Emitir() class TApiCTe
     // Request Body
     ::defineBody()
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "POST", apiUrl, ::token, "Emitir CTe", ::body)
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "POST", apiUrl, ::token, "Emitir CTe", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -137,7 +137,7 @@ method Consultar() class TApiCTe
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid
     // endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar CTe")
 
     ::httpStatus := res['status']
@@ -196,8 +196,8 @@ method BaixarPDFdoDACTE() class TApiCTe
 
     ::body := "logotipo=true"
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do DACTE", ::body)
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do DACTE", ::body, nil, "*/*")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -230,8 +230,8 @@ method BaixarXMLdoCTe() class TApiCTe
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml/conhecimento"
     // endif
 
-    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar XML do CTe")
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar XML do CTe", nil, nil, "*/*")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']

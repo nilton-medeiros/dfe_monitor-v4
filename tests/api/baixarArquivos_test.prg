@@ -11,7 +11,7 @@ procedure testBaixarArquivos()
     empresa := appEmpresas:getEmpresa(cte:emp_id)
 
     // "2019-08-24T14:15:22Z"
-    anoMes := hb_ULeft(getNumbers(apiCTe:data_emissao), 6)
+    anoMes := hb_ULeft(getNumbers(baixar:data_emissao), 6)
     directory := appData:dfePath + empresa:CNPJ + '\CTe\' + anoMes + '\'
 
     if !hb_DirExists(directory)

@@ -45,7 +45,8 @@ method new(cte) class TApiCTe
     ::nuvemfiscal_uuid := cte:nuvemfiscal_uuid
     ::status := cte:situacao
     ::data_emissao := cte:dhEmi
-    ::chave := ""
+    ::chave := cte:chave
+    ::data_emissao := cte:data_emissao
     ::codigo_status := 0
     ::motivo_status := ""
     ::numero_protocolo := ""

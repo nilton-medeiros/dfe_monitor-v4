@@ -183,7 +183,7 @@ class TConhecimento
     method setUpdateCte(key, value)
     method setUpdateEventos(cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_ev_detalhe)
     method save()
-    method saveEvento()
+    method saveEventos()
 
 end class
 
@@ -541,7 +541,7 @@ method save() class TConhecimento
     endif
 return nil
 
-method saveEvento() class TConhecimento
+method saveEventos() class TConhecimento
     local cte
     if !Empty(::updateEventos)
         cte := TDbConhecimentos():new()

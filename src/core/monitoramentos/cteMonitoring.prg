@@ -45,30 +45,39 @@ return
 
 procedure cteSubmit(cte)
     local apiCTe := TApiCTe():new(cte)
-    local startTimer, consultouCTe := false, empresa
+    local startTimer, recebido, emitido, empresa
     local targetFile, anoEmes, directory, aError, error
 
-    if apiCTe:Emitir()
+    recebido := apiCTe:Emitir()
+    emitido := false
+
+    if recebido
 
         consoleLog("Processando Emitir(cte) | apiCTe:status " + apiCTe:status)   // Debug
 
-        if (apiCTe:status == "autorizado")
-            consultouCTe := true
-        else
+        // CTe foi recebido, verifica se foi autorizado, rejeitado ou se ainda está pendente (aguardando na fila para ser processado)
+        emitido := (apiCTe:status == "autorizado")
+
+        if !emitido
+
+            // Normalmente em produção a api da Nuvem Fiscal retorna status "pendente" segundo orientação da nv, nos testes (homologação) retornaram direto 'autorizado'
             sysWait(2)  // Aguarda 2 segundos para obter autorizado ou erro
-            consultouCTe := apiCTe:Consultar()
+
+            recebido := apiCTe:Consultar()
             startTimer := Seconds()
 
-            do while consultouCTe .and. (apiCTe:status == 'pendente') .and. (Seconds() - startTimer < 10)
+            do while recebido .and. (apiCTe:status == 'pendente') .and. (Seconds() - startTimer < 10)
                 // Situação pouco provável, porem não impossível: Insiste obter informações por até 10 segundos
                 sysWait(2)
-                consultouCTe := apiCTe:Consultar()
+                recebido := apiCTe:Consultar()
             enddo
 
-            consoleLog("consultouCTe: " + iif(consultouCTe, "SIM", "NÃO"))  // Debug
+            emitido := (apiCTe:status == "autorizado")
+            consoleLog("emitido: " + iif(emitido, "SIM", "NÃO"))  // Debug
+
         endif
 
-        if consultouCTe
+        if emitido
 
             // Prepara os campos da tabela ctes para receber os updates
             cte:setSituacao(apiCTe:status)
@@ -125,27 +134,23 @@ procedure cteSubmit(cte)
                 saveLog("Arquivo XML do CTe não retornado; CTe Chave: " + apiCTe:chave)
                 cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, "XML CTE", "Arquivo XML do CTe não foi retornado")
             endif
-
-        else
-            aError := getMessageApiError(apiCTe, false)
-            for each error in aError
-                cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
-            next
-            cte:setSituacao("ERRO")
-            // Debug
-            consoleLog("apiCte:response" + apiCTe:response + hb_eol() + "API Conectado: " + iif(apiCTe:connected, "SIM", "NÃO"))
         endif
-    else
+
+    endif
+
+    if !emitido
         aError := getMessageApiError(apiCTe, false)
         for each error in aError
             cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
         next
         cte:setSituacao("ERRO")
+        // Debug
+        consoleLog("apiCte:response" + apiCTe:response + hb_eol() + "API Conectado: " + iif(apiCTe:connected, "SIM", "NÃO"))
     endif
 
     cte:setUpdateCte('cte_monitor_action', "EXECUTED")
     cte:save()
-    cte:SaveEvento()
+    cte:saveEventos()
 
 return
 

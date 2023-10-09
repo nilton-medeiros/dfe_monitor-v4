@@ -188,10 +188,10 @@ method BaixarPDFdoDACTE() class TApiCTe
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
     // if ::cte:tpAmb == 1
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::cte:nuvemfiscal_uuid + "/pdf"
+        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/pdf"
     // else
         // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::cte:nuvemfiscal_uuid + "/pdf"
+        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/pdf"
     // endif
 
     ::body := "logotipo=true"
@@ -224,10 +224,10 @@ method BaixarXMLdoCTe() class TApiCTe
     // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
     // if ::cte:tpAmb == 1
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::cte:nuvemfiscal_uuid + "/xml/conhecimento"
+        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml/conhecimento"
     // else
         // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::cte:nuvemfiscal_uuid + "/xml/conhecimento"
+        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml/conhecimento"
     // endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type

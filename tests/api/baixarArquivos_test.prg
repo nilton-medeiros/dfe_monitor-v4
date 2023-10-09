@@ -2,6 +2,7 @@ procedure testBaixarArquivos()
     local cte, ctes := TDbConhecimentos():new()
     local baixar
 
+    ctes:getListCTes()
     cte := ctes:ctes[1]
 
     baixar := TApiCTe():new(cte)

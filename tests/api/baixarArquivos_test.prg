@@ -7,6 +7,7 @@ procedure testBaixarArquivos()
 
     baixar := TApiCTe():new(cte)
     baixar:nuvemfiscal_uuid := "cte_3a0e2918fd064e3c85f7b0208df9779b"
+    baixar:chave := "35231057296543000115570010000000021660513554"
 
     empresa := appEmpresas:getEmpresa(cte:emp_id)
 

@@ -17,7 +17,7 @@ class TApiCTe
     data data_evento readonly
     data data_recebimento readonly
     data status readonly
-    data chave readonly
+    data chave 
     data codigo_status readonly
     data motivo_status readonly
     data numero_protocolo readonly
@@ -45,8 +45,7 @@ method new(cte) class TApiCTe
     ::nuvemfiscal_uuid := cte:nuvemfiscal_uuid
     ::status := cte:situacao
     ::data_emissao := cte:dhEmi
-    ::chave := cte:chave
-    ::data_emissao := cte:data_emissao
+    ::chave := ""
     ::codigo_status := 0
     ::motivo_status := ""
     ::numero_protocolo := ""

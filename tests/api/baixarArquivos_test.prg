@@ -6,7 +6,7 @@ procedure testBaixarArquivos()
     cte := ctes:ctes[1]
 
     baixar := TApiCTe():new(cte)
-    baixar:nuvemfiscal_uuid := "cte_3a0e28a9b51c423080296501104993b"
+    baixar:nuvemfiscal_uuid := "cte_3a0e2918fd064e3c85f7b0208df9779b"
     baixar:BaixarPDFdoDACTE()
     baixar:BaixarXMLdoCTe()
 

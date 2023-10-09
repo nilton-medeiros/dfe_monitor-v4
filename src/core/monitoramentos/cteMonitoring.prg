@@ -66,6 +66,7 @@ procedure cteSubmit(cte)
             enddo
 
             consoleLog("consultouCTe: " + iif(consultouCTe, "SIM", "NÃO"))  // Debug
+        endif
 
         if consultouCTe
 

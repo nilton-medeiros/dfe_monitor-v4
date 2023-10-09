@@ -19,7 +19,7 @@ procedure testBaixarArquivos()
         hb_DirBuild(directory)
     endif
 
-    if apbaixariCte:BaixarPDFdoDACTE()
+    if baixar:BaixarPDFdoDACTE()
         targetFile := baixar:chave + '-cte.pdf'
         if hb_MemoWrit(directory + targetFile, baixar:pdf_dacte)
             saveLog("Arquivo PDF do DACTE salvo com sucesso: " + directory + targetFile)

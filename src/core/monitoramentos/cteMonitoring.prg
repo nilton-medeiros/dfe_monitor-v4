@@ -44,5 +44,3 @@ procedure cteMonitoring()
 
 return
 
-procedure cteCancel()
-return

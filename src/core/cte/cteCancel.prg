@@ -1,23 +1,23 @@
 #include "hmg.ch"
 
-procedure cteSubmit(cte)
+procedure cteCancel(cte)
     local apiCTe := TApiCTe():new(cte)
-    local startTimer, recebido, emitido
+    local startTimer, recebido, cancelado
     local targetFile, anoEmes, directory, aError, error
 
-    recebido := apiCTe:Emitir()
-    emitido := false
+    recebido := apiCTe:Cancelar()
+    cancelado := false
 
     if recebido
 
-        consoleLog("Processando Emitir(cte) | apiCTe:status " + apiCTe:status)   // Debug
+        consoleLog("Processando Cancelar(cte) | apiCTe:status " + apiCTe:status)   // Debug
 
-        // Se CTe foi recebido, verifica se foi autorizado, rejeitado ou se ainda está pendente (aguardando na fila para ser processado)
-        emitido := (apiCTe:status == "autorizado")
+        // Se CTe foi recebido, verifica se foi cancelado, rejeitado ou se ainda está pendente (aguardando na fila para ser processado)
+        cancelado := (apiCTe:status == "cancelado")
 
-        if !emitido
+        if !cancelado
 
-            // Normalmente em produção a api da Nuvem Fiscal retorna status "pendente" segundo orientação da nv, nos testes (homologação) retornaram direto 'autorizado'
+            // Normalmente em produção a api da Nuvem Fiscal retorna status "pendente" segundo orientação da nv, nos testes (homologação) retornaram direto 'cancelado'
             sysWait(2)  // Aguarda 2 segundos para obter autorizado ou erro
 
             startTimer := Seconds()
@@ -27,18 +27,15 @@ procedure cteSubmit(cte)
                 sysWait(2)
             enddo
 
-            emitido := (apiCTe:status == "autorizado")
-            consoleLog("emitido: " + iif(emitido, "SIM", "NÃO"))  // Debug
+            cancelado := (apiCTe:status == "cancelado")
+            consoleLog("Cancelado: " + iif(cancelado, "SIM", "NÃO"))  // Debug
 
         endif
 
-        if emitido
+        if cancelado
 
             // Prepara os campos da tabela ctes para receber os updates
             cte:setSituacao(apiCTe:status)
-            cte:setUpdateCte('cte_chave', apiCTe:chave)
-            cte:setUpdateCte('cte_protocolo_autorizacao', apiCTe:numero_protocolo)
-            cte:setUpdateCte('nuvemfiscal_uuid', apiCTe:nuvemfiscal_uuid)
 
             // Prepara os campos da tabela ctes_eventos para receber os updates
             if !Empty(apiCTe:motivo_status)
@@ -52,7 +49,7 @@ procedure cteSubmit(cte)
 
     endif
 
-    if !emitido
+    if !cancelado
         aError := getMessageApiError(apiCTe, false)
         for each error in aError
             cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
@@ -62,7 +59,7 @@ procedure cteSubmit(cte)
         consoleLog("apiCTe:response" + apiCTe:response + hb_eol() + "API Conectado: " + iif(apiCTe:connected, "SIM", "NÃO"))
     endif
 
-    if emitido
+    if cancelado
         cteGetFiles(cte)
     endif
 

@@ -1,3 +1,5 @@
+#include "hmg.ch"
+
 function cteGetFiles(cte)
     local lExisteAutorizado := lExisteCancelado := false
     local apiCTe, upload := {=>}
@@ -16,16 +18,18 @@ function cteGetFiles(cte)
     cancelXML := cte:chCTe + '-cteCancelado.xml'
 
     if hb_DirExists(directory)
-        lExisteAutorizado := hb_FileExists(directory + filePDF) .and. hb_FileExists(directory + fileXML)
-        if lExisteAutorizado
-            upload["pdf"] := directory + filePDF
-            upload["xml"] := directory + fileXML
-        endif
-        if cte:situacao == "CANCELADO"
+        if (cte:situacao == "CANCELADO")
+            lExisteAutorizado := true
             lExisteCancelado := hb_FileExists(directory + cancelPDF) .and. hb_FileExists(directory + cancelXML)
             if lExisteCancelado
                 upload["pdfCancel"] := directory + cancelPDF
                 upload["xmlCancel"] := directory + cancelXML
+            endif
+        else
+            lExisteAutorizado := hb_FileExists(directory + filePDF) .and. hb_FileExists(directory + fileXML)
+            if lExisteAutorizado
+                upload["pdf"] := directory + filePDF
+                upload["xml"] := directory + fileXML
             endif
         endif
     else
@@ -64,7 +68,7 @@ function cteGetFiles(cte)
 
     endif
 
-    if cte:situacao == "CANCELADO" .and. !lExisteCancelado
+    if (cte:situacao == "CANCELADO") .and. !lExisteCancelado
 
         if apiCTe:BaixarPDFdoCancelamento()
             if hb_MemoWrit(directory + cancelPDF, apiCTe:pdf_cancel)

@@ -31,11 +31,12 @@ class TApiCTe
     method new(cte) constructor
     method Emitir()
     method Consultar()
-    method defineBody()
+    method Cancelar()
     method BaixarPDFdoDACTE()
     method BaixarPDFdoCancelamento()
     method BaixarXMLdoCTe()
     method BaixarXMLdoCancelamento()
+    method defineBody()
 
 end class
 
@@ -178,6 +179,56 @@ method Consultar() class TApiCTe
             endif
         endif
         ::tipo_evento := hAutorizacao['tipo_evento']
+    endif
+
+return !res['error']
+
+method Cancelar() class TApiCTe
+    local res, apiUrl, hRes
+
+    if !::connected
+        return false
+    endif
+
+    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
+    // if ::cte:tpAmb == 1
+        // API de Produção
+        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
+    // else
+        // API de Teste
+        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
+    // endif
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "POST", apiUrl, ::token, "Cancelar CTe")
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao cancelar CTe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    else
+        hRes := hb_jsonDecode(::response)
+        ::ambiente := hRes['ambiente']
+        ::status := hRes['status']
+        ::data_evento := DateTime_to_mysql(hRes['data_evento'])
+        ::numero_protocolo := hRes['numero_protocolo']
+        ::data_recebimento := DateTime_to_mysql(hRes['data_recebimento'])
+
+        if hb_HGetRef(hRes, 'codigo_status')
+            ::codigo_status := hRes['codigo_status']
+            ::motivo_status := hRes['motivo_status']
+        else
+            if hb_HGetRef(hRes, 'codigo_mensagem')
+                ::codigo_status := hRes['codigo_mensagem']
+                ::motivo_status := hRes['mensagem']
+            endif
+        endif
+        ::tipo_evento := hRes['tipo_evento']
     endif
 
 return !res['error']

@@ -25,13 +25,17 @@ class TApiCTe
     data tipo_evento readonly
     data pdf_dacte readonly
     data xml_cte readonly
+    data pdf_cancel readonly
+    data xml_cancel readonly
 
     method new(cte) constructor
     method Emitir()
     method Consultar()
     method defineBody()
     method BaixarPDFdoDACTE()
+    method BaixarPDFdoCancelamento()
     method BaixarXMLdoCTe()
+    method BaixarXMLdoCancelamento()
 
 end class
 
@@ -45,10 +49,10 @@ method new(cte) class TApiCTe
     ::nuvemfiscal_uuid := cte:nuvemfiscal_uuid
     ::status := cte:situacao
     ::data_emissao := cte:dhEmi
-    ::chave := ""
+    ::chave := cte:chCTe
     ::codigo_status := 0
     ::motivo_status := ""
-    ::numero_protocolo := ""
+    ::numero_protocolo := cte:nProt
     ::mensagem := ""
     ::tipo_evento := ""
 
@@ -214,6 +218,42 @@ method BaixarPDFdoDACTE() class TApiCTe
 
 return !res['error']
 
+method BaixarPDFdoCancelamento() class TApiCTe
+    local res, apiUrl, hRes
+
+    if !::connected
+        return false
+    endif
+
+    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
+    // if ::cte:tpAmb == 1
+        // API de Produção
+        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/pdf"
+    // else
+        // API de Teste
+        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/pdf"
+    // endif
+
+    ::body := "logotipo=true"
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do CTE CANCELADO", ::body, nil, "*/*")
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao baixar PDF do CTE CANCELADO na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    else
+        ::pdf_cancel := ::response
+    endif
+
+return !res['error']
+
 method BaixarXMLdoCTe() class TApiCTe
     local res, apiUrl, hRes
 
@@ -244,6 +284,40 @@ method BaixarXMLdoCTe() class TApiCTe
         ::mensagem := res["response"]
     else
         ::xml_cte := ::response
+    endif
+
+return !res['error']
+
+method BaixarXMLdoCancelamento() class TApiCTe
+    local res, apiUrl, hRes
+
+    if !::connected
+        return false
+    endif
+
+    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
+    // if ::cte:tpAmb == 1
+        // API de Produção
+        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/xml"
+    // else
+        // API de Teste
+        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/xml"
+    // endif
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar XML do CTE CANCELADO", nil, nil, "*/*")
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao baixar XML do CTE CANCELADO na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    else
+        ::xml_cancel := ::response
     endif
 
 return !res['error']

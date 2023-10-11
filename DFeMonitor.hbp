@@ -2,7 +2,8 @@ main.prg
 setup.prg
 src\components\ComboBox.prg
 src\components\textBoxFocus.prg
-src\connections\ftp\Ftp.prg
+src\connections\ftp\FTP.prg
+src\connections\ftp\GED_FTP.prg
 src\connections\mysql\auth\DataSource.prg
 src\connections\mysql\db\ctes\CTes.prg
 src\connections\mysql\db\empresas\Empresas.prg
@@ -20,6 +21,9 @@ src\connections\nuvemFiscal\auth\AuthNuvemFiscal.prg
 src\connections\nuvemFiscal\shared\utils.prg
 src\core\AppData.prg
 src\core\cte\cte.prg
+src\core\cte\cteGetFiles.prg
+src\core\cte\cteSubmit.prg
+src\core\cte\cteUploadFiles.prg
 src\core\empresa\alterarEmpresa.prg
 src\core\empresa\cadastrarEmpresa.prg
 src\core\empresa\Empresa.prg

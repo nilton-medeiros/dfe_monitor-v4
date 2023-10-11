@@ -169,7 +169,7 @@ method registerDatabase() class TAppData
     /*
         O arquivo ".env.json" existe na primeira instalação do sistema no servidor do cliente e é oculto
         Verifica se o arquivo oculto ".env.json" existe, se existe carrega para o RegEdit a configuração
-        inicial sensíveis (key, token, logins de db e ftp), em seguida deleta o aquivo ".env.json"
+        inicial com dados sensíveis (key, token, logins de db e ftp), em seguida deleta o aquivo ".env.json"
     */
     if hb_FileExists(".env.json")
         hEnv := hb_jsonDecode(hb_MemoRead(".env.json"))

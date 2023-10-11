@@ -200,7 +200,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::serie := cte["serie"]
     ::nCT := cte["nCT"] // Numero do CTe
     ::cCT := PadL(cte["cCT"], 8, "0") // Numero da Minuta
-    ::situacao := cte["situacao"]
+    ::situacao := hmg_upper(cte["situacao"])
     ::chCTe := cte["chCTe"]
     ::nProt := cte["nProt"]
     ::CFOP := hb_ntos(cte["CFOP"])
@@ -500,6 +500,7 @@ return nil
 
 method setSituacao(cteStatus) class TConhecimento
     local lSet := false
+    cteStatus := hmg_lower(cteStatus)
     if !Empty(cteStatus) .and. cteStatus $ "pendente,autorizado,rejeitado,denegado,encerrado,cancelado,erro"
         ::situacao := hmg_upper(cteStatus)
         lSet := true

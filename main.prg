@@ -102,7 +102,7 @@ procedure main_form_oninit()
     endwith
 
     appDataSource := TMySQLDataSource():new(dbServer, dbUser, dbPassword, dbPort, dbDatabase)
-    appFTP := TFtp():new(ftpUrl, ftpServer, ftpUser, ftpPassword)
+    appFTP := TFTP():new(ftpUrl, ftpServer, ftpUser, ftpPassword)
 
     if appDataSource:connect()
 

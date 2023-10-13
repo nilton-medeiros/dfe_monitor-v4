@@ -68,14 +68,20 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
                 resposta["ContentType"] := "json"
             else
                 // "application/text"
-                resposta["response"] := connection:ResponseText
+                if !Empty(connection:ResponseText)
+                    resposta["response"] := connection:ResponseText
+                elseif !Empty(connection:ResponseBody)
+                    resposta["response"] := connection:ResponseBody
+                else
+                    resposta["response"] := "ResponseText e ResponseBody retornaram vazio, sem mensagem"
+                endif
                 resposta["ContentType"] := "text"
             endif
 
         endif
 
         // Debug: Remover esta linha e a debaixo após testes
-        consoleLog({"Debug: " + operation + " | Response: ", hb_eol(), resposta["response"]})
+        consoleLog({"Debug: " + operation + " | HTTP Status: ", resposta["status"], hb_eol(), "Response: ", hb_eol(), resposta["response"]})
     endif
 
 return resposta

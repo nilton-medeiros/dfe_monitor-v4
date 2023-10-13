@@ -40,7 +40,7 @@ function getMessageApiError(api, lAsText)
 					textError += hb_eol()
 				endif
 				textError += "Código: " + error["code"] + hb_eol()
-				textError += "Menssagem: " + error["message"]
+				textError += "Mensagem: " + error["message"]
 			next
 		endif
 	else

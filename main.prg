@@ -28,9 +28,6 @@ procedure main
     public appUsuarios
     public appNuvemFiscal
 
-    // Debug: Teste: Em modo de homologação - remover essa variável appQtdeDeTestes de todo o sistema após testes e modo em produção
-    public appQtdeDeTestes := 0
-
     IF HMG SUPPORT UNICODE RUN
 
     hb_langSelect("PT")
@@ -186,21 +183,18 @@ procedure main_Timer_dfe_action()
     endif
 
     // Debug:
-    consoleLog({"Entrou main_Timer_dfe_action, Seconds - timer >= frequency: ", iif((Seconds() - appData:timer >= appData:frequency), "SIM", "NAO")})
+    consoleLog({"Entrou main_Timer_dfe_action, Seconds - timer >= frequency: ", Seconds(), "-", appData:timer, ">=", appData:frequency, iif((Seconds() - appData:timer >= appData:frequency), "SIM", "NAO")})
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
-        if appQtdeDeTestes < 3  // Debug: Remover este if após testes, limita até 3 testes por execução
-            cteMonitoring()
-            // Debug
-            // mdfeMonitoring()
-            appData:setTimer()
-            appQtdeDeTestes++
-        endif
+        cteMonitoring()
+        // Debug
+        // mdfeMonitoring()
+        appData:setTimer()
+        // Debug: Testando api empresas, cadastrar uma empresa
+        // testAlterarEmpresa()
+        turnOFF()
     endif
 
-    // Debug: Testando api empresas, cadastrar uma empresa
-    // testAlterarEmpresa()
-    turnOFF()
     startTimer()
 
 return

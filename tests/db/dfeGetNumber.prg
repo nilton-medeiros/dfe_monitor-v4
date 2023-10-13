@@ -10,7 +10,7 @@ function dfeGetNumber(dfeKey)
     if hb_FileExists(jsonFile)
         nextNumbers := hb_jsonDecode(hb_MemoRead(jsonFile))
     else
-        nextNumbers := {"cte" => 1, "mdfe" => 1}
+        nextNumbers := {"cte" => 1, "dbCTe" => 44502, "mdfe" => 1}
     endif
 
     numeroDFe := hb_HGetDef(nextNumbers, dfeKey, 1)

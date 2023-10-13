@@ -2,7 +2,7 @@
 
 procedure cteMonitoring()
     local cte, ctes := TDbConhecimentos():new()
-    local emTeste := true // Remover esta linha após testes
+    local emTeste := true // Debug: Remover esta linha após testes
 
     ctes:getListCTes()
 
@@ -11,12 +11,11 @@ procedure cteMonitoring()
     endif
 
     for each cte in ctes:ctes
-        // Testes: remover esta variável "emTeste" e o "if emTeste" após testes
+        // Debug: Em teste, remover esta variável "emTeste" e o "if emTeste" após testes
         if emTeste
             // Os CTes de 44501 à 44506 são dados reais e vem do banco de dados e serao processados no ambiente de homologação
-            // cteSubmit(cte)
-            cteGetFiles(cte)
-            // cteCancel(cte)
+            cteSubmit(cte)
+            cteCancel(cte)
         else
             switch cte:monitor_action
                 case "SUBMIT"
@@ -32,15 +31,8 @@ procedure cteMonitoring()
             cte:setUpdateCte('cte_monitor_action', "EXECUTED")
             cte:save()
             cte:saveEventos()
-            DO EVENTS
         endif
+        DO EVENTS
     next
 
-    // Testes - remover essas linhas abaixo
-    PlayOk()
-    MsgInfo({'getSubmit: OK', hb_eol(), 'getGetFiles: OK', hb_eol(),'getCancel: OK', hb_eol(), "Ver log do sistema."}, "Testes Concluídos")
-    saveLog("Fim dos testes, desligamento do sistema automático.")
-    turnOFF()
-
 return
-

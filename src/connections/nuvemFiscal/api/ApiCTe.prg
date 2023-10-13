@@ -440,7 +440,7 @@ method defineBody() class TApiCTe
         if !Empty(::cte:tom_xFant)
             toma["xFant"] := ::cte:tom_xFant
         endif
-        if !Emtpy(::cte:tom_fone)
+        if !Empty(::cte:tom_fone)
             toma["fone"] := ::cte:tom_fone
         endif
 
@@ -600,10 +600,10 @@ method defineBody() class TApiCTe
         endif
 
         remet["xNome"] := ::cte:rem_razao_social
-        if !Emtpy(::cte:rem_nome_fantasia)
+        if !Empty(::cte:rem_nome_fantasia)
             remet["xFant"] := ::cte:rem_nome_fantasia
         endif
-        if !Emtpy(::cte:rem_fone)
+        if !Empty(::cte:rem_fone)
             remet["fone"] := ::cte:rem_fone
         endif
 
@@ -640,7 +640,7 @@ method defineBody() class TApiCTe
         endif
 
         exped["xNome"] := ::cte:exp_razao_social
-        if !Emtpy(::cte:exp_fone)
+        if !Empty(::cte:exp_fone)
             exped["fone"] := ::cte:exp_fone
         endif
 

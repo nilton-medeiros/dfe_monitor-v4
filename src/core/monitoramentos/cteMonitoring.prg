@@ -13,6 +13,7 @@ procedure cteMonitoring()
     for each cte in ctes:ctes
         // Debug: Em teste, remover esta variável "emTeste" e o "if emTeste" após testes
         if emTeste
+            consoleLog({"Entrou ctemonitoring, cte: ", cte:id, hb_eol(), "invocando cteSubmit e cteCancel"})
             // Os CTes de 44501 à 44506 são dados reais e vem do banco de dados e serao processados no ambiente de homologação
             cteSubmit(cte)
             cteCancel(cte)

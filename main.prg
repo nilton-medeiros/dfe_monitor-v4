@@ -185,6 +185,8 @@ procedure main_Timer_dfe_action()
         endif
     endif
 
+    // Debug:
+    consoleLog({"Entrou main_Timer_dfe_action, Seconds - timer >= frequency: ", iif((Seconds() - appData:timer >= appData:frequency), "SIM", "NAO")})
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
         if appQtdeDeTestes < 3  // Debug: Remover este if após testes, limita até 3 testes por execução

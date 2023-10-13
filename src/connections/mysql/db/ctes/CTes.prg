@@ -199,9 +199,7 @@ method getListCTes() class TDbConhecimentos
     // sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
 
     // Debug: Testes em homologação: Remover este comando abaixo ---------------------------------
-    nCTe := dfeGetNumber("dbCTe")
-    consoleLog({ValType(nCTe), " ", nCTe})
-    sql:add(" AND cte_id = " + hb_ntos(nCTe))
+    sql:add(" AND cte_id = " + hb_ntos(dfeGetNumber("dbCTe")))
     // Testes em homologação --------------------------------------------------------------
 
     sql:add(" ORDER BY cte_monitor_action, emp_id, cte_numero")

@@ -437,8 +437,12 @@ method defineBody() class TApiCTe
             toma["IE"] := ::cte:tom_ie
         endif
         toma["xNome"] := ::cte:tom_xNome
-        toma["xFant"] := ::cte:tom_xFant
-        toma["fone"] := ::cte:tom_fone
+        if !Empty(::cte:tom_xFant)
+            toma["xFant"] := ::cte:tom_xFant
+        endif
+        if !Emtpy(::cte:tom_fone)
+            toma["fone"] := ::cte:tom_fone
+        endif
 
         ender := {=>}
         ender["xLgr"] := ::cte:tom_end_logradouro
@@ -596,8 +600,12 @@ method defineBody() class TApiCTe
         endif
 
         remet["xNome"] := ::cte:rem_razao_social
-        remet["xFant"] := ::cte:rem_nome_fantasia
-        remet["fone"] :=::cte:rem_fone
+        if !Emtpy(::cte:rem_nome_fantasia)
+            remet["xFant"] := ::cte:rem_nome_fantasia
+        endif
+        if !Emtpy(::cte:rem_fone)
+            remet["fone"] := ::cte:rem_fone
+        endif
 
         ender := {=>}
         ender["xLgr"] := ::cte:rem_end_logradouro
@@ -632,7 +640,9 @@ method defineBody() class TApiCTe
         endif
 
         exped["xNome"] := ::cte:exp_razao_social
-        exped["fone"] :=::cte:exp_fone
+        if !Emtpy(::cte:exp_fone)
+            exped["fone"] := ::cte:exp_fone
+        endif
 
         ender := {=>}
         ender["xLgr"] := ::cte:exp_end_logradouro
@@ -667,7 +677,9 @@ method defineBody() class TApiCTe
         endif
 
         receb["xNome"] := ::cte:rec_razao_social
-        receb["fone"] :=::cte:rec_fone
+        if !Empty(::cte:rec_fone)
+            receb["fone"] := ::cte:rec_fone
+        endif
 
         ender := {=>}
         ender["xLgr"] := ::cte:rec_end_logradouro
@@ -702,7 +714,9 @@ method defineBody() class TApiCTe
         endif
 
         desti["xNome"] := ::cte:des_razao_social
-        desti["fone"] :=::cte:des_fone
+        if !Empty(::cte:des_fone)
+            desti["fone"] := ::cte:des_fone
+        endif
 
         if !Empty(::cte:des_ISUF)
             desti["ISUF"] := ::cte:des_ISUF

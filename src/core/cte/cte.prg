@@ -198,7 +198,8 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     // ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
     ::modelo := number_format(cte["modelo"])
     ::serie := cte["serie"]
-    ::nCT := cte["nCT"] // Numero do CTe
+    // ::nCT := cte["nCT"] // Numero do CTe
+    ::nCT := dfeGetNumber("cte") // Debug: Numero do CTe
     ::cCT := PadL(cte["cCT"], 8, "0") // Numero da Minuta
     ::situacao := hmg_upper(cte["situacao"])
     ::chCTe := cte["chCTe"]
@@ -358,6 +359,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
     ::tpImp := ::emitente:tpImp
     ::cUF := ::emitente:cUF
     ::tpAmb := ::emitente:tpAmb
+
     // Se o registro no DB ainda não tem uma chave UUID, é criado uma
     if Empty(::referencia_uuid)
         ::referencia_uuid :=  hb_UPadL(::serie, 3, "0") +;

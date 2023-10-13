@@ -58,8 +58,6 @@ procedure cteSubmit(cte)
             cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
         next
         cte:setSituacao("ERRO")
-        // Debug
-        consoleLog("apiCTe:response" + apiCTe:response + hb_eol() + "API Conectado: " + iif(apiCTe:connected, "SIM", "NÃO"))
     endif
 
     if emitido

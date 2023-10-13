@@ -391,7 +391,7 @@ method defineBody() class TApiCTe
     ide["natOp"] := ::cte:natOp
     ide["mod"] := ::cte:modelo
     ide["serie"] := ::cte:serie
-    ide["nCT"] := ::cte:nCT        |  Debug: Após testes, descomentar esta linha eremover a debaixo
+    ide["nCT"] := ::cte:nCT
     ide["dhEmi"] := ::cte:dhEmi
     ide["tpImp"] :=  ::cte:tpImp
     ide["tpEmis"] := ::cte:tpEmis

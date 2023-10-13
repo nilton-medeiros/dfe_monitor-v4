@@ -289,7 +289,7 @@ procedure setup_Button_Submit_Certificado_action()
 				consoleLog(certificado:response)
 				jsonResponse := hb_jsonDecode(certificado:response)
 				msgRetorno := "codigo: " + jsonResponse['error']['code'] + hb_eol()
-				msgRetorno += "Menssagem: " + jsonResponse['error']['message']
+				msgRetorno += "Mensagem: " + jsonResponse['error']['message']
 			else
 				msgRetorno := certificado:response
 			endif

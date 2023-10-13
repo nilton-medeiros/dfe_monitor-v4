@@ -21,6 +21,7 @@ src\connections\nuvemFiscal\auth\AuthNuvemFiscal.prg
 src\connections\nuvemFiscal\shared\utils.prg
 src\core\AppData.prg
 src\core\cte\cte.prg
+src\core\cte\cteCancel.prg
 src\core\cte\cteGetFiles.prg
 src\core\cte\cteSubmit.prg
 src\core\cte\cteUploadFiles.prg

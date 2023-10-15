@@ -44,3 +44,4 @@ src\utils\msgNotify.prg
 src\utils\SysWait.prg
 src\utils\timersForms.prg
 tests\db\dfeGetNumber.prg
+tests\api\cancelarCTe_test.prg

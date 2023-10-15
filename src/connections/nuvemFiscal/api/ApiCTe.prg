@@ -198,9 +198,9 @@ method Cancelar() class TApiCTe
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
     // endif
-
+    ::body := '{"justificativa":""}'
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "POST", apiUrl, ::token, "Cancelar CTe")
+    res := Broadcast(::connection, "POST", apiUrl, ::token, "Cancelar CTe", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -747,6 +747,7 @@ method defineBody() class TApiCTe
     infCte["ide"] := ide
     infCte["compl"] := compl
     infCte["emit"] := emite
+
     if !Empty(remet)
         infCte["rem"] := remet
     endif
@@ -760,7 +761,7 @@ method defineBody() class TApiCTe
         infCte["dest"] := desti
     endif
 
-    // Libera as variáveis e deixa o Garbage Collector do Harbour limpar a memória
+    // Limpa e libera as variáveis deixando o Garbage Collector do Harbour limpar a memória
     ide := compl := emite := remet := exped := receb := desti := nil
 
     vPrest := {=>}
@@ -1009,7 +1010,7 @@ method defineBody() class TApiCTe
 
     ambiente := "homologacao"   // Debug: Após encerrar os testes, alterar esta linha
 
-    // Cria o Body Hasht Table
+    // Cria o Body Hash Table
     hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => ::cte:referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
 

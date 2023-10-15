@@ -3,11 +3,11 @@ procedure cteUploadFiles(upload)
     local cte := upload["cte"], empresa := upload["empresa"]
     local upFTP
 
-    // Debug:
+    // Debug: Descomentar todas as linhas de upFTP := TGED_FTP() após testes
     consoleLog("Entrou em cteUploadFile")
 
     if hb_HGetRef(upload, "pdf")
-        consoleLog(upload["pdf"])
+        consoleLog({"FakeTest: Efetuado o upload simbólico do arquivo: ", upload["pdf"]})
         // upFTP := TGED_FTP():new(upload["pdf"], empresa:remote_file_path)
         // if upFTP:upload()
         //     cte:setUpdateCte('cte_pdf', upFTP:getURL())
@@ -18,7 +18,7 @@ procedure cteUploadFiles(upload)
     endif
 
     if hb_HGetRef(upload, "xml")
-        consoleLog(upload["xml"])
+        consoleLog({"FakeTest: Efetuado o upload simbólico do arquivo: ", upload["xml"]})
         // upFTP := TGED_FTP():new(upload["xml"], empresa:remote_file_path)
         // if upFTP:upload()
         //     cte:setUpdateCte('cte_xml', upFTP:getURL())
@@ -29,7 +29,7 @@ procedure cteUploadFiles(upload)
     endif
 
     if hb_HGetRef(upload, "pdfCancel")
-        consoleLog(upload["pdfCancel"])
+        consoleLog({"FakeTest: Efetuado o upload simbólico do arquivo: ", upload["pdfCancel"]})
         // upFTP := TGED_FTP():new(upload["pdfCancel"], empresa:remote_file_path)
         // if upFTP:upload()
         //     cte:setUpdateCte('cte_cancelado_pdf', upFTP:getURL())
@@ -40,7 +40,7 @@ procedure cteUploadFiles(upload)
     endif
 
     if hb_HGetRef(upload, "xmlCancel")
-        consoleLog(upload["xmlCancel"])
+        consoleLog({"FakeTest: Efetuado o upload simbólico do arquivo: ", upload["xmlCancel"]})
         // upFTP := TGED_FTP():new(upload["xmlCancel"], empresa:remote_file_path)
         // if upFTP:upload()
         //     cte:setUpdateCte('cte_cancelado_xml', upFTP:getURL())

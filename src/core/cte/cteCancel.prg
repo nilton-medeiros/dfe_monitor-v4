@@ -5,6 +5,9 @@ procedure cteCancel(cte)
     local registrado
     local targetFile, anoEmes, directory, aError, error
 
+    // Debug:
+    consoleLog({"Cancelando CTe: ", cte:chave, ", nuvemfiscal_uuid: ", cte:nuvemfiscal_uuid})
+
     if apiCTe:Cancelar()
 
         consoleLog("Evento de Cancelamento Registrado | apiCTe:status " + apiCTe:status)   // Debug
@@ -33,8 +36,8 @@ procedure cteCancel(cte)
             cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
         next
         cte:setSituacao(apiCTe:status)
-        // Debug
-        consoleLog("apiCTe:response" + apiCTe:response + hb_eol() + "API Conectado: " + iif(apiCTe:connected, "SIM", "NÃO"))
+        // Debug:
+        consoleLog("Erro ao cancelar: apiCTe:response" + apiCTe:response)
     endif
 
 return

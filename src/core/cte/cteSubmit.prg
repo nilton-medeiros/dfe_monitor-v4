@@ -10,7 +10,7 @@ procedure cteSubmit(cte)
 
     if recebido
 
-        consoleLog("Processando Emitir(cte) | apiCTe:status " + apiCTe:status)   // Debug
+        consoleLog("Processando Emitir(cte) | apiCTe:status: " + Upper(apiCTe:status))   // Debug
 
         // Se CTe foi recebido, verifica se foi autorizado, rejeitado ou se ainda está pendente (aguardando na fila para ser processado)
         emitido := (apiCTe:status == "autorizado")
@@ -52,16 +52,15 @@ procedure cteSubmit(cte)
 
     endif
 
-    if !emitido
+    if emitido
+        cteGetFiles(cte, apiCTe)
+        cteCancel()
+    else
         aError := getMessageApiError(apiCTe, false)
         for each error in aError
             cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
         next
         cte:setSituacao("ERRO")
-    endif
-
-    if emitido
-        cteGetFiles(cte)
     endif
 
 return

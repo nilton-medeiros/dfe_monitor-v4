@@ -3,8 +3,8 @@
 
 #define TDZ_TRUE .T.
 
-// Interface entre appp e DB | Usado TConhecimento e Não "TCTe" para não conflitir com os objetos da lib xml sefaz CTe, CTes
-class TConhecimento
+// Interface entre appp e DB ()
+class TCTe
 
     data id readonly    // id do CTe no sistema TMS.Cloud
     data emp_id readonly
@@ -187,7 +187,7 @@ class TConhecimento
 
 end class
 
-method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
+method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     local clie, obs, nValFCP, percDIFAL, valorDIFAL
 
     ::id := cte["id"]
@@ -469,7 +469,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TConhecimento
 
 return self
 
-method infIndGlobalizado() class TConhecimento
+method infIndGlobalizado() class TCTe
     local nfe, cnpj, rem := {}, des := {}, docs := 0
 
     if (::tipo_doc_anexo == 2)
@@ -500,7 +500,7 @@ method infIndGlobalizado() class TConhecimento
 
 return nil
 
-method setSituacao(cteStatus) class TConhecimento
+method setSituacao(cteStatus) class TCTe
     local lSet := false
     cteStatus := hmg_lower(cteStatus)
     if !Empty(cteStatus) .and. cteStatus $ "pendente,autorizado,rejeitado,denegado,encerrado,cancelado,erro"
@@ -510,7 +510,7 @@ method setSituacao(cteStatus) class TConhecimento
     endif
 return lSet
 
-method setUpdateCte(key, value) class TConhecimento
+method setUpdateCte(key, value) class TCTe
     local lSet := false, pos
 
     if !Empty(key)
@@ -525,7 +525,7 @@ method setUpdateCte(key, value) class TConhecimento
 
 return lSet
 
-method setUpdateEventos(cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_ev_detalhe) class TConhecimento
+method setUpdateEventos(cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_ev_detalhe) class TCTe
     local ambiente := iif((::tpAmb == 1), "Produção", "Homologação")
     AAdd(::updateEventos, {"cte_id" => hb_ntos(::id), ;
                            "cte_ev_protocolo" => cte_ev_protocolo, ;
@@ -534,20 +534,20 @@ method setUpdateEventos(cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_e
                            "cte_ev_detalhe" => "Ambiente: " + ambiente + " |" + cte_ev_detalhe})
 return nil
 
-method save() class TConhecimento
+method save() class TCTe
     local cte
     if !Empty(::updateCTe)
-        cte := TDbConhecimentos():new()
+        cte := TDbCTes():new()
         if cte:updateCTe(hb_ntos(::id), ::updateCTe)
             ::updateCTe := {}
         endif
     endif
 return nil
 
-method saveEventos() class TConhecimento
+method saveEventos() class TCTe
     local cte
     if !Empty(::updateEventos)
-        cte := TDbConhecimentos():new()
+        cte := TDbCTes():new()
         if cte:insertEventos(::updateEventos)
             ::updateEventos := {}
         endif

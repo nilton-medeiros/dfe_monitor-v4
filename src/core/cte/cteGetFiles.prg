@@ -1,8 +1,8 @@
 #include "hmg.ch"
 
-function cteGetFiles(cte)
+function cteGetFiles(cte, apiCTe)
     local lExisteAutorizado := lExisteCancelado := false
-    local apiCTe, upload := {=>}
+    local upload := {=>}
     local directory, filePDF, fileXML, cancelPDF, cancelXML
     local empresa, anoMes
 
@@ -36,7 +36,7 @@ function cteGetFiles(cte)
         hb_DirBuild(directory)
     endif
 
-    apiCTe := TApiCTe():new(cte)
+    default apiCTe := TApiCTe():new(cte)
 
     if !lExisteAutorizado
 

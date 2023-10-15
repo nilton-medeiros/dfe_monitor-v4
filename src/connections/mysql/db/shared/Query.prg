@@ -13,6 +13,7 @@ class TQuery
     method serverBusy()
     method Skip() inline ::db:Skip()
     method GoTop() inline ::db:GoTop()
+    method GetRow() inline ::db:GetRow()
     method eof() inline ::db:eof()
     method FieldGet(cnField) inline ::db:FieldGet(cnField)
     method Destroy()

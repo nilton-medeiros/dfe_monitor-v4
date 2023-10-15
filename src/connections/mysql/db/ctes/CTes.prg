@@ -1,7 +1,7 @@
 #include "hmg.ch"
 #include <hbclass.ch>
 
-class TDbConhecimentos
+class TDbCTes
     data ctes
 
     method new() constructor
@@ -17,11 +17,11 @@ class TDbConhecimentos
 
 end class
 
-method new() class TDbConhecimentos
+method new() class TDbCTes
     ::ctes := {}
 return self
 
-method getListCTes() class TDbConhecimentos
+method getListCTes() class TDbCTes
     local hCTe, hAnexos, emails, docTransAnt, modalidade
     local dbCTes, empresa, sql := TSQLString():new()
 
@@ -208,16 +208,16 @@ method getListCTes() class TDbConhecimentos
     dbCTes := TQuery():new(sql:value)
 
     if dbCTes:executed
-        do while !dbCTes:db:Eof()
-            hCTe := convertFieldsDb(dbCTes:db:GetRow())
+        do while !dbCTes:eof()
+            hCTe := convertFieldsDb(dbCTes:GetRow())
             hAnexos := ::getAnexosCTe(hCTe)
             emails := ::getEmails(hCTe)
             if (hb_ntos(hCTe['tpServ']) $ "123")
                 docTransAnt := ::getDocAnteriores(hCTe["id"])
             endif
             modalidade := iif(hCTe['modal'] == 1, ::getRodoOCC(hCTe["id"]), ::getAereoCub3(hCTe["id"]))
-            AAdd(::ctes, TConhecimento():new(hCTe, hAnexos, emails, docTransAnt, modalidade))
-            dbCTes:db:Skip()
+            AAdd(::ctes, TCTe():new(hCTe, hAnexos, emails, docTransAnt, modalidade))
+            dbCTes:Skip()
         enddo
     endif
 
@@ -225,10 +225,10 @@ method getListCTes() class TDbConhecimentos
 
 return nil
 
-method count() class TDbConhecimentos
+method count() class TDbCTes
 return hmg_len(::ctes)
 
-method getAnexosCTe(hCTe) class TDbConhecimentos
+method getAnexosCTe(hCTe) class TDbCTes
     local sql := TSQLString():new(), where := TSQLString():new()
     local obsFisco, compCalc, doc
     local hResult := {"obs_fisco" => {}, "comp_calc" => {}, "doc" => {}}
@@ -327,7 +327,7 @@ method getAnexosCTe(hCTe) class TDbConhecimentos
 
 return hResult
 
-method getEmails(hCTe) class TDbConhecimentos
+method getEmails(hCTe) class TDbCTes
     local sql := TSQLString():new()
     local cliente, contato
     local clientes := { ;
@@ -355,7 +355,7 @@ method getEmails(hCTe) class TDbConhecimentos
 
 return clientes
 
-method getDocAnteriores(id) class TDbConhecimentos
+method getDocAnteriores(id) class TDbCTes
     local s := TSQLString():new("SELECT ")
     local emiDocAnt := {}, emitentes, hEmitente
 
@@ -425,7 +425,7 @@ method getDocAnteriores(id) class TDbConhecimentos
 return emiDocAnt
 
 // OCC: Ordem de Coleta
-method getRodoOCC(id) class TDbConhecimentos
+method getRodoOCC(id) class TDbCTes
     local occ := {}, s := TSQLString():new("SELECT ")
     local serie, coleta, coletas
 
@@ -462,7 +462,7 @@ method getRodoOCC(id) class TDbConhecimentos
 
 return occ
 
-method getAereoCub3(id) class TDbConhecimentos
+method getAereoCub3(id) class TDbCTes
     local s := TSQLString():new("SELECT ")
     local dim, aereo := {=>}
 
@@ -486,7 +486,7 @@ method getAereoCub3(id) class TDbConhecimentos
 
 return aereo
 
-method updateCTe(cId, aFields) class TDbConhecimentos
+method updateCTe(cId, aFields) class TDbCTes
     local updated, cte, sql := TSQLString():new()
     local hField, campo, valor, n := 0
 
@@ -525,7 +525,7 @@ method updateCTe(cId, aFields) class TDbConhecimentos
 
 return updated
 
-method insertEventos(aEvents) class TDbConhecimentos
+method insertEventos(aEvents) class TDbCTes
     local inserted, ctes_eventos, sql := TSQLString():new()
     local hEvent, n := 0
 

@@ -1,5 +1,5 @@
 procedure testBaixarArquivos()
-    local cte, ctes := TDbConhecimentos():new()
+    local cte, ctes := TDbCTes():new()
     local baixar, targetFile, empresa, anoMes, directory
 
     ctes:getListCTes()

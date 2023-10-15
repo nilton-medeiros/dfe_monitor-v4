@@ -1,22 +1,21 @@
 #include "hmg.ch"
 
 procedure cteMonitoring()
-    local cte, ctes := TDbConhecimentos():new()
+    local cte, dbCTes := TDbCTes():new()
     local emTeste := true // Debug: Remover esta linha após testes
 
-    ctes:getListCTes()
+    dbCTes:getListCTes()
 
-    if (ctes:count == 0)
+    if (dbCTes:count == 0)
         return // Não retornou CTEs para transmitir a Sefaz
     endif
 
-    for each cte in ctes:ctes
+    for each cte in dbCTes:ctes
         // Debug: Em teste, remover esta variável "emTeste" e o "if emTeste" após testes
         if emTeste
-            consoleLog({"Entrou ctemonitoring, cte: ", cte:id, hb_eol(), "invocando cteSubmit e cteCancel"})
+            consoleLog({"Entrou ctemonitoring, cte: ", cte:id, ", invocando cteSubmit e cteCancel"})
             // Os CTes de 44501 à 44506 são dados reais e vem do banco de dados e serao processados no ambiente de homologação
             cteSubmit(cte)
-            cteCancel(cte)
         else
             switch cte:monitor_action
                 case "SUBMIT"

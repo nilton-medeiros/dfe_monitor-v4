@@ -56,10 +56,10 @@ function cteGetFiles(cte, apiCTe)
         if apiCTe:BaixarXMLdoCTe()
             if hb_MemoWrit(directory + fileXML, apiCTe:xml_cte)
                 upload["xml"] := directory + fileXML
-                saveLog("Arquivo XML do CTe salvo com sucesso: " + directory + filetXML)
+                saveLog("Arquivo XML do CTe salvo com sucesso: " + directory + fileXML)
             else
                 cte:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "BINARY XML", "Erro ao escrever XML em arquivo. Ver log servidor local")
-                saveLog("Erro ao escrever xml binary em arquivo " + filetXML + " na pasta " + directory)
+                saveLog("Erro ao escrever xml binary em arquivo " + fileXML + " na pasta " + directory)
             endif
         else
             cte:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "BINARY XML", "Arquivo XML do CTe não retornado. Ver log servidor local")

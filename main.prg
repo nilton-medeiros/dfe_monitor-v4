@@ -186,8 +186,9 @@ procedure main_Timer_dfe_action()
     consoleLog({"Entrou main_Timer_dfe_action, Seconds - timer >= frequency: ", Seconds(), "-", appData:timer, ">=", appData:frequency, iif((Seconds() - appData:timer >= appData:frequency), "SIM", "NAO")})
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
-        cteMonitoring()
         // Debug
+        testCancelarCTe()
+        // cteMonitoring()
         // mdfeMonitoring()
         appData:setTimer()
         // Debug: Testando api empresas, cadastrar uma empresa

@@ -6,7 +6,7 @@ procedure cteCancel(cte)
     local targetFile, anoEmes, directory, aError, error
 
     // Debug:
-    consoleLog({"Cancelando CTe: ", cte:chave, ", nuvemfiscal_uuid: ", cte:nuvemfiscal_uuid})
+    consoleLog({"Cancelando CTe: ", cte:chave, ", nuvemfiscal_uuid: ", apiCTe:nuvemfiscal_uuid})
 
     if apiCTe:Cancelar()
 

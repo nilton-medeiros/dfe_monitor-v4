@@ -198,7 +198,9 @@ method Cancelar() class TApiCTe
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
     // endif
-    ::body := '{"justificativa":""}'
+
+    ::body := '{"justificativa":"Erro no preenchimento do Conhecimento de transporte Eletronico"}'
+
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "POST", apiUrl, ::token, "Cancelar CTe", ::body, "application/json")
 
@@ -216,17 +218,17 @@ method Cancelar() class TApiCTe
         ::ambiente := hRes['ambiente']
         ::status := hRes['status']
         ::data_evento := DateTime_to_mysql(hRes['data_evento'])
-        ::numero_protocolo := hRes['numero_protocolo']
         ::data_recebimento := DateTime_to_mysql(hRes['data_recebimento'])
+        ::numero_protocolo := hb_HGetDef(hRes, 'numero_protocolo', hRes['id'])
 
         if hb_HGetRef(hRes, 'codigo_status')
             ::codigo_status := hRes['codigo_status']
             ::motivo_status := hRes['motivo_status']
+        elseif hb_HGetRef(hRes, 'codigo_mensagem')
+            ::codigo_status := hRes['codigo_mensagem']
+            ::motivo_status := hRes['mensagem']
         else
-            if hb_HGetRef(hRes, 'codigo_mensagem')
-                ::codigo_status := hRes['codigo_mensagem']
-                ::motivo_status := hRes['mensagem']
-            endif
+            ::mensagem := res["response"]
         endif
         ::tipo_evento := hRes['tipo_evento']
     endif

@@ -13,7 +13,7 @@ procedure consoleLog(text)
       FSeek(h, 0, FS_END)
    else
       h := hb_FCreate(path + logFile, FC_NORMAL)
-      FWrite(h, 'Console Log de Sistema ' + appData:displayName + hb_eol())
+      FWrite(h, 'Console Log de Sistema ' + appData:displayName + hb_eol() + hb_eol())
    endif
    if ValType(text) == 'A'
       for each t in text
@@ -37,7 +37,7 @@ procedure consoleLog(text)
 
    processos += ProcName(1) + '(' + hb_ntos(ProcLine(1)) + ')'
 
-   msg := hb_eol() + DtoC(Date()) + ' ' + Time() + ' [' + processos + ']: ' + msg
+   msg := DtoC(Date()) + ' ' + Time() + ' [' + processos + ']' + hb_eol() + "    " + msg + hb_eol() + hb_eol()
 
    SET(_SET_DATEFORMAT, dateFormat)
 

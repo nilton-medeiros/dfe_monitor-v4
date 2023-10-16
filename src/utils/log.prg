@@ -1,21 +1,19 @@
 #include "hmg.ch"
 #include <fileio.ch>
 
-procedure saveLog(text, lEncrypt)
+procedure saveLog(text)
    local path := appData:systemPath + 'log\'
    local dateFormat := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
    local logFile := 'dfe_log' + hb_ULeft(DToS(Date()),6) + '.txt'
    local h
    local t, msg := "", processos := ''
 
-   DEFAULT lEncrypt := false
-
    if hb_FileExists(path + logFile)
       h := FOpen(path + logFile, FO_WRITE)
       FSeek(h, 0, FS_END)
    else
       h := hb_FCreate(path + logFile, FC_NORMAL)
-      FWrite(h, 'Log de Sistema ' + appData:displayName + hb_eol())
+      FWrite(h, 'Log de Sistema ' + appData:displayName + hb_eol() + hb_eol())
    endif
    if ValType(text) == 'A'
       for each t in text
@@ -42,11 +40,7 @@ procedure saveLog(text, lEncrypt)
 
    processos += ProcName(1) + '(' + hb_ntos(ProcLine(1)) + ')'
 
-   if lEncrypt
-      msg := "[ENCRYPT START =>]" + hb_eol() + auxEncrypt(msg) + hb_eol() + [<= ENCRYPT END]
-   endif
-
-   msg := hb_eol() + DtoC(Date()) + ' ' + Time() + ' [' + processos + '] ' + msg + hb_eol()
+   msg := DtoC(Date()) + ' ' + Time() + ' [' + processos + ']' + hb_eol() + "    " + msg + hb_eol() + hb_eol()
 
    SET(_SET_DATEFORMAT, dateFormat)
 
@@ -54,15 +48,6 @@ procedure saveLog(text, lEncrypt)
    FClose(h)
 
 return
-
-function auxEncrypt(string)
-    local char, encrypted := ''
-    string := desacentuar(string)
-    for each char in string
-        encrypted += hb_ntos(asc(char)) + '#|@'
-    next
-    encrypted := hb_ULeft(encrypted, hmg_len(encrypted)-3)
-return encrypted
 
 /*
    Copiar esta função e usar em https://os.allcom.pl/harbour/

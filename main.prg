@@ -182,12 +182,10 @@ procedure main_Timer_dfe_action()
         endif
     endif
 
-    // Debug:
-    consoleLog({"Entrou main_Timer_dfe_action, Seconds - timer >= frequency: ", Seconds(), "-", appData:timer, ">=", appData:frequency, iif((Seconds() - appData:timer >= appData:frequency), "SIM", "NAO")})
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
         // Debug
-        testCancelarCTe()
+        // testCancelarCTe()
         // cteMonitoring()
         // mdfeMonitoring()
         appData:setTimer()

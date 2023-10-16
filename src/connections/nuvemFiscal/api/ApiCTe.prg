@@ -258,7 +258,7 @@ method BaixarPDFdoDACTE() class TApiCTe
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
-    ::response := res['response']
+    ::response := res['response']   // Response Schema: "*/*", não retorna json, somente o binário
 
     if res['error']
         saveLog({"Erro ao baixar PDF do DACTE na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
@@ -294,7 +294,7 @@ method BaixarPDFdoCancelamento() class TApiCTe
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
-    ::response := res['response']
+    ::response := res['response']   // Response Schema: "*/*", não retorna json, somente o binário
 
     if res['error']
         saveLog({"Erro ao baixar PDF do CTE CANCELADO na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;

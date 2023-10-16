@@ -80,10 +80,12 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
 
         endif
 
-        // Debug: Remover esta linha e a debaixo após testes
-        consoleLog({"Debug: " + operation + " | HTTP Status: ", resposta["status"], hb_eol(), "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
-            "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
-            "Body: ", iif(body==nil, "NULL", body), hb_eol(), "Response: ", resposta["response"]})
+        if !(Lower(Left(operation, 6)) == "baixar")
+            // Debug: Remover esta linha e a debaixo após testes
+            consoleLog({"Debug: " + operation + " | HTTP Status: ", resposta["status"], hb_eol(), "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
+                "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
+                "Body: ", iif(body==nil, "NULL", body), hb_eol(), "Response: ", resposta["response"]})
+        endif
     endif
 
 return resposta

@@ -15,7 +15,7 @@ class TCTe
     data nCT readonly
     data cCT readonly
     data situacao readonly
-    data chCTe readonly
+    data chCTe 
     data nProt readonly
     data CFOP readonly
     data natOp readonly

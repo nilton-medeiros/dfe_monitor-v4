@@ -5,7 +5,7 @@ procedure consoleLog(text)
    local path := appData:systemPath + 'log\'
    local dateFormat := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
    local logFile := 'console.log'
-   local h
+   local h, n := 0
    local t, msg := "", processos := ''
 
    if hb_FileExists(path + logFile)
@@ -24,8 +24,11 @@ procedure consoleLog(text)
                t := hb_DToC(t)
             elseif (ValType(t) == 'L')
                t := iif(t, 'true', 'false')
+            else
+               t := "Parametro inválido: ValType(t): " + ValType(t) + " | Posição: " + hb_ntos(n)
             endif
          endif
+         n++
          msg += t
       next
    else

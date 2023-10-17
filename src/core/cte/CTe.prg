@@ -15,7 +15,7 @@ class TCTe
     data nCT readonly
     data cCT readonly
     data situacao readonly
-    data chCTe 
+    data chCTe
     data nProt readonly
     data CFOP readonly
     data natOp readonly
@@ -382,7 +382,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
             AAdd(::obs_fisco, {"xCampo" => obs["xCampo"], "xTexto" => obs["xTexto"]})
         endif
     next
-
+    
     if !Empty(::vTotTrib)
         AAdd(::obs_contr, {"xCampo" => "LEI DA TRANSPARENCIA",;
                            "xTexto" => "Lei da transparencia 12741/12, o valor aproximado dos tributos incidentes sobre o preço do serviço:" +;

@@ -191,7 +191,7 @@ procedure main_Timer_dfe_action()
         appData:setTimer()
         // Debug: Testando api empresas, cadastrar uma empresa
         // testAlterarEmpresa()
-        turnOFF()
+        // turnOFF()
     endif
 
     startTimer()

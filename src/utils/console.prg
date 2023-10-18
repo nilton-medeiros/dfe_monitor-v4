@@ -25,7 +25,7 @@ procedure consoleLog(text)
             elseif (ValType(t) == 'L')
                t := iif(t, 'true', 'false')
             else
-               t := "Parametro inválido: ValType(t): " + ValType(t) + " | Posição: " + hb_ntos(n)
+               t := "Parametro invalido: ValType(t): " + ValType(t) + " | Posicao: " + hb_ntos(n)
             endif
          endif
          n++

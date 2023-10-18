@@ -25,12 +25,14 @@ method new(cSql) class TQuery
     ::executed := false
     ::count := 0
     if appDataSource:connected .or. appDataSource:connect()
+        SetProperty("main", "NotifyIcon", "serverWAIT")
         msgNotify({'notifyTooltip' => "Executando query..."})
         if ::runQuery()
             ::count := ::db:LastRec()
             ::db:GoTop()
         endif
         msgNotify()
+        SetProperty("main", "NotifyIcon", "serverON")
     endif
 return self
 

@@ -15,7 +15,7 @@ procedure cteMonitoring()
         if emTeste
             consoleLog({"Entrou ctemonitoring, cte: ", cte:id, ", invocando cteSubmit e cteCancel"})
             // Os CTes de 44501 à 44506 são dados reais e vem do banco de dados e serao processados no ambiente de homologação
-            //cteSubmit(cte)
+            cteSubmit(cte)
         else
             switch cte:monitor_action
                 case "SUBMIT"

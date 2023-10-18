@@ -46,5 +46,6 @@ procedure testBaixarArquivos()
     endif
 
     MsgStop("Fim do teste" + hb_eol() + "Verificar pasta C:\shared\DFe", "Baixar Arquivos")
+    turnOFF()
 
 return

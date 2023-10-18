@@ -70,7 +70,7 @@ return !res['error']
 
 
 method Enviar(imgLogotipo, cExt) class TApiLogotipo
-    local res, apiUrl, body, content_type := "image/png"
+    local res, apiUrl, content_type := "image/png"
 
     if !::connected
         return false
@@ -87,17 +87,12 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // endif
 
-    // Request Body
-    body := '{' + hb_eol()
-    body += '  "Input": "' + imgLogotipo + '"' + hb_eol()
-    body += '}'
-
     if !(hmg_lower(cExt) == ".png")
         content_type := "image/jpeg"
     endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Enviar Logotipo", body, content_type)
+    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Enviar Logotipo", imgLogotipo, content_type)
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']

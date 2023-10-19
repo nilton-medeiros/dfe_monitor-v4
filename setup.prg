@@ -1,4 +1,6 @@
 #include "hmg.ch"
+#include <fileio.ch>
+
 #define GREEN_OCRE {0, 128, 128}
 #define YELLOW_OCRE {253, 253, 0}
 
@@ -318,7 +320,7 @@ procedure setup_Button_Submit_Logotipo_action()
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
-	local logotipo, fileLoaded
+	local logotipo, binaryFile, nFileHandle
 
 	SetProperty('setup', 'Label_StatusLogotipo', 'value', '')
 
@@ -338,18 +340,30 @@ procedure setup_Button_Submit_Logotipo_action()
 
 		// Transmitir para a nuvem fiscal e pegar retorno
 
-		fileLoaded := MemoRead(fileLogo)
-		logotipo := TApiLogotipo():new(cnpj)
+		nFileHandle := FOpen(fileLogo, FO_READ + FD_BINARY)
 
-		if logotipo:Enviar(fileLoaded, hb_FNameExt(fileLogo))
-			RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", fileLogo)
-			RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 1)
-			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Logotipo carregado com sucesso!')
-			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', GREEN_OCRE)
+		if !(nFileHandle == F_ERROR)
+			binaryFile := FRead(nFileHandle, FSize(nFileHandle))
+			FClose(nFileHandle)
+
+			if !Empty(binaryFile)
+				logotipo := TApiLogotipo():new(cnpj)
+
+				if logotipo:Enviar(binaryFile, hb_FNameExt(fileLogo))
+					RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", fileLogo)
+					RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 1)
+					SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Logotipo carregado com sucesso!')
+					SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', GREEN_OCRE)
+				else
+					SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Erro ao carregar Logotipo!')
+					SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', RED)
+					MsgStop(getMessageApiError(logotipo), "Erro ao carregar Logotipo")
+				endif
+			else
+				MsgStop("Erro ao ler o arquivo de imagem.", "Erro ao ler Logotipo")
+			endif
 		else
-			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Erro ao carregar Logotipo!')
-			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', RED)
-			MsgStop(getMessageApiError(logotipo), "Erro ao carregar Logotipo")
+			MsgStop("Erro ao abrir o arquivo de imagem.", "Erro ao carregar Logotipo")
 		endif
 
 	endif

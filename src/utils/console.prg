@@ -17,6 +17,7 @@ procedure consoleLog(text)
    endif
    if ValType(text) == 'A'
       for each t in text
+         n++
          if !(ValType(t) == 'C')
             if (ValType(t) == 'N')
                t := hb_ntos(t)
@@ -25,10 +26,9 @@ procedure consoleLog(text)
             elseif (ValType(t) == 'L')
                t := iif(t, 'true', 'false')
             else
-               t := "Parametro invalido: ValType(t): " + ValType(t) + " | Posicao: " + hb_ntos(n)
+               t := "Parametro t is null | Posicao: " + hb_ntos(n)
             endif
          endif
-         n++
          msg += t
       next
    else

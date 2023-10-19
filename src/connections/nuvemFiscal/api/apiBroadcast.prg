@@ -55,8 +55,10 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         if (resposta["status"] > 199) .and. (resposta["status"] < 300)
 
             // Entre 200 e 299
-            resposta["response"] := connection:ResponseBody
-            resposta["ContentType"] := "json"
+            if !Empty(connection:ResponseBody)
+                resposta["response"] := connection:ResponseBody
+                resposta["ContentType"] := "json"
+            endif
 
         else    // if (resposta["status"] > 399) .and. (resposta["status"] < 600)
 
@@ -82,9 +84,24 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
 
         if !(Lower(Left(operation, 6)) == "baixar")
             // Debug: Remover esta linha e a debaixo após testes
-            consoleLog({"Debug: " + operation + " | HTTP Status: ", resposta["status"], hb_eol(), "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
-                "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
-                "Body: ", iif(body==nil, "NULL", body), hb_eol(), "Response: ", resposta["response"]})
+            consoleLog({"Debug: " + operation + " | HTTP Status: ", .
+                        resposta["status"], ;
+                        hb_eol(), ;
+                        "URL API (", ;
+                        httpMethod + "): ", ;
+                        apiUrl, ;
+                        hb_eol(), ;
+                        "content_type: ", ;
+                        iif(content_type == nil, "NULL", content_type), ;
+                        hb_eol(), ;
+                        "accept: ", ;
+                        iif(accept == nil, "NULL", accept), ;
+                        hb_eol(), ;
+                        "Body: ", ;
+                        iif(body == nil, "NULL", body), ;
+                        hb_eol(), ;
+                        "Response: ", ;
+                        iif(resposta["response"] == nil, "NULL", resposta["response"])})
         endif
     endif
 

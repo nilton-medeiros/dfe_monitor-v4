@@ -186,7 +186,7 @@ procedure main_Timer_dfe_action()
     if (Seconds() - appData:timer >= appData:frequency)
         // Debug
         // testCancelarCTe()
-        cteMonitoring()
+        // cteMonitoring()
         // mdfeMonitoring()
         appData:setTimer()
         // Debug: Testando api empresas, cadastrar uma empresa

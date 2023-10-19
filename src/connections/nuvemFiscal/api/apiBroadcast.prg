@@ -84,7 +84,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
 
         if !(Lower(Left(operation, 6)) == "baixar")
             // Debug: Remover esta linha e a debaixo após testes
-            consoleLog({"Debug: " + operation + " | HTTP Status: ", .
+            consoleLog({"Debug: " + operation + " | HTTP Status: ", ;
                         resposta["status"], ;
                         hb_eol(), ;
                         "URL API (", ;

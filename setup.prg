@@ -337,6 +337,9 @@ procedure setup_Button_Submit_Logotipo_action()
 		SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', YELLOW_OCRE)
 
 		// Transmitir para a nuvem fiscal e pegar retorno
+		// Debug:
+		saveLog({"Enviando FileLogo: ", fileLogo, hb_eol(), "Extensão: ", hb_FNameExt(fileLogo)})
+
 		fileLoaded := hb_MemoRead(fileLogo)
 		logotipo := TApiLogotipo():new(cnpj)
 

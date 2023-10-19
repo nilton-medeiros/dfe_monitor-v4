@@ -41,7 +41,7 @@ class TCTeHPDFDoc
    data dhCreated protected
    data qtdeDoc protected
 
-   method new() constructor
+   method new(out_path, logo, ch_cte, tpAmb, ind_globalizado) constructor
    method startPDF() setget
    method encoding() setget
    method pageHeader()

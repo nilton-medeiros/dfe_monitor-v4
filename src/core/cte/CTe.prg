@@ -374,6 +374,10 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::obs_contr := {}
     ::obs_fisco := {}
 
+
+    // Adiciona o Emissor a tag ObsCont "Uso Exclusivo do Emissor de CT-e"
+    AAdd(::obs_contr, {"xCampo" => "Emissor", "xTexto" => ::xEmi})
+
     // Docs anexos ao CTe
     for each obs in hAnexos["obs_fisco"]
         if (obs["interessado"] == "CONTRIBUINTE")
@@ -382,7 +386,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
             AAdd(::obs_fisco, {"xCampo" => obs["xCampo"], "xTexto" => obs["xTexto"]})
         endif
     next
-    
+
     if !Empty(::vTotTrib)
         AAdd(::obs_contr, {"xCampo" => "LEI DA TRANSPARENCIA",;
                            "xTexto" => "Lei da transparencia 12741/12, o valor aproximado dos tributos incidentes sobre o preço do serviço:" +;

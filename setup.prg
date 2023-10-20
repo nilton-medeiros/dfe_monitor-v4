@@ -341,7 +341,7 @@ procedure setup_Button_Submit_Logotipo_action()
 
 		// Transmitir para a nuvem fiscal e pegar retorno
 
-		nFileHandle := FOpen(fileLogo, FO_READ + FD_BINARY)
+		nFileHandle := FOpen(fileLogo, FD_BINARY)
 
 		if !(nFileHandle == F_ERROR)
 			nSize := hb_FSize(fileLogo)

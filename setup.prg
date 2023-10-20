@@ -320,7 +320,7 @@ procedure setup_Button_Submit_Logotipo_action()
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
-	local logotipo, binaryFile, nFileHandle
+	local logotipo, binaryFile, nFileHandle, nSize
 
 	SetProperty('setup', 'Label_StatusLogotipo', 'value', '')
 
@@ -343,7 +343,9 @@ procedure setup_Button_Submit_Logotipo_action()
 		nFileHandle := FOpen(fileLogo, FO_READ + FD_BINARY)
 
 		if !(nFileHandle == F_ERROR)
-			binaryFile := FRead(nFileHandle, hb_FSize(fileLogo))
+			nSize := hb_FSize(fileLogo)
+			binaryFile := Space(nSize)
+			nSize := FRead(nFileHandle, @binaryFile, nSize)
 			FClose(nFileHandle)
 
 			if !Empty(binaryFile)
@@ -360,7 +362,7 @@ procedure setup_Button_Submit_Logotipo_action()
 					MsgStop(getMessageApiError(logotipo), "Erro ao carregar Logotipo")
 				endif
 			else
-				MsgStop("Erro ao ler o arquivo de imagem.", "Erro ao ler Logotipo")
+				MsgStop({"Erro ao ler o arquivo de imagem.", hb_eol(), "nSize: ", nSize}, "Erro ao ler Logotipo")
 			endif
 		else
 			MsgStop("Erro ao abrir o arquivo de imagem.", "Erro ao carregar Logotipo")

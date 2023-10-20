@@ -341,7 +341,7 @@ procedure setup_Button_Submit_Logotipo_action()
 
 		// Transmitir para a nuvem fiscal e pegar retorno
 
-		nFileHandle := FOpen(fileLogo, FD_BINARY)
+		nFileHandle := FOpen(fileLogo)
 
 		if !(nFileHandle == F_ERROR)
 			nSize := hb_FSize(fileLogo)
@@ -363,10 +363,10 @@ procedure setup_Button_Submit_Logotipo_action()
 					MsgStop(getMessageApiError(logotipo), "Erro ao carregar Logotipo")
 				endif
 			else
-				MsgStop({"Erro ao ler o arquivo de imagem.", hb_eol(), "nSize: ", nSize}, "Erro ao ler Logotipo")
+				MsgStop({"Erro ao ler o arquivo de imagem.", hb_eol(), "Erro: ", }, "Erro ao ler Logotipo")
 			endif
 		else
-			MsgStop("Erro ao abrir o arquivo de imagem.", "Erro ao carregar Logotipo")
+			MsgStop({"Erro ao abrir o arquivo de imagem.", "Erro: ", FError()}, "Erro ao carregar Logotipo")
 		endif
 
 	endif

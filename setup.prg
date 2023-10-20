@@ -343,7 +343,7 @@ procedure setup_Button_Submit_Logotipo_action()
 		nFileHandle := FOpen(fileLogo, FO_READ + FD_BINARY)
 
 		if !(nFileHandle == F_ERROR)
-			binaryFile := FRead(nFileHandle, FSize(nFileHandle))
+			binaryFile := FRead(nFileHandle, hb_FSize(fileLogo))
 			FClose(nFileHandle)
 
 			if !Empty(binaryFile)

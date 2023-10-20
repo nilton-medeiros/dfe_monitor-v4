@@ -320,7 +320,8 @@ procedure setup_Button_Submit_Logotipo_action()
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
-	local logotipo, binaryFile, nFileHandle, nSize
+	local logotipo, nFileHandle, nSize
+	private binaryFile
 
 	SetProperty('setup', 'Label_StatusLogotipo', 'value', '')
 

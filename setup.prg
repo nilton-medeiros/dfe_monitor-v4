@@ -241,7 +241,7 @@ procedure setup_Button_Submit_Certificado_action()
 	elseif !hb_FileExists(filePFX)
 		MsgExclamation("Arquivo " + filePFX + hb_eol() + "não encontrado!", "Arquivo PFX (Certificado A1)")
 	elseif !(paswUser == cbxUsers:getCargo())
-		MsgExclamation("Senha do admin inválida!" + hb_eol() + "Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
+		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + "Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
 	elseif Empty(cnpj)
 		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "Selecione uma Empresa")
 	else
@@ -317,6 +317,8 @@ procedure setup_Button_Submit_Certificado_action()
 return
 
 procedure setup_Button_Submit_Logotipo_action()
+	MsgInfo("Módulo desativado", "Envio do logotipo")
+/*
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
@@ -330,7 +332,7 @@ procedure setup_Button_Submit_Logotipo_action()
 	elseif !hb_FileExists(fileLogo)
 		MsgExclamation("Arquivo " + fileLogo + hb_eol() + "não encontrado!", "Arquivo de Logotipo")
 	elseif !(paswUser == cbxUsers:getCargo())
-		MsgExclamation("Senha do admin inválida!" + hb_eol() + ;
+		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + ;
 			"Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
 	elseif Empty(cnpj)
 		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "Selecione uma Empresa")
@@ -379,24 +381,28 @@ procedure setup_Button_Submit_Logotipo_action()
 	endif
 
 	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', !Empty(GetProperty('setup', 'Image_logotipo', 'picture')))
-
+*/
 return
 
 procedure setup_button_delete_logotipo_action()
 	local cnpj, logo
+	local paswUser := GetProperty('setup', 'Text_password', 'Value')
 
-	if MsgYesNo("Confirme a remoção do logotipo no PDF da DACTE/DAMDFE", "Remover Logotipo", false)
+	if !(paswUser == cbxUsers:getCargo())
+		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + ;
+			"Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
+	elseif MsgYesNo("Confirme a remoção do logotipo no PDF da DACTE/DAMDFE", "Remover Logotipo", false)
 		SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Deletando Logo...')
 		SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', YELLOW_OCRE)
 		cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 		logo := TApiLogotipo():new(cnpj)
 		if logo:Deletar()
-			SetProperty('setup', 'Image_logotipo', 'picture', "")
+			SetProperty('setup', 'Image_logotipo', 'picture', NIL)
 			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Logotipo Removido com Sucesso!')
 			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', GREEN_OCRE)
-			SetProperty("setup", "Image_logotipo", "picture", "")
 			RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", "")
 			RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 0)
+			saveLog("Usuário " + cbxUsers:getDisplay() + " deletou o logotipo!")
 		else
 			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Erro ao Remover Logotipo!')
 			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', RED)

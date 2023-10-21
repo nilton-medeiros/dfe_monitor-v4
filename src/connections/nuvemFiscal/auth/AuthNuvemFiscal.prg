@@ -19,7 +19,7 @@ method new() class TAuthNuvemFiscal
     ::regPath := appData:winRegistryPath
     ::token := CharXor(RegistryRead(::regPath + "nuvemFiscal\token"), "SysWeb2023")
     ::expires_in := StoD(RegistryRead(::regPath + "nuvemFiscal\expires_in"))
-    
+
     if Empty(::expires_in) .or. (::expires_in < Date())
         // Ainda não tem token ou garante o novo token 2 dias antes de expirar
         ::Authorized := ::getNewToken()
@@ -37,7 +37,7 @@ method getNewToken() class TAuthNuvemFiscal
 	local content_type := "application/x-www-form-urlencoded"
     local client_id := empresa:nuvemfiscal_client_id
     local client_secret := empresa:nuvemfiscal_client_secret
-    local scope := "cte mdfe cnpj empresa cep"
+    local scope := "cte mdfe cnpj empresa cep conta"
     local hResp, objError, msgError, body
 
     begin sequence

@@ -317,8 +317,8 @@ procedure setup_Button_Submit_Certificado_action()
 return
 
 procedure setup_Button_Submit_Logotipo_action()
-	// MsgInfo("Módulo desativado", "Envio do logotipo")
-
+	MsgInfo("Módulo desativado!", "Envio do logotipo")
+/*
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
@@ -381,7 +381,7 @@ procedure setup_Button_Submit_Logotipo_action()
 	endif
 
 	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', !Empty(GetProperty('setup', 'Image_logotipo', 'picture')))
-
+*/
 return
 
 procedure setup_button_delete_logotipo_action()

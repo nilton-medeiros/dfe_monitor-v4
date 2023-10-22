@@ -103,12 +103,6 @@ procedure main_form_oninit()
 
     if appDataSource:connect()
 
-        appNuvemFiscal := TAuthNuvemFiscal():new()
-
-        if !appNuvemFiscal:Authorized
-            turnOFF()
-        endif
-
         appEmpresas := TDbEmpresas():new()
 
         if !appEmpresas:ok
@@ -116,11 +110,20 @@ procedure main_form_oninit()
             MessageBoxTimeout('Nenhuma empresa foi retornada do banco de dados' + hb_eol() + 'Avise ao suporte!', 'Parada forçada', MB_ICONEXCLAMATION, 300000)
             turnOFF()
         endif
+
         appUsuarios := TDbUsuarios():new()
+
         if !appUsuarios:ok
             // A falta de usuários administradores não interfere no monitoramento de CT-es, apenas o Setup não será liberado
             saveLog("Nenhum usuario admin foi retornado do banco de dados")
         endif
+
+        appNuvemFiscal := TAuthNuvemFiscal():new()
+
+        if !appNuvemFiscal:Authorized
+            turnOFF()
+        endif
+
     else
         turnOFF()
     endif

@@ -188,8 +188,8 @@ procedure main_Timer_dfe_action()
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
         // Debug
-        cteMonitoring()
-        mdfeMonitoring()
+        // cteMonitoring()
+        // mdfeMonitoring()
         appData:setTimer()
         // Debug: Testando api empresas, cadastrar uma empresa
         // testAlterarEmpresa()
@@ -201,8 +201,8 @@ procedure main_Timer_dfe_action()
 return
 
 procedure turnOFF(isUser)
-
     default isUser := false
+
     stopTimer()
     if !Empty(appDataSource)
         appDataSource:disconnect()

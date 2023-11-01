@@ -28,7 +28,11 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
             connection:Send(body)
         endif
 
-        connection:WaitForResponse(5000)
+        if ("image" $ content_type)
+            connection:WaitForResponse(20000)
+        else
+            connection:WaitForResponse(5000)
+        endif
 
     recover using objError
         if (objError:genCode == 0)

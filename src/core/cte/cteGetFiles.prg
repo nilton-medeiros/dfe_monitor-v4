@@ -4,7 +4,7 @@ function cteGetFiles(cte, apiCTe)
     local lExisteAutorizado := lExisteCancelado := false
     local upload := {=>}
     local directory, filePDF, fileXML, cancelPDF, cancelXML
-    local empresa, anoMes
+    local empresa, anoMes, printPDF, printPath
 
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(cte:emp_id)
@@ -99,6 +99,18 @@ function cteGetFiles(cte, apiCTe)
     endif
 
     if !Empty(upload)
+        printPath := RegistryRead("HKEY_CURRENT_USER\Software\Sistrom\SendToPrinter\InstallPath\Path")
+        if !Empty(printPath)
+            printPath += "printNow\"
+            if hb_HGetRef(upload, "pdf")
+                printPDF := printPath + Token(upload["pdf"], "\")
+                hb_FCopy(upload["pdf"], printPDF)
+            endif
+            if hb_HGetRef(upload, "pdfCancel")
+                printPDF := printPath + Token(upload["pdfCancel"], "\")
+                hb_FCopy(upload["pdfCancel"], printPDF)
+            endif
+        endif
         upload["cte"] := cte
         upload["empresa"] := empresa
         cteUploadFiles(upload)

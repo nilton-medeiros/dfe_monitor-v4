@@ -66,6 +66,14 @@ function mdfeGetFiles(mdfe, apiMDFe)
     endif
 
     if !Empty(upload)
+        printPath := RegistryRead("HKEY_CURRENT_USER\Software\Sistrom\SendToPrinter\InstallPath\Path")
+        if !Empty(printPath)
+            printPath += "printNow\"
+            if hb_HGetRef(upload, "pdf")
+                printPDF := printPath + Token(upload["pdf"], "\")
+                hb_FCopy(upload["pdf"], printPDF)
+            endif
+        endif
         upload["mdfe"] := mdfe
         upload["empresa"] := empresa
         mdfeUploadFiles(upload)

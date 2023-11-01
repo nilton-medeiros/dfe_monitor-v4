@@ -4,7 +4,7 @@ procedure cteUploadFiles(upload)
     local upFTP
 
     // Debug: Descomentar todas as linhas de upFTP := TGED_FTP() após testes
-    consoleLog("Entrou em cteUploadFile")
+    consoleLog("Entrou em cteUploadFiles")
 
     if hb_HGetRef(upload, "pdf")
         consoleLog({"FakeTest: Efetuado o upload simbólico do arquivo: ", upload["pdf"]})

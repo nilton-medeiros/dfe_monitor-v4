@@ -2,14 +2,17 @@
 #include "hbclass.ch"
 
 class TMDFe
+    data versao
     data id         // id do MDFe no sistema TMS.Cloud
     data emp_id
     data emitente
+    data tpAmb
     data tpEmit
     data mod
     data serie
     data nMDF
     data cMDF
+    data chMDFe
     data nProt
     data dhEmi
     data tpEmis
@@ -17,53 +20,77 @@ class TMDFe
     data verProc
     data UFIni
     data UFFim
+    data infMunCarrega
+    data infPercurso
+    data infContratante
+    data veicTracao
+    data condutor
+    data infDescarga
+    data aVerb
+    data prodPred
+    data autXML
     data qCTe
     data vCarga
     data cUnid
     data qCarga
     data infAdFisco
     data infCpl
-    data lista_tomadores
     data situacao
-    data cte_monitor_action
+    data monitor_action
     data referencia_uuid
     data nuvemfiscal_uuid
     data updateMDFe
     data updateEvents
 
-    method new(mdfe) constructor
+    method new(hMDFe) constructor
     method setSituacao(mdfeStatus)
     method setUpdateMDFe(key, value)
     method setUpdateEventos(protocolo, data_hora, evento, detalhe)
+    method save()
+    method saveEventos()
 
 end class
 
-method new(mdfe) class TMDFe
+method new(hMDFe) class TMDFe
+    local mdfe := hMDFe["hDbMDFe"]
 
+    ::versao := "3.00"
     ::id := mdfe["id"]
     ::emp_id := mdfe["emp_id"]
     ::emitente := appEmpresas:getEmpresa(::emp_id)
+    ::tpAmb := ::emitente:tpAmb
     ::tpEmit := mdfe["tpEmit"]
-    ::mod := mdfe["modelo"]
+    ::mod := mdfe["modelo"]         // Modelo do MDFe
     ::serie := mdfe["serie"]
     ::nMDF := mdfe["nMDF"]
-    ::cMDF := mdfe["chMDFe"]
-    ::nProt := mdfe["nProt"]
+    ::cMDF := mdfe["id"]            // Código (id) que compõe a chave do MDFe
+    ::chMDFe := mdfe["chMDFe"]      // Chave do MDFe
+    ::modal := 1                    // MDFe sempre é = 1: Rodoviário
     ::dhEmi := mdfe["dhEmi"]
     ::tpEmis := mdfe["tpEmis"]
-    ::procEmi := mdfe["procEmi"]
+    ::procEmi := 0                  // 0-Emissão de MDF-e com aplicativo do contribuinte
     ::verProc := mdfe["verProc"]
     ::UFIni := mdfe["UFIni"]
     ::UFFim := mdfe["UFFim"]
+    ::infMunCarrega := hMDFe["carregamento"]
+    ::infPercurso := hMDFe["percursos"]
+    ::infContratante := hMDFe["contratantes"]
+    ::veicTracao := hMDFe["veicTracao"]
+    ::condutor := hMDFe["condutor"]
+    ::infDescarga := hMDFe["infDescarga"]
+    ::aVerb := hMDFe["aVerb"]
+    ::prodPred := hMDFe["prodPred"]
+    ::autXML := hMDFe["autXML"]
     ::qCTe := mdfe["qCTe"]
     ::vCarga := mdfe["vCarga"]
-    ::cUnid := mdfe["cUnid"]
+    ::cUnid := PadL(mdfe["cUnid"], 2, "0")
     ::qCarga := mdfe["qCarga"]
     ::infAdFisco := mdfe["infAdFisco"]
     ::infCpl := mdfe["infCpl"]
     ::lista_tomadores := mdfe["lista_tomadores"]
     ::situacao := mdfe["situacao"]
-    ::cte_monitor_action := mdfe["cte_monitor_action"]
+    ::monitor_action := mdfe["monitor_action"]
+    ::nProt := mdfe["nProt"]
     ::referencia_uuid := mdfe["referencia_uuid"]
     ::nuvemfiscal_uuid := mdfe["nuvemfiscal_uuid"]
     ::updateMDFe := {}
@@ -77,7 +104,7 @@ method setSituacao(mdfeStatus) class TMDFe
     if !Empty(mdfeStatus) .and. mdfeStatus $ "pendente,autorizado,rejeitado,denegado,encerrado,cancelado,erro"
         ::situacao := hmg_upper(mdfeStatus)
         lSet := true
-        ::setUpdateMDFe("mdfe_situacao", ::situacao)
+        ::setUpdateMDFe("situacao", ::situacao)
     endif
 return lSet
 
@@ -97,10 +124,31 @@ method setUpdateMDFe(key, value) class TMDFe
 return lSet
 
 method setUpdateEventos(protocolo, data_hora, evento, detalhe) class TMDFe
-    local ambiente := iif((::emitente:tpAmb == 1), "Produção", "Homologação")
+    local ambiente := iif((::tpAmb == 1), "Produção", "Homologação")
     AAdd(::updateEvents, {"mdfe_id" => hb_ntos(::id), ;
                            "protocolo" => cte_ev_protocolo, ;
                            "data_hora" => data_hora, ;
                            "evento" => evento, ;
-                           "detalhe" => "Ambiente: " + ambiente + " |" + detalhe})
+                           "motivo" => "Ambiente: " + ambiente, ;
+                           "detalhe" => detalhe})
+return nil
+
+method save() class TMDFe
+    local db
+    if !Empty(::updateMDFe)
+        db := TDbMDFes():new()
+        if db:updateMDFe(hb_ntos(::id), ::updateMDFe)
+            ::updateMDFe := {}
+        endif
+    endif
+return nil
+
+method saveEventos() class TMDFe
+    local mdfe
+    if !Empty(::updateEventos)
+        mdfe := TDbMDFes():new()
+        if mdfe:insertEventos(::updateEventos)
+            ::updateEventos := {}
+        endif
+    endif
 return nil

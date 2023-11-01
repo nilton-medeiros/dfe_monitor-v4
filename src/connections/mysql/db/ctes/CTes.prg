@@ -460,6 +460,8 @@ method getRodoOCC(id) class TDbCTes
         enddo
     endif
 
+    coletas:Destroy()
+
 return occ
 
 method getAereoCub3(id) class TDbCTes
@@ -483,6 +485,8 @@ method getAereoCub3(id) class TDbCTes
         // Debug: Após testes, trocar por saveLog() e não passar o s:value
         consoleLog({"dim:count = ", dim:count, hb_eol(), s:value})
     endif
+
+    dim:Destroy()
 
 return aereo
 

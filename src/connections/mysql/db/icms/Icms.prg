@@ -39,7 +39,8 @@ method new(ufOrigem, ufDestino) class TDbIcms
         else
             saveLog("Consuta a tabela de ICMS não retornou dois registros necessários")
         endif
-        icms:Destroy()
     endif
+    
+    icms:Destroy()
 
 return self

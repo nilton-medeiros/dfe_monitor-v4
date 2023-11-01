@@ -7,7 +7,7 @@
 */
 function Broadcast(connection, httpMethod, apiUrl, token, operation, body, content_type, accept)
     local objError
-    local resposta := {"error" => false, "status" => 0, "ContentType" => "", "response" => ""}
+    local response := {"error" => false, "status" => 0, "ContentType" => "", "response" => ""}
 
     begin sequence
 
@@ -34,75 +34,69 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         if (objError:genCode == 0)
             // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), hb_eol()})
             saveLog({"Erro de conexão com o site em " + operation, hb_eol(), hb_eol(), hb_eol()})
-            resposta["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation
+            response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation
         else
             // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), hb_eol()})
             saveLog({"Erro de conexão com o site em " + operation, hb_eol(), "Error: ", objError:description, hb_eol()})
-            resposta["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation + " | " + objError:description
+            response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation + " | " + objError:description
         endif
-        resposta["error"] := true
-        resposta["ContentType"] := "text"
+        response["error"] := true
+        response["ContentType"] := "text"
         Break
     end sequence
 
-    if resposta["error"]
+    if response["error"]
         // Debug: Remover esta linha e a debaixo após testes
-        consoleLog({"Debug: " + operation + " |ContentType: " + resposta["ContentType"] + " |Response: ", hb_eol(), resposta["response"]})
+        if (Lower(Left(operation, 6)) == "baixar")
+            consoleLog({"Debug: " + operation + " |ContentType: " + response["ContentType"]})
+        else
+            consoleLog({"Debug: " + operation + " |ContentType: " + response["ContentType"] + " |Response: ", hb_eol(), response["response"]})
+        endif
     else
 
-         resposta["status"] := connection:Status
+         response["status"] := connection:Status
 
-        if (resposta["status"] > 199) .and. (resposta["status"] < 300)
+        if (response["status"] > 199) .and. (response["status"] < 300)
 
             // Entre 200 e 299
             if !Empty(connection:ResponseBody)
-                resposta["response"] := connection:ResponseBody
-                resposta["ContentType"] := "json"
+                response["response"] := connection:ResponseBody
+                response["ContentType"] := "json"
             endif
 
-        else    // if (resposta["status"] > 399) .and. (resposta["status"] < 600)
+        else    // if (response["status"] > 399) .and. (response["status"] < 600)
 
-            resposta["error"] := true
+            response["error"] := true
 
             if ("json" $ connection:getResponseHeader("Content-Type"))
                 // "application/json"
-                resposta["response"] := connection:ResponseBody
-                resposta["ContentType"] := "json"
+                response["ContentType"] := "json"
+                response["response"] := connection:ResponseBody
             else
                 // "application/text"
+                response["ContentType"] := "text"
                 if !Empty(connection:ResponseText)
-                    resposta["response"] := connection:ResponseText
+                    response["response"] := connection:ResponseText
                 elseif !Empty(connection:ResponseBody)
-                    resposta["response"] := connection:ResponseBody
+                    response["response"] := connection:ResponseBody
                 else
-                    resposta["response"] := "ResponseText e ResponseBody retornaram vazio, sem mensagem"
+                    response["response"] := "ResponseText e ResponseBody retornaram vazio, sem mensagem"
                 endif
-                resposta["ContentType"] := "text"
             endif
 
         endif
 
-        if !(Lower(Left(operation, 6)) == "baixar")
-            // Debug: Remover esta linha e a debaixo após testes
-            consoleLog({"Debug: " + operation + " | HTTP Status: ", ;
-                        resposta["status"], ;
-                        hb_eol(), ;
-                        "URL API (", ;
-                        httpMethod + "): ", ;
-                        apiUrl, ;
-                        hb_eol(), ;
-                        "content_type: ", ;
-                        iif(content_type == nil, "NULL", content_type), ;
-                        hb_eol(), ;
-                        "accept: ", ;
-                        iif(accept == nil, "NULL", accept), ;
-                        hb_eol(), ;
-                        "Body: ", ;
-                        iif(body == nil, "NULL", body), ;
-                        hb_eol(), ;
-                        "Response: ", ;
-                        iif(resposta["response"] == nil, "NULL", resposta["response"])})
-        endif
+        // Debug: Remover esta linha e a debaixo após testes
+        consoleLog({"Debug: " + operation + ;
+            " | HTTP Status: ", response["status"], hb_eol(), ;
+            "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
+            "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), ;
+            "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
+            "Body: ", iif(body == nil, "NULL", body), hb_eol(), ;
+            "Response: ", iif((response["response"] == nil), "NULL", ;
+                          iif((Lower(Left(operation, 6)) == "baixar"), "Response é um ARQUIVO BINÁRIO", response["response"])) ;
+        })
+
     endif
 
-return resposta
+return response

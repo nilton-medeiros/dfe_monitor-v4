@@ -21,7 +21,6 @@ class TApiEmpresas
 
 end class
 
-
 method new() class TApiEmpresas
 
     ::connected := false

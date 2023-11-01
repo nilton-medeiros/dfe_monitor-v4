@@ -54,7 +54,6 @@ procedure cteSubmit(cte)
 
     if emitido
         cteGetFiles(cte, apiCTe)
-        // cteCancel(cte)
     else
         aError := getMessageApiError(apiCTe, false)
         for each error in aError

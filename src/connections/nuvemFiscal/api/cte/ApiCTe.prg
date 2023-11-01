@@ -22,11 +22,12 @@ class TApiCTe
     data motivo_status readonly
     data numero_protocolo readonly
     data mensagem readonly
-    data tipo_evento readonly
     data pdf_dacte readonly
     data xml_cte readonly
     data pdf_cancel readonly
     data xml_cancel readonly
+    data tipo_evento readonly
+    data digest_value readonly
 
     method new(cte) constructor
     method Emitir()
@@ -56,6 +57,7 @@ method new(cte) class TApiCTe
     ::numero_protocolo := cte:nProt
     ::mensagem := ""
     ::tipo_evento := ""
+    ::digest_value := ""
 
     if Empty(::token)
         saveLog("Token vazio para conexão com a Nuvem Fiscal")
@@ -121,7 +123,10 @@ method Emitir() class TApiCTe
                 ::motivo_status := hAutorizacao['mensagem']
             endif
         endif
+
         ::tipo_evento := hAutorizacao['tipo_evento']
+        ::digest_value := hAutorizacao['digest_value']
+
     endif
 
 return !res['error']
@@ -178,7 +183,6 @@ method Consultar() class TApiCTe
                 ::motivo_status := hAutorizacao['mensagem']
             endif
         endif
-        ::tipo_evento := hAutorizacao['tipo_evento']
     endif
 
 return !res['error']
@@ -230,7 +234,10 @@ method Cancelar() class TApiCTe
         else
             ::mensagem := res["response"]
         endif
-        ::tipo_evento := hRes['tipo_evento']
+        if hb_HGetRef(hRes, 'tipo_evento')
+            ::tipo_evento := res['tipo_evento']
+        endif
+
     endif
 
 return !res['error']
@@ -559,7 +566,10 @@ method defineBody() class TApiCTe
     endif
 
     emite["xNome"] := ::cte:emitente:xNome
-    emite["xFant"] := ::cte:emitente:xFant
+
+    if !Empty(::cte:emitente:xFant)
+        emite["xFant"] := ::cte:emitente:xFant
+    endif
 
     ender := {=>}
     ender["xLgr"] := ::cte:emitente:xLgr

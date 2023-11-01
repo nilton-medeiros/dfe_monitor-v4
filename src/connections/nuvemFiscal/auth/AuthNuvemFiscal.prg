@@ -74,12 +74,12 @@ method getNewToken() class TAuthNuvemFiscal
 
     recover using objError
         msgError := MsgDebug(connection)
-        if objError:genCode != 0
-            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), msgError, hb_eol()})
-            saveLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol()})
-        else
+        if (objError:genCode == 0)
             // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), msgError, hb_eol()})
             saveLog({"Erro de conexão com o site", hb_eol(), hb_eol()})
+        else
+            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), msgError, hb_eol()})
+            saveLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol()})
         endif
         saveLog({"Erro de conexão com o site", hb_eol(), msgError, hb_eol()})
         lError := true

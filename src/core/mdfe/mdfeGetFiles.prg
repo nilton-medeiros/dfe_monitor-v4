@@ -1,0 +1,74 @@
+#include "hmg.ch"
+
+function mdfeGetFiles(mdfe, apiMDFe)
+    local upload := {=>}
+    local lFileExists := false
+    local directory, filePDF, fileXML, status := ""
+    local empresa, anoMes
+
+    // As vars que começam com "app" são de nível global (Public) definidas no main.prg
+    empresa := appEmpresas:getEmpresa(mdfe:emp_id)
+
+    // "2019-08-24T14:15:22Z"
+    anoMes := Left(getNumbers(mdfe:dhEmi), 6)
+    directory := appData:dfePath + empresa:CNPJ + '\MDFe\' + anoMes + '\'
+
+    default apiMDFe := TApiMDFe():new(mdfe)
+
+    if (mdfe:situacao == "AUTORIZADO")
+        status := "-mdfe"
+    else
+        status := "-mdfe" + Capitalize(mdfe:situacao)
+    endif
+
+    filePDF := mdfe:chMDFe + status + ".pdf"
+    fileXML := mdfe:chMDFe + status + ".xml"
+
+    if hb_DirExists(directory)
+            lFileExists := hb_FileExists(directory + filePDF) .and. hb_FileExists(directory + fileXML)
+            if lFileExists
+                upload["pdf"] := directory + filePDF
+                upload["xml"] := directory + fileXML
+            endif
+        endif
+    else
+        hb_DirBuild(directory)
+    endif
+
+    if !lFileExists
+
+        if apiMDFe:BaixarPDFdoDAMDFE()
+            if hb_MemoWrit(directory + filePDF, apiMDFe:pdf_binary)
+                upload["pdf"] := directory + filePDF
+                saveLog("Arquivo PDF do DAMDFE salvo com sucesso: " + directory + filePDF)
+            else
+                saveLog("Erro ao escrever pdf binary em arquivo " + filePDF + " na pasta " + directory)
+                mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Erro ao escrever PDF em arquivo. Ver log servidor local")
+            endif
+        else
+            saveLog("Arquivo PDF do DAMDFE não retornado; Chave MDFe: " + apiMDFe:chave)
+            mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Arquivo PDF do DAMDFE não retornado. Ver log servidor local")
+        endif
+
+        if apiMDFe:BaixarXMLdoMDFe()
+            if hb_MemoWrit(directory + fileXML, apiMDFe:xml_binary)
+                upload["xml"] := directory + fileXML
+                saveLog("Arquivo XML do MDFe salvo com sucesso: " + directory + fileXML)
+            else
+                mdfe:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "BINARY XML", "Erro ao escrever XML em arquivo. Ver log servidor local")
+                saveLog("Erro ao escrever xml binary em arquivo " + fileXML + " na pasta " + directory)
+            endif
+        else
+            mdfe:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "BINARY XML", "Arquivo XML do MDFe não retornado. Ver log servidor local")
+            saveLog("Arquivo XML do MDFe não retornado; Chave MDFe: " + apiMDFe:chave)
+        endif
+
+    endif
+
+    if !Empty(upload)
+        upload["mdfe"] := mdfe
+        upload["empresa"] := empresa
+        mdfeUploadFiles(upload)
+    endif
+
+return

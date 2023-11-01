@@ -87,8 +87,13 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // endif
 
-    cExt := Token(cExt, ".")
-    content_type := "multipart/form-data"
+    cExt := Lower(Token(cExt, "."))
+
+    if (cExt == "jpg")
+        cExt := "jpeg"
+    endif
+
+    content_type := "image/" + cExt
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "PUT", apiUrl, ::token, "Enviar Logotipo", imgLogotipo, content_type)

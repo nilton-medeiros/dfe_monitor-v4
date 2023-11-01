@@ -354,7 +354,6 @@ procedure setup_Button_Submit_Logotipo_action()
 
 			if !Empty(binaryFile)
 				logotipo := TApiLogotipo():new(cnpj)
-				binaryFile := HB_Base64Encode(binaryFile)
 				if logotipo:Enviar(binaryFile, hb_FNameExt(fileLogo))
 					RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", fileLogo)
 					RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 1)

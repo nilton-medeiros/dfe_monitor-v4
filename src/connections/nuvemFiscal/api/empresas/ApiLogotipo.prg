@@ -76,7 +76,7 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
         return false
     endif
 
-    default cExt := ".png"
+    default cExt := "png"
 
     // Integração em teste, remover os comentários do laço if/endif abaixo
     // if empresa:tpAmb == 1
@@ -87,8 +87,12 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     // endif
 
-    if !(hmg_lower(cExt) == ".png")
+    cExt := Token(cExt, ".")
+
+    if (hmg_lower(cExt) == "jpg")
         content_type := "image/jpeg"
+    else
+        content_type := "image/" + cExt
     endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept

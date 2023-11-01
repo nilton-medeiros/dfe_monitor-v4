@@ -88,12 +88,7 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
     // endif
 
     cExt := Token(cExt, ".")
-
-    if (hmg_lower(cExt) == "jpg")
-        content_type := "image/jpeg"
-    else
-        content_type := "image/" + cExt
-    endif
+    content_type := "multipart/form-data"
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "PUT", apiUrl, ::token, "Enviar Logotipo", imgLogotipo, content_type)

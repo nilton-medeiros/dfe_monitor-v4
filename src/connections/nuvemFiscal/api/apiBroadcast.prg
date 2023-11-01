@@ -29,7 +29,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         endif
 
         if ("image" $ content_type)
-            connection:WaitForResponse(20000)
+            connection:WaitForResponse(70000)
         else
             connection:WaitForResponse(5000)
         endif

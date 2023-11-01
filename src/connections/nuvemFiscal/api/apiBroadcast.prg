@@ -96,8 +96,8 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
             "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
             "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), ;
             "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
-            "Body: ", iif(body == nil, "NULL", iif("image" $ content_type, "[ ARQUIVO BINARIO IMAGEM ]", body)), hb_eol(), ;
-            "Response: ", iif((response["response"] == nil), "NULL", ;
+            "Body: ", iif(body == nil, "NULL", iif("image" $ content_type, "[ ARQUIVO BINARIO DA IMAGEM ]", body)), hb_eol(), ;
+            "Response: ", iif(response["response"] == null .or. Empty(response["response"]), "NULL", ;
                           iif((Lower(Left(operation, 6)) == "baixar"), "Response é um ARQUIVO BINÁRIO", response["response"])) ;
         })
 

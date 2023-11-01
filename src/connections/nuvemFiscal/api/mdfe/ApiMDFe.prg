@@ -338,7 +338,7 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
 
 return !res['error']
 
-method BaixarXMLdoMDFe() class TApiCTe
+method BaixarXMLdoMDFe() class TApiMDFe
     local res, apiUrl, hRes
 
     if !::connected

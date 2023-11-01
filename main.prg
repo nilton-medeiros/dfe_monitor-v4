@@ -204,7 +204,9 @@ procedure turnOFF(isUser)
 
     default isUser := false
     stopTimer()
-    appDataSource:disconnect()
+    if !Empty(appDataSource)
+        appDataSource:disconnect()
+    endif
 
     if isUser
        saveLog('Sistema encerrado pelo usuário')

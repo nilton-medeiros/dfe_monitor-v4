@@ -25,11 +25,10 @@ function mdfeGetFiles(mdfe, apiMDFe)
     fileXML := mdfe:chMDFe + status + ".xml"
 
     if hb_DirExists(directory)
-            lFileExists := hb_FileExists(directory + filePDF) .and. hb_FileExists(directory + fileXML)
-            if lFileExists
-                upload["pdf"] := directory + filePDF
-                upload["xml"] := directory + fileXML
-            endif
+        lFileExists := hb_FileExists(directory + filePDF) .and. hb_FileExists(directory + fileXML)
+        if lFileExists
+            upload["pdf"] := directory + filePDF
+            upload["xml"] := directory + fileXML
         endif
     else
         hb_DirBuild(directory)

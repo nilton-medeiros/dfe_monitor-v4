@@ -45,12 +45,12 @@ function cteGetFiles(cte, apiCTe)
                 upload["pdf"] := directory + filePDF
                 saveLog("Arquivo PDF do DACTE salvo com sucesso: " + directory + filePDF)
             else
-                saveLog("Erro ao escrever pdf binary em arquivo " + filePDF + " na pasta " + directory)
                 cte:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Erro ao escrever PDF em arquivo. Ver log servidor local")
+                saveLog("Erro ao escrever pdf binary em arquivo " + filePDF + " na pasta " + directory)
             endif
         else
-            saveLog("Arquivo PDF do DACTE não retornado; Chave CTe: " + apiCTe:chave)
             cte:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Arquivo PDF do DACTE não retornado. Ver log servidor local")
+            saveLog("Arquivo PDF do DACTE não retornado; Chave CTe: " + apiCTe:chave)
         endif
 
         if apiCTe:BaixarXMLdoCTe()
@@ -75,12 +75,12 @@ function cteGetFiles(cte, apiCTe)
                 upload["pdfCancel"] := directory + cancelPDF
                 saveLog("Arquivo PDF do CTE CANCELADO salvo com sucesso: " + directory + cancelPDF)
             else
-                saveLog("Erro ao escrever pdf binary em arquivo " + cancelPDF + " na pasta " + directory)
                 cte:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Erro ao escrever PDF do CTe CANCELADO em arquivo. Ver log servidor local")
+                saveLog("Erro ao escrever pdf binary em arquivo " + cancelPDF + " na pasta " + directory)
             endif
         else
-            saveLog("Arquivo PDF do CTE CANCELADO não retornado; Chave CTe: " + apiCTe:chave)
             cte:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Arquivo PDF do CTE CANCELADO não retornado. Ver log servidor local")
+            saveLog("Arquivo PDF do CTE CANCELADO não retornado; Chave CTe: " + apiCTe:chave)
         endif
 
         if apiCTe:BaixarXMLdoCancelamento()

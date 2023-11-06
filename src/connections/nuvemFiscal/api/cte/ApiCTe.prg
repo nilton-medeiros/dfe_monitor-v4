@@ -75,14 +75,11 @@ method Emitir() class TApiCTe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::cte:tpAmb == 1
-        // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte"
-    // else
-        // API de Teste
+    if (::cte:tpAmb == 1)   // API de Produção
+        apiUrl := "https://api.nuvemfiscal.com.br/cte"
+    else    // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte"
-    // endif
+    endif
 
     // Request Body
     ::defineBody()
@@ -138,14 +135,11 @@ method Consultar() class TApiCTe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::cte:tpAmb == 1
-        // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid
-    // else
-        // API de Teste
+    if (::cte:tpAmb == 1)   // API de Produção
+        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid
+    else   // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar CTe")
@@ -194,14 +188,11 @@ method Cancelar() class TApiCTe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::cte:tpAmb == 1
-        // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
-    // else
-        // API de Teste
+    if (::cte:tpAmb == 1)   // API de Produção
+        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
+    else   // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
-    // endif
+    endif
 
     ::body := '{"justificativa":"Erro no preenchimento do Conhecimento de transporte Eletronico"}'
 
@@ -249,14 +240,11 @@ method BaixarPDFdoDACTE() class TApiCTe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::cte:tpAmb == 1
-        // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/pdf"
-    // else
-        // API de Teste
+    if (::cte:tpAmb == 1)        // API de Produção
+        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/pdf"
+    else        // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/pdf"
-    // endif
+    endif
 
     ::body := "logotipo=true"
 
@@ -285,14 +273,11 @@ method BaixarPDFdoCancelamento() class TApiCTe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::cte:tpAmb == 1
-        // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/pdf"
-    // else
-        // API de Teste
+    if (::cte:tpAmb == 1)        // API de Produção
+        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/pdf"
+    else        // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/pdf"
-    // endif
+    endif
 
     ::body := "logotipo=true"
 
@@ -321,14 +306,11 @@ method BaixarXMLdoCTe() class TApiCTe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::cte:tpAmb == 1
-        // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml"
-    // else
-        // API de Teste
+    if (::cte:tpAmb == 1)  // API de Produção
+        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml"
+    else        // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml"
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar XML do CTe", nil, nil, "*/*")
@@ -355,14 +337,11 @@ method BaixarXMLdoCancelamento() class TApiCTe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::cte:tpAmb == 1
-        // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/xml"
-    // else
-        // API de Teste
+    if (::cte:tpAmb == 1)        // API de Produção
+        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/xml"
+    else        // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/xml"
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar XML do CTE CANCELADO", nil, nil, "*/*")
@@ -404,7 +383,7 @@ method defineBody() class TApiCTe
     ide["dhEmi"] := ::cte:dhEmi
     ide["tpImp"] :=  ::cte:tpImp
     ide["tpEmis"] := ::cte:tpEmis
-    ide["tpAmb"] := 2                       // Debug: 2- Homologação, mudar para -> ::cte:tpAmb quando terminar os testes
+    ide["tpAmb"] := ::cte:tpAmb
     ide["tpCTe"] := ::cte:tpCTe
     ide["procEmi"] := 0                     // 0 - Emissão de CT-e com aplicativo do contribuinte
     ide["verProc"] := Left(appData:version, hb_RAt('.', appData:version)) + '0'
@@ -755,7 +734,7 @@ method defineBody() class TApiCTe
     endif
 
     infCte := {=>}
-    infCte["versao"] := "4.00"                     // Debug: mudar para -> //::cte:versao_xml quando terminar os testes
+    infCte["versao"] := ::cte:emitente:cte_versao_xml
     infCte["ide"] := ide
     infCte["compl"] := compl
     infCte["emit"] := emite
@@ -849,10 +828,10 @@ method defineBody() class TApiCTe
         if !Empty(::cte:xOutCat)
             infCarga["xOutCat"] := ::cte:xOutCat
         endif
+
         SET FIXED ON
         SET DECIMALS TO 4
-        // Debug: Verificando porque number_format não tem efeito aqui
-        // consoleLog({"Type peso_bruto: ", ValType(::cte:peso_bruto), " | Value: ", ::cte:peso_bruto, " | Return number_format: ", number_format(::cte:peso_bruto, 4)})
+
         infCarga["infQ"] := {{"cUnid" => "01", "tpMed" => "PESO BRUTO", "qCarga" => ::cte:peso_bruto}, ;
                              {"cUnid" => "01", "tpMed" => "PESO BC", "qCarga" => ::cte:peso_bc}, ;
                              {"cUnid" => "01", "tpMed" => "PESO CUBADO", "qCarga" => ::cte:peso_cubado}, ;
@@ -927,7 +906,7 @@ method defineBody() class TApiCTe
         endif
 
         infModal := {=>}
-        infModal["versaoModal"] := "4.00"   // Debug: mudar para -> //::cte:versao_xml quando terminar os testes
+        infModal["versaoModal"] := ::cte:versao_xml
 
         if (::cte:tpCTe == 0)
             // tp::cte: 0 - Normal

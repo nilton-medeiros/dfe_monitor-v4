@@ -4,7 +4,7 @@ function mdfeGetFiles(mdfe, apiMDFe)
     local upload := {=>}
     local lFileExists := false
     local directory, filePDF, fileXML, status := ""
-    local empresa, anoMes
+    local empresa, anoMes, printPath, printPDF
 
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(mdfe:emp_id)
@@ -41,12 +41,12 @@ function mdfeGetFiles(mdfe, apiMDFe)
                 upload["pdf"] := directory + filePDF
                 saveLog("Arquivo PDF do DAMDFE salvo com sucesso: " + directory + filePDF)
             else
-                saveLog("Erro ao escrever pdf binary em arquivo " + filePDF + " na pasta " + directory)
                 mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Erro ao escrever PDF em arquivo. Ver log servidor local")
+                saveLog("Erro ao escrever pdf binary em arquivo " + filePDF + " na pasta " + directory)
             endif
         else
-            saveLog("Arquivo PDF do DAMDFE não retornado; Chave MDFe: " + apiMDFe:chave)
             mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Arquivo PDF do DAMDFE não retornado. Ver log servidor local")
+            saveLog("Arquivo PDF do DAMDFE não retornado; Chave MDFe: " + apiMDFe:chave)
         endif
 
         if apiMDFe:BaixarXMLdoMDFe()

@@ -10,26 +10,18 @@ procedure mdfeSubmit(mdfe)
 
     if recebido
 
-        consoleLog("Processando Emitir(mdfe) | apiMDFe:status: " + Upper(apiMDFe:status))   // Debug
-
         // Se mdfe foi recebido, verifica se foi autorizado, rejeitado ou se ainda está pendente (aguardando na fila para ser processado)
         emitido := (apiMDFe:status == "autorizado")
 
         if !emitido
-
             // Normalmente em produção a api da Nuvem Fiscal retorna status "pendente" segundo orientação da nv, nos testes (homologação) retornaram direto 'autorizado'
             sysWait(2)  // Aguarda 2 segundos para obter autorizado ou erro
-
             startTimer := Seconds()
-
             do while apiMDFe:Consultar() .and. (apiMDFe:status == 'pendente') .and. (Seconds() - startTimer < 10)
                 // Situação pouco provável, porem não impossível: Insiste obter informações por até 10 segundos
                 sysWait(2)
             enddo
-
             emitido := (apiMDFe:status == "autorizado")
-            consoleLog("emitido: " + iif(emitido, "SIM", "NÃO"))  // Debug
-
         endif
 
         if emitido

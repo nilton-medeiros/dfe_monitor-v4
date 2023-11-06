@@ -19,7 +19,8 @@ class TEmpresa
     data UF readonly
     data CEP readonly
     data fone readonly
-    data versao_xml readonly
+    data cte_versao_xml readonly
+    data mdfe_versao_xml readonly
     data tpAmb readonly
     data modal readonly
     data RNTRC readonly
@@ -41,6 +42,11 @@ class TEmpresa
 end class
 
 method new(empresa) class TEmpresa
+    local versao := hb_ntos(empresa['cte_versao_xml'])
+
+    if (Len(Token(versao, ".")) == 1)
+        versao += "0"
+    endif
 
     ::id := empresa['id']
     ::xNome := empresa['xNome']
@@ -58,7 +64,8 @@ method new(empresa) class TEmpresa
     ::UF := empresa['UF']
     ::CEP := getNumbers(empresa['CEP'])
     ::fone := getNumbers(empresa['fone'])
-    ::versao_xml := empresa['versao_xml']
+    ::cte_versao_xml := versao
+    ::mdfe_versao_xml := empresa['mdfe_versao_xml']
     ::tpAmb := empresa['tpAmb']
     ::modal := empresa['modal']
     ::RNTRC := empresa['RNTRC']

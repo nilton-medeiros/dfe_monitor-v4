@@ -57,14 +57,7 @@ method runQuery() class TQuery
             return false
         endif
     endif
-/*
-    // Servidor ocupado não causa um erro na execução de comandos
-    if ::serverBusy()
-        // msgDebugInfo({'Servidor do Banco de Dados ocupado, tente mais tarde!', hb_eol() + hb_eol(), 'Ver Log do sistema', hb_eol(), ::db:Error()})
-        // ::db:Destroy()
-        // return false
-    endif
-*/
+
     command := hmg_upper(firstString(hb_utf8StrTran(::db:cQuery, ";")))
     command := AllTrim(command)
 

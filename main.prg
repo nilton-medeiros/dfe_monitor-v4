@@ -20,6 +20,7 @@ REQUEST HB_CODEPAGE_UTF8
         appNuvemFiscal: Faz a autenticação e disponibiliza integração com a RestAPI da Nuvem Fiscal
         links: sistrom.com.br, nuvemfiscal.com.br
 */
+
 procedure main
     public appData := TAppData():new("4.0.00")
     public appDataSource
@@ -187,13 +188,9 @@ procedure main_Timer_dfe_action()
 
     // Monitoramento de CTes e MDFes conforme a frequência estabelecida em frequency
     if (Seconds() - appData:timer >= appData:frequency)
-        // Debug
-        // cteMonitoring()
-        // mdfeMonitoring()
+        cteMonitoring()
+        mdfeMonitoring()
         appData:setTimer()
-        // Debug: Testando api empresas, cadastrar uma empresa
-        // testAlterarEmpresa()
-        turnOFF()
     endif
 
     startTimer()

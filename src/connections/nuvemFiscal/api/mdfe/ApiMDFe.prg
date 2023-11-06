@@ -445,13 +445,14 @@ method defineBody() class TApiMDFe
     ender["xMun"] := emitente:xMunEnv
     ender["CEP"] := emitente:CEP
     ender["UF"] := emitente:UF
-    ender["fone"] :=emitente:fone
+    ender["fone"] := emitente:fone
 
     emit["enderEmit"] := ender
     ender := nil
 
     infModal := {=>}
-    infModal["versaoModal"] := "4.00" // Debug: após testes, usar -> emitente:versao_xml
+    // Versão do layout dos CTes anexos do modal rodo (CTe 4.00), porem a versão de Layout XML do MDFe é independente do CTe
+    infModal["versaoModal"] := emitente:cte_versao_xml
 
     if !Empty(emitente:RNTRC)
         infANTT := {=>}

@@ -10,26 +10,18 @@ procedure cteSubmit(cte)
 
     if recebido
 
-        consoleLog("Processando Emitir(cte) | apiCTe:status: " + Upper(apiCTe:status))   // Debug
-
         // Se CTe foi recebido, verifica se foi autorizado, rejeitado ou se ainda está pendente (aguardando na fila para ser processado)
         emitido := (apiCTe:status == "autorizado")
 
         if !emitido
-
             // Normalmente em produção a api da Nuvem Fiscal retorna status "pendente" segundo orientação da nv, nos testes (homologação) retornaram direto 'autorizado'
             sysWait(2)  // Aguarda 2 segundos para obter autorizado ou erro
-
             startTimer := Seconds()
-
             do while apiCTe:Consultar() .and. (apiCTe:status == 'pendente') .and. (Seconds() - startTimer < 10)
                 // Situação pouco provável, porem não impossível: Insiste obter informações por até 10 segundos
                 sysWait(2)
             enddo
-
             emitido := (apiCTe:status == "autorizado")
-            consoleLog("emitido: " + iif(emitido, "SIM", "NÃO"))  // Debug
-
         endif
 
         if emitido

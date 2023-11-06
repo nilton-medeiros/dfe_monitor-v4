@@ -108,10 +108,8 @@ method getListMDFes() class TDbMDFes
 return nil
 
 method updateMDFe(cId, aFields) class TDbMDFes
-    local updated, mdfe, sql := TSQLString():new()
+    local updated, mdfe, sql := TSQLString():new("UPDATE mdfes SET ")
     local hField, campo, valor, n := 0
-
-    sql:setValue("UPDATE mdfes SET ")
 
     for each hField in aFields
         n++
@@ -137,12 +135,13 @@ method updateMDFe(cId, aFields) class TDbMDFes
 
     sql:add(" WHERE id = " + cId)
 
-    // mdfe := TQuery():new(sql)
-    // updated := mdfe:executed
-    updated := false    // Debug: Remover esta linha após testes
-    // Debug: Remover esta e a linha de baixo após testes e descomentar as linhas acima e abaixo
-    consoleLog({"SQL Executado: ", "NÃO EXECUTADO-EM TESTE", " |SQL: " + hb_eol(), sql:value})
-    // mdfe:Destroy()
+    mdfe := TQuery():new(sql:value)
+    updated := mdfe:executed
+    mdfe:Destroy()
+
+    if !updated
+        consoleLog(sql:value)   // Debug
+    endif
 
 return updated
 
@@ -162,14 +161,13 @@ method insertEventos(aEvents) class TDbMDFes
         sql:add("'" + string_hb_to_mysql(hEvent["motivo"]) + "', ")
         sql:add("'" + string_hb_to_mysql(hEvent["detalhe"]) + "')")
     next
-    // Debug: Descomentar esta linha em ambiente de produção
-    // ctes_eventos := TQuery():new(sql)
-    // inserted := ctes_eventos:executed
-    inserted := false // Debug: Remover esta linha em ambiente de produção
+    ctes_eventos := TQuery():new(sql:value)
+    inserted := ctes_eventos:executed
+    ctes_eventos:Destroy()
 
-    // Debug: Remover esta e a linha de baixo e descomentar a linha 551 Destroy(), após testes
-    consoleLog({"SQL Executado: ", iif(inserted, "SIM", "NÃO-EM TESTE"), " |SQL: " + hb_eol() , sql:value})
-    // ctes_eventos:Destroy()
+    if !inserted
+        consoleLog(sql:value)   // Debug
+    endif
 
 return inserted
 

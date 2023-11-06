@@ -194,14 +194,7 @@ method getListCTes() class TDbCTes
         sql:add(")")
     endif
 
-    // Debug:
-    // Em produção: Remover estes comentários em produção e descomentar a linha abaixo ----------------------------
-    // sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
-
-    // Debug: Testes em homologação: Remover este comando abaixo ---------------------------------
-    sql:add(" AND cte_id = " + hb_ntos(dfeGetNumber("dbCTe")))
-    // Testes em homologação --------------------------------------------------------------
-
+    sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
     sql:add(" ORDER BY cte_monitor_action, emp_id, cte_numero")
 
     ::ctes := {}
@@ -520,12 +513,12 @@ method updateCTe(cId, aFields) class TDbCTes
 
     sql:add(" WHERE cte_id = " + cId)
 
-    // cte := TQuery():new(sql)
-    // updated := cte:executed
-    updated := false
-    // Debug: Remover esta e a linha de baixo após testes
-    consoleLog({"SQL Executado: ", "NÃO-EM TESTE", " |SQL: " + hb_eol(), sql:value})
-    // cte:Destroy()
+    cte := TQuery():new(sql:value)
+    updated := cte:executed
+    cte:Destroy()
+    if !updated
+        consoleLog(sql:value)   // Debug
+    endif
 
 return updated
 
@@ -544,13 +537,11 @@ method insertEventos(aEvents) class TDbCTes
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_evento"]) + "', ")
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_detalhe"]) + "')")
     next
-    // Debug: Descomentar esta linha em ambiente de produção
-    // ctes_eventos := TQuery():new(sql)
-    // inserted := ctes_eventos:executed
-    inserted := false // Debug: Remover esta linha em ambiente de produção
-
-    // Debug: Remover esta e a linha de baixo e descomentar a linha 551 Destroy(), após testes
-    consoleLog({"SQL Executado: ", iif(inserted, "SIM", "NÃO-EM TESTE"), " |SQL: " + hb_eol() , sql:value})
-    // ctes_eventos:Destroy()
+    ctes_eventos := TQuery():new(sql:value)
+    inserted := ctes_eventos:executed
+    ctes_eventos:Destroy()
+    if !inserted
+        consoleLog(sql:value)   // Debug
+    endif
 
 return inserted

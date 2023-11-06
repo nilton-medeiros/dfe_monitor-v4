@@ -54,10 +54,10 @@ end class
 method new(hMDFe) class TMDFe
     local mdfe := hMDFe["hDbMDFe"]
 
-    ::versao := "3.00"
     ::id := mdfe["id"]
     ::emp_id := mdfe["emp_id"]
     ::emitente := appEmpresas:getEmpresa(::emp_id)
+    ::versao := ::emitente:mdfe_versao_xml
     ::tpAmb := ::emitente:tpAmb
     ::tpEmit := mdfe["tpEmit"]
     ::mod := mdfe["modelo"]         // Modelo do MDFe
@@ -105,6 +105,8 @@ method setSituacao(mdfeStatus) class TMDFe
         ::situacao := hmg_upper(mdfeStatus)
         lSet := true
         ::setUpdateMDFe("situacao", ::situacao)
+    else
+        saveLog("Status do MDFe id " + hb_ntos(::id) + " invalido | Status: " + mdfeStatus)
     endif
 return lSet
 
@@ -126,7 +128,7 @@ return lSet
 method setUpdateEventos(protocolo, data_hora, evento, detalhe) class TMDFe
     local ambiente := iif((::tpAmb == 1), "Produção", "Homologação")
     AAdd(::updateEvents, {"mdfe_id" => hb_ntos(::id), ;
-                           "protocolo" => cte_ev_protocolo, ;
+                           "protocolo" => protocolo, ;
                            "data_hora" => data_hora, ;
                            "evento" => evento, ;
                            "motivo" => "Ambiente: " + ambiente, ;
@@ -144,10 +146,10 @@ method save() class TMDFe
 return nil
 
 method saveEventos() class TMDFe
-    local mdfe
+    local db
     if !Empty(::updateEventos)
-        mdfe := TDbMDFes():new()
-        if mdfe:insertEventos(::updateEventos)
+        db := TDbMDFes():new()
+        if db:insertEventos(::updateEventos)
             ::updateEventos := {}
         endif
     endif

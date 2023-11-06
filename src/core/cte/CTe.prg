@@ -511,6 +511,8 @@ method setSituacao(cteStatus) class TCTe
         ::situacao := hmg_upper(cteStatus)
         lSet := true
         ::setUpdateCte("cte_situacao", ::situacao)
+    else
+        saveLog("Status do CTe " + hb_ntos(::id) + " invalido | Status: " + cteStatus)
     endif
 return lSet
 
@@ -539,21 +541,21 @@ method setUpdateEventos(cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_e
 return nil
 
 method save() class TCTe
-    local cte
+    local cte, ok := false
     if !Empty(::updateCTe)
         cte := TDbCTes():new()
-        if cte:updateCTe(hb_ntos(::id), ::updateCTe)
+        if (ok := cte:updateCTe(hb_ntos(::id), ::updateCTe))
             ::updateCTe := {}
         endif
     endif
-return nil
+return ok
 
 method saveEventos() class TCTe
-    local cte
+    local cte, ok := false
     if !Empty(::updateEventos)
         cte := TDbCTes():new()
-        if cte:insertEventos(::updateEventos)
+        if (ok := cte:insertEventos(::updateEventos))
             ::updateEventos := {}
         endif
     endif
-return nil
+return ok

@@ -77,14 +77,13 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
 
     default cExt := "png"
 
-    // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    // endif
+    endif
 
     cExt := Lower(Token(cExt, "."))
 
@@ -111,14 +110,14 @@ return !res['error']
 
 method Deletar() class TApiLogotipo
     local apiUrl, res
-    // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "DELETE", apiUrl, ::token, "Deletar Logotipo")

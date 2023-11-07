@@ -68,7 +68,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
                 response["ContentType"] := "json"
             endif
 
-        else    // if (response["status"] > 399) .and. (response["status"] < 600)
+        else    // elseif (response["status"] > 399) .and. (response["status"] < 600)
 
             response["error"] := true
 

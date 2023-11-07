@@ -48,11 +48,11 @@ method Consultar() class TApiCertificado
 
     if empresa:tpAmb == 1
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar Certificado")
@@ -75,14 +75,13 @@ method Cadastrar(certificado, password) class TApiCertificado
         return false
     endif
 
-    // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
-    // endif
+    endif
 
     // Request Body
     body := '{' + hb_eol()
@@ -107,14 +106,14 @@ return !res['error']
 
 method Deletar() class TApiCertificado
     local apiUrl, res
-    // Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "DELETE", apiUrl, ::token, "Deletar Certificado")

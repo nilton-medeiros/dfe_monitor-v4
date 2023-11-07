@@ -51,5 +51,4 @@ function getMessageApiError(api, lAsText)
 		endif
 	endif
 
-
 return iif(lAsText, textError, aError)

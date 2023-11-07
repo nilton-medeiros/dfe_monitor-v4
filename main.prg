@@ -104,6 +104,12 @@ procedure main_form_oninit()
 
     if appDataSource:connect()
 
+        appNuvemFiscal := TAuthNuvemFiscal():new()
+
+        if !appNuvemFiscal:Authorized
+            turnOFF()
+        endif
+
         appEmpresas := TDbEmpresas():new()
 
         if !appEmpresas:ok
@@ -117,12 +123,6 @@ procedure main_form_oninit()
         if !appUsuarios:ok
             // A falta de usuários administradores não interfere no monitoramento de CT-es, apenas o Setup não será liberado
             saveLog("Nenhum usuario admin foi retornado do banco de dados")
-        endif
-
-        appNuvemFiscal := TAuthNuvemFiscal():new()
-
-        if !appNuvemFiscal:Authorized
-            turnOFF()
         endif
 
     else

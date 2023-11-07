@@ -25,6 +25,8 @@ class TApiMDFe
     data xml_binary readonly
     data tipo_evento readonly
     data digest_value readonly
+    data baseUrl readonly
+    data baseUrlID readonly
 
     method new(mdfe) constructor
     method Emitir()
@@ -62,28 +64,30 @@ method new(mdfe) class TApiMDFe
         ::connected := !Empty(::connection)
     endif
 
+    if (::mdfe:tpAmb == 1)
+        // API de Produção
+        ::baseUrl := "https://api.nuvemfiscal.com.br/mdfe"
+    else
+        // API de Teste
+        ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe"
+    endif
+
+    ::baseUrlID := ::baseUrl + "/" ::nuvemfiscal_uuid
+
 return self
 
 method Emitir() class TApiMDFe
-    local res, apiUrl, hRes
+    local res, hRes
 
     if !::connected
         return false
-    endif
-
-    if (::mdfe:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/mdfe"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe"
     endif
 
     // Request Body
     ::defineBody()
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "POST", apiUrl, ::token, "Emitir MDFe", ::body, "application/json")
+    res := Broadcast(::connection, "POST", ::baseUrl, ::token, "Emitir MDFe", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -127,19 +131,11 @@ method Emitir() class TApiMDFe
 return !res['error']
 
 method Encerrar() class TApiMDFe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID + "/encerramento"
     loca emitente := ::mdfe:emitente
 
     if !::connected
         return false
-    endif
-
-    if (::mdfe:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/encerramento"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/encerramento"
     endif
 
     ::body := '{"uf":"' + emitente:UF + '", "codigo_municipio":"' + emitente:cMunEnv + '"}'
@@ -181,22 +177,14 @@ method Encerrar() class TApiMDFe
 return !res['error']
 
 method Consultar() class TApiMDFe
-    local res, apiUrl, hRes, hAutorizacao
+    local res, hRes, hAutorizacao
 
     if !::connected
         return false
     endif
 
-    if (::mdfe:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar MDFe")
+    res := Broadcast(::connection, "GET", ::baseUrlID, ::token, "Consultar MDFe")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -236,18 +224,10 @@ method Consultar() class TApiMDFe
 return !res['error']
 
 method Cancelar() class TApiMDFe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento"
 
     if !::connected
         return false
-    endif
-
-    if (::mdfe:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/cancelamento"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/cancelamento"
     endif
 
     ::body := '{"justificativa":"Erro no preenchimento do Manifesto de Documentos Fiscais"}'
@@ -289,18 +269,10 @@ method Cancelar() class TApiMDFe
 return !res['error']
 
 method BaixarPDFdoDAMDFE() class TApiMDFe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID
 
     if !::connected
         return false
-    endif
-
-    if (::mdfe:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
     endif
 
     switch Lower(::mdfe:situacao)
@@ -334,18 +306,10 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
 return !res['error']
 
 method BaixarXMLdoMDFe() class TApiMDFe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID
 
     if !::connected
         return false
-    endif
-
-    if (::mdfe:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
     endif
 
     switch Lower(::mdfe:situacao)

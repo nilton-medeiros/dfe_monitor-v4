@@ -57,6 +57,7 @@ method getListMDFes() class TDbMDFes
     sql:add('referencia_uuid, ')
     sql:add('nuvemfiscal_uuid, ')
     sql:add('situacao, ')
+    sql:add('cte_versao_xml, ')
     sql:add('cte_monitor_action AS monitor_action ')
     sql:add('FROM view_mdfes ')
 
@@ -78,7 +79,8 @@ method getListMDFes() class TDbMDFes
         sql:add(")")
     endif
 
-    sql:add(" AND cte_monitor_action IN ('SUBMIT','CANCEL','CLOSE') ")
+    sql:add(" AND cte_monitor_action IN ('SUBMIT','CANCEL','CLOSE') AND ")
+    sql:add("cte_versao_xml > 3.00 ")
     sql:add("ORDER BY monitor_action, emp_id, nMDF")
 
     ::mdfes := {}

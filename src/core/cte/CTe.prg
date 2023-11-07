@@ -198,8 +198,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     // ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
     ::modelo := number_format(cte["modelo"])
     ::serie := cte["serie"]
-    // ::nCT := cte["nCT"] // Numero do CTe
-    ::nCT := dfeGetNumber("cte") // Debug: Numero do CTe, remover esta linha e descomentar a de cima
+    ::nCT := cte["nCT"] // Numero do CTe
     ::cCT := PadL(cte["cCT"], 8, "0") // Numero da Minuta
     ::situacao := hmg_upper(cte["situacao"])
     ::chCTe := cte["chCTe"]

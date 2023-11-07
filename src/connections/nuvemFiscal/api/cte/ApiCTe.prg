@@ -28,6 +28,8 @@ class TApiCTe
     data xml_cancel readonly
     data tipo_evento readonly
     data digest_value readonly
+    data baseUrl readonly
+    data baseUrlID readonly
 
     method new(cte) constructor
     method Emitir()
@@ -66,26 +68,28 @@ method new(cte) class TApiCTe
         ::connected := !Empty(::connection)
     endif
 
+    if (::cte:tpAmb == 1)   // API de Produção
+        ::baseUrl := "https://api.nuvemfiscal.com.br/cte"
+    else    // API de Teste
+        ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/cte"
+    endif
+
+    ::baseUrlID := ::baseUrl + "/" ::nuvemfiscal_uuid
+
 return self
 
 method Emitir() class TApiCTe
-    local res, apiUrl, hRes, hAutorizacao
+    local res, hRes, hAutorizacao
 
     if !::connected
         return false
-    endif
-
-    if (::cte:tpAmb == 1)   // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/cte"
-    else    // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte"
     endif
 
     // Request Body
     ::defineBody()
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "POST", apiUrl, ::token, "Emitir CTe", ::body, "application/json")
+    res := Broadcast(::connection, "POST", ::baseUrl, ::token, "Emitir CTe", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -129,20 +133,14 @@ method Emitir() class TApiCTe
 return !res['error']
 
 method Consultar() class TApiCTe
-    local res, apiUrl, hRes, hAutorizacao
+    local res, hRes, hAutorizacao
 
     if !::connected
         return false
     endif
 
-    if (::cte:tpAmb == 1)   // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid
-    else   // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar CTe")
+    res := Broadcast(::connection, "GET", ::baseUrlID, ::token, "Consultar CTe")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -182,16 +180,10 @@ method Consultar() class TApiCTe
 return !res['error']
 
 method Cancelar() class TApiCTe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento"
 
     if !::connected
         return false
-    endif
-
-    if (::cte:tpAmb == 1)   // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
-    else   // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento"
     endif
 
     ::body := '{"justificativa":"Erro no preenchimento do Conhecimento de transporte Eletronico"}'
@@ -234,16 +226,10 @@ method Cancelar() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoDACTE() class TApiCTe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID + "/pdf"
 
     if !::connected
         return false
-    endif
-
-    if (::cte:tpAmb == 1)        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/pdf"
-    else        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/pdf"
     endif
 
     ::body := "logotipo=true"
@@ -267,16 +253,10 @@ method BaixarPDFdoDACTE() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoCancelamento() class TApiCTe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/pdf"
 
     if !::connected
         return false
-    endif
-
-    if (::cte:tpAmb == 1)        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/pdf"
-    else        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/pdf"
     endif
 
     ::body := "logotipo=true"
@@ -300,16 +280,10 @@ method BaixarPDFdoCancelamento() class TApiCTe
 return !res['error']
 
 method BaixarXMLdoCTe() class TApiCTe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID + "/xml"
 
     if !::connected
         return false
-    endif
-
-    if (::cte:tpAmb == 1)  // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml"
-    else        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/xml"
     endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
@@ -331,16 +305,10 @@ method BaixarXMLdoCTe() class TApiCTe
 return !res['error']
 
 method BaixarXMLdoCancelamento() class TApiCTe
-    local res, apiUrl, hRes
+    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/xml"
 
     if !::connected
         return false
-    endif
-
-    if (::cte:tpAmb == 1)        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/xml"
-    else        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/cte/" + ::nuvemfiscal_uuid + "/cancelamento/xml"
     endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept

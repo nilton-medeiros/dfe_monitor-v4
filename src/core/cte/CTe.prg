@@ -193,9 +193,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::id := cte["id"]
     ::emp_id := cte["emp_id"]
     ::versao_xml := cte["versao_xml"]
-    // Debug: Remover a linha abaixo e descomentar a próxima linha
-    ::dhEmi := string_as_DateTime(Left(hb_TSToStr(hb_DateTime()), 19), TDZ_TRUE)
-    // ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
+    ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
     ::modelo := number_format(cte["modelo"])
     ::serie := cte["serie"]
     ::nCT := cte["nCT"] // Numero do CTe
@@ -343,9 +341,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::peso_bc := cte["peso_bc"]
     ::cubagem_m3 := cte["cubagem_m3"]
     ::qtde_volumes := cte["qtde_volumes"]
-    // Debug: Após testes descomentar a linha abaixo e excluir a próxima linha
-    // ::tipo_doc_anexo := cte["tipo_doc_anexo"]
-    ::tipo_doc_anexo := 3
+    ::tipo_doc_anexo := cte["tipo_doc_anexo"]
     ::nOCA := cte["nOCA"]
     ::dPrevAereo := cte["dPrevAereo"]
     ::referencia_uuid := cte["referencia_uuid"]
@@ -366,7 +362,6 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
                               hb_UPadL(::id, 9, "0") +;     // Id CTe
                               hb_UPadL(::cCT, 9, "0") +;    // Numero Minuta
                               hb_UPadL(::emp_id, 6, "0")    // Id Emitente
-        // Debug: Verificar se o método save() salvará todos os campos que estão no array ::updateCTe
         ::setUpdateCte("referencia_uuid", ::referencia_uuid)
     endif
 
@@ -396,9 +391,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     endif
 
     ::comp_calc := hAnexos['comp_calc']
-    // Debug: Forçando anexo do tipo 3
-    // ::doc_anexo := hAnexos['doc']
-    ::doc_anexo := {{"tpDoc" => 99, "descOutros" => "Teste de doc anexo do tipo 3", "nDoc" => 123456, "dEmi" => "2023-10-06", "vDocFisc" => 189.54}}
+    ::doc_anexo := hAnexos['doc']
 
     ::infIndGlobalizado()
 

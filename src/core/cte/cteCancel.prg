@@ -5,7 +5,6 @@ procedure cteCancel(cte)
     local registrado
     local targetFile, anoEmes, directory, aError, error
 
-    // Debug:
     consoleLog({"Cancelando CTe: ", cte:chave, ", nuvemfiscal_uuid: ", apiCTe:nuvemfiscal_uuid})
 
     if apiCTe:Cancelar()
@@ -13,7 +12,6 @@ procedure cteCancel(cte)
         // Prepara os campos da tabela ctes para receber os updates
         if (apiCTe:codigo_status == 135)
             cte:setSituacao("CANCELADO")
-            // Debug:
             consoleLog({"CTe: ", apiCTe:chave, " cancelado com sucesso, pegando PDF e XML de Cancelamento"})
             cteGetFiles(cte)
         else
@@ -34,7 +32,8 @@ procedure cteCancel(cte)
             endif
         endif
 
-        consoleLog({"Evento de Cancelamento Registrado", hb_eol(), "apiCTe:status " + apiCTe:status, hb_eol(), "cStat: ", iif(!Empty(apiCTe:codigo_status), apiCTe:codigo_status, apiCTe:codigo_mensagem)})   // Debug
+        consoleLog({"Evento de Cancelamento Registrado", hb_eol(), "apiCTe:status " + apiCTe:status, hb_eol(), ;
+                    "cStat: ", iif(!Empty(apiCTe:codigo_status), apiCTe:codigo_status, apiCTe:codigo_mensagem)})
 
     else
         aError := getMessageApiError(apiCTe, false)
@@ -42,7 +41,6 @@ procedure cteCancel(cte)
             cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
         next
         cte:setSituacao(apiCTe:status)
-        // Debug:
         consoleLog("Erro ao cancelar: apiCTe:response" + apiCTe:response)
     endif
 

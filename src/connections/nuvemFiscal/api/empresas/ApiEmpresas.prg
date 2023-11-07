@@ -47,14 +47,13 @@ method Cadastrar(empresa) class TApiEmpresas
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas"
-    // endif
+    endif
 
     // Request Body
     ::defineBody(empresa)
@@ -83,14 +82,13 @@ method Consultar(empresa) class TApiEmpresas
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar Empresa")
@@ -114,14 +112,14 @@ method Alterar(empresa) class TApiEmpresas
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    // endif
+    endif
+
     // Request Body
     ::defineBody(empresa)
 
@@ -172,19 +170,18 @@ method putSetupCTe(empresa) class TApiEmpresas
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
-    // endif
+    endif
 
     // Request Body
     hBody := {=>}
     hBody["CRT"] := empresa:CRT
-    hBody["ambiente"] := "homologacao"     // Debug: Após testes, substituir por iif(empresa:tpAmb == 1, "producao", "homologacao")
+    hBody["ambiente"] := iif(empresa:tpAmb == 1, "producao", "homologacao")
     ::body := hb_jsonEncode(hBody, 4)
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept

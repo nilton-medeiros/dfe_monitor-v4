@@ -46,8 +46,7 @@ method Consultar() class TApiCertificado
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if empresa:tpAmb == 1
         // API de Produção
         // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     // else

@@ -58,7 +58,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         endif
     else
 
-         response["status"] := connection:Status
+        response["status"] := connection:Status
 
         if (response["status"] > 199) .and. (response["status"] < 300)
 

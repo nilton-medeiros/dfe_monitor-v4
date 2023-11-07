@@ -999,13 +999,10 @@ method defineBody() class TApiCTe
     // infSolicNFF: Não utilizado
     // infCteSupl: Gerado automaticamente pela nuvem fiscal
 
-    ambiente := "homologacao"   // Debug: Após encerrar os testes, alterar esta linha
+    ambiente := iif(::cte:tpAmb == 1, "producao", "homologacao")
 
     // Cria o Body Hash Table
     hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => ::cte:referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
-
-    // Debug, remover a linha abaixo após testes
-    hb_MemoWrit(appData:systemPath + "tmp\CTe" + ::cte:referencia_uuid + ".json", ::body)
 
 return nil

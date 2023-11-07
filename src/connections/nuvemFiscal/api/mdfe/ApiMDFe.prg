@@ -71,14 +71,13 @@ method Emitir() class TApiMDFe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if (::mdfe:tpAmb == 1)
+    if (::mdfe:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/mdfe"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/mdfe"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe"
-    // endif
+    endif
 
     // Request Body
     ::defineBody()
@@ -135,14 +134,13 @@ method Encerrar() class TApiMDFe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if (::mdfe:tpAmb == 1)
+    if (::mdfe:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/encerramento"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/encerramento"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/encerramento"
-    // endif
+    endif
 
     ::body := '{"uf":"' + emitente:UF + '", "codigo_municipio":"' + emitente:cMunEnv + '"}'
 
@@ -189,14 +187,13 @@ method Consultar() class TApiMDFe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if (::mdfe:tpAmb == 1)
+    if (::mdfe:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar MDFe")
@@ -245,14 +242,13 @@ method Cancelar() class TApiMDFe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if (::mdfe:tpAmb == 1)
+    if (::mdfe:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/cancelamento"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/cancelamento"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid + "/cancelamento"
-    // endif
+    endif
 
     ::body := '{"justificativa":"Erro no preenchimento do Manifesto de Documentos Fiscais"}'
 
@@ -299,14 +295,13 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if (::mdfe:tpAmb == 1)
+    if (::mdfe:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    // endif
+    endif
 
     switch Lower(::mdfe:situacao)
         case "autorizado"
@@ -345,14 +340,13 @@ method BaixarXMLdoMDFe() class TApiMDFe
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if ::mdfe:tpAmb == 1
+    if (::mdfe:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe/" + ::nuvemfiscal_uuid
-    // endif
+    endif
 
     switch Lower(::mdfe:situacao)
         case "autorizado"
@@ -392,7 +386,7 @@ method defineBody() class TApiMDFe
     // Tag ide
     ide := {=>}
     ide["cUF"] := emitente:cUF
-    ide["tpAmb"] := 2   // ::mdfe:tpAmb  Debug:
+    ide["tpAmb"] := ::mdfe:tpAmb
     ide["tpEmit"] := emitente:tpEmit
 
     /*
@@ -620,13 +614,10 @@ method defineBody() class TApiMDFe
         }
     endif
 
-    ambiente := "homologacao"   // Debug: Após encerrar os testes, alterar esta linha
+    ambiente := iif(::mdfe:tpAmb == 1, "producao", "homologacao")
 
     // Cria o Body Hash Table
     hBody := {"infMDFe" => infMDFe, "ambiente" => ambiente, "referencia" => ::mdfe:referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
-
-    // Debug, remover a linha abaixo após testes
-    hb_MemoWrit(appData:systemPath + "tmp\MDFe" + ::mdfe:referencia_uuid + ".json", ::body)
 
 return nil

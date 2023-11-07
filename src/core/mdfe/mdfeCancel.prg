@@ -12,7 +12,6 @@ procedure mdfeCancel(mdfe)
             mdfeGetFiles(mdfe)
         else
             mdfe:setSituacao(apiMDFe:status)
-            // Debug
             consoleLog({"Evento de Cancelamento Registrado", hb_eol(), "apiMDFe:status " + apiMDFe:status, hb_eol(), "cStat: ", iif(!Empty(apiMDFe:codigo_status), apiMDFe:codigo_status, apiMDFe:codigo_mensagem)})
         endif
 
@@ -36,7 +35,6 @@ procedure mdfeCancel(mdfe)
             mdfe:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
         next
         mdfe:setSituacao(apiMDFe:status)
-        // Debug:
         consoleLog("Erro ao cancelar: apiMDFe:response" + apiMDFe:response)
     endif
 

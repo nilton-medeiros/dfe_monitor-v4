@@ -46,14 +46,13 @@ method Baixar() class TApiLogotipo
         return false
     endif
 
-    // Debug: Integração em teste, remover os comentários do laço if/endif abaixo
-    // if empresa:tpAmb == 1
+    if (empresa:tpAmb == 1)
         // API de Produção
-        // apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    // else
+        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
+    else
         // API de Teste
         apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    // endif
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar Logotipo")

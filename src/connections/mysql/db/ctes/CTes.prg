@@ -194,8 +194,9 @@ method getListCTes() class TDbCTes
         sql:add(")")
     endif
 
-    sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') ")
-    sql:add(" ORDER BY cte_monitor_action, emp_id, cte_numero")
+    sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') AND ")
+    sql:add("cte_versao_leiaute_xml > 3.00 ")
+    sql:add("ORDER BY cte_monitor_action, emp_id, cte_numero")
 
     ::ctes := {}
     dbCTes := TQuery():new(sql:value)

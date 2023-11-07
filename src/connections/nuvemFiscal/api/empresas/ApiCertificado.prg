@@ -63,7 +63,7 @@ method Consultar() class TApiCertificado
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao consultar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao consultar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']
@@ -125,7 +125,7 @@ method Deletar() class TApiCertificado
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao deletar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao deletar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']

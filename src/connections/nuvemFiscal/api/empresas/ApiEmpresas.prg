@@ -68,7 +68,7 @@ method Cadastrar(empresa) class TApiEmpresas
 
     if res['error']
         saveLog({"Erro ao cadastrar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-                 "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+                 "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     else
         ::putSetupCTe(empresa)
     endif
@@ -101,7 +101,7 @@ method Consultar(empresa) class TApiEmpresas
 
     if res['error']
         saveLog({"Erro ao consultar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-                 "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+                 "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']
@@ -134,7 +134,7 @@ method Alterar(empresa) class TApiEmpresas
 
     if res['error']
         saveLog({"Erro ao alterar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-                 "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+                 "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     else
         ::putSetupCTe(empresa)
     endif
@@ -196,7 +196,7 @@ method putSetupCTe(empresa) class TApiEmpresas
 
     if res['error']
         saveLog({"Erro ao alterar configuração de CT-e na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-                 "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+                 "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']

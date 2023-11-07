@@ -63,7 +63,7 @@ method Baixar() class TApiLogotipo
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao baixar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao baixar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']
@@ -129,7 +129,7 @@ method Deletar() class TApiLogotipo
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao deletar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContetType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao deletar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']

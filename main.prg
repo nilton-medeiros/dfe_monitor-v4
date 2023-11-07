@@ -104,17 +104,17 @@ procedure main_form_oninit()
 
     if appDataSource:connect()
 
-        appNuvemFiscal := TAuthNuvemFiscal():new()
-
-        if !appNuvemFiscal:Authorized
-            turnOFF()
-        endif
-
         appEmpresas := TDbEmpresas():new()
 
         if !appEmpresas:ok
             saveLog("Nenhuma empresa foi retornada do banco de dados")
             MessageBoxTimeout('Nenhuma empresa foi retornada do banco de dados' + hb_eol() + 'Avise ao suporte!', 'Parada forçada', MB_ICONEXCLAMATION, 300000)
+            turnOFF()
+        endif
+
+        appNuvemFiscal := TAuthNuvemFiscal():new()
+
+        if !appNuvemFiscal:Authorized
             turnOFF()
         endif
 

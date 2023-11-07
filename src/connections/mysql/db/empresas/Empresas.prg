@@ -60,24 +60,6 @@ method new() class TDbEmpresas
             hRow := convertFieldsDb(dbEmpresas:db:GetRow())
             empresa := TEmpresa():new(hRow)
             AAdd(::empresas, empresa)
-            // Verifica se a empresa precisa ser cadastrada ou alterada na Nuvem Fiscal
-            if empresa:nuvemfiscal_cadastrar
-                nuvemFiscal := TApiEmpresas():new()
-                if nuvemFiscal:Cadastrar(empresa)
-                    consoleLog("Empresa cadastrada na API Nuvem Fiscal")
-                else
-                    MsgStop(getMessageApiError(nuvemFiscal), "Erro ao cadastrar Empresa na API da Nuvem Fiscal")
-                    turnOFF()
-                endif
-            elseif empresa:nuvemfiscal_alterar
-                nuvemFiscal := TApiEmpresas():new()
-                if nuvemFiscal:Alterar(empresa)
-                    consoleLog("Empresa alterada na API Nuvem Fiscal")
-                else
-                    MsgStop(getMessageApiError(nuvemFiscal), "Erro ao alterar Empresa na API da Nuvem Fiscal")
-                    turnOFF()
-                endif
-            endif
             dbEmpresas:db:Skip()
         enddo
     endif

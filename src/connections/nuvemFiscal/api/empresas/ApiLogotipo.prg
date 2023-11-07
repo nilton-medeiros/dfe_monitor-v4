@@ -4,6 +4,7 @@
 
 class TApiLogotipo
 
+    data tpAmb readonly
     data cnpj readonly
     data token
     data connection
@@ -20,9 +21,10 @@ class TApiLogotipo
 end class
 
 
-method new(cnpj) class TApiLogotipo
+method new(empresa) class TApiLogotipo
 
-    ::cnpj := cnpj
+    ::tpAmb := empresa:tpAmb
+    ::cnpj := empresa:cnpj
     ::connected := false
     ::response := ""
     ::httpStatus := 0
@@ -46,7 +48,7 @@ method Baixar() class TApiLogotipo
         return false
     endif
 
-    if (empresa:tpAmb == 1)
+    if (::tpAmb == 1)
         // API de Produção
         apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     else
@@ -77,7 +79,7 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
 
     default cExt := "png"
 
-    if (empresa:tpAmb == 1)
+    if (::tpAmb == 1)
         // API de Produção
         apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     else
@@ -111,7 +113,7 @@ return !res['error']
 method Deletar() class TApiLogotipo
     local apiUrl, res
 
-    if (empresa:tpAmb == 1)
+    if (::tpAmb == 1)
         // API de Produção
         apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
     else

@@ -4,6 +4,7 @@
 
 class TApiCertificado
 
+    data tpAmb readonly
     data cnpj readonly
     data token
     data connection
@@ -12,7 +13,7 @@ class TApiCertificado
     data httpStatus readonly
     data ContentType readonly
 
-    method new(cnpj) constructor
+    method new(empresa) constructor
     method Consultar()
     method Cadastrar(certificado, password)
     method Deletar()
@@ -20,9 +21,10 @@ class TApiCertificado
 end class
 
 
-method new(cnpj) class TApiCertificado
+method new(empresa) class TApiCertificado
 
-    ::cnpj := cnpj
+    ::tpAmb := empresa:tpAmb
+    ::cnpj := empresa:cnpj
     ::connected := false
     ::response := ""
     ::httpStatus := 0
@@ -46,7 +48,7 @@ method Consultar() class TApiCertificado
         return false
     endif
 
-    if empresa:tpAmb == 1
+    if (::tpAmb == 1)
         // API de Produção
         apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     else
@@ -75,7 +77,7 @@ method Cadastrar(certificado, password) class TApiCertificado
         return false
     endif
 
-    if (empresa:tpAmb == 1)
+    if (::tpAmb == 1)
         // API de Produção
         apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     else
@@ -107,7 +109,7 @@ return !res['error']
 method Deletar() class TApiCertificado
     local apiUrl, res
 
-    if (empresa:tpAmb == 1)
+    if (::tpAmb == 1)
         // API de Produção
         apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/certificado"
     else

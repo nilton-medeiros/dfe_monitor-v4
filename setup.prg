@@ -225,6 +225,7 @@ procedure setup_button_logotipo_action()
 return
 
 procedure setup_Button_Submit_Certificado_action()
+	local index := GetProperty("setup", "Grid_Empresas", "value")
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local filePFX := GetProperty('setup', 'Text_ArquivoPFX', 'value')
 	local paswPFX := GetProperty('setup', 'Text_SenhaPFX', 'value')
@@ -256,7 +257,7 @@ procedure setup_Button_Submit_Certificado_action()
 		// Transmitir para a nuvem fiscal e pegar retorno
 		fileLoaded := hb_MemoRead(filePFX)
 		cdEncode64 := HB_Base64Encode(fileLoaded)
-		certificado := TApiCertificado():new(cnpj)
+		certificado := TApiCertificado():new(appEmpresas:empresas[index])
 		tudoCerto := certificado:Cadastrar(cdEncode64, paswPFX)
 
 		if tudoCerto
@@ -317,12 +318,19 @@ procedure setup_Button_Submit_Certificado_action()
 return
 
 procedure setup_Button_Submit_Logotipo_action()
-	// MsgInfo("Módulo desativado!", "Envio do logotipo")
+	MsgInfo("Módulo desativado!", "Envio do logotipo")
+
+/*
+	* Por motivos desconhecidos, o logotipo não é enviado corretamente, é provavel que o problema estaja na
+	* configuração da DLL win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") para enviar arquivos do tipo image/jpeg,png,tif...
 
 	local cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
 	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
 	local logotipo, nFileHandle, nSize
+    local index := GetProperty("setup", "Grid_Empresas", "value")
+	local empresa := appEmpresas:empresas[index]
+
 	private binaryFile
 
 	SetProperty('setup', 'Label_StatusLogotipo', 'value', '')
@@ -353,7 +361,7 @@ procedure setup_Button_Submit_Logotipo_action()
 			FClose(nFileHandle)
 
 			if !Empty(binaryFile)
-				logotipo := TApiLogotipo():new(cnpj)
+				logotipo := TApiLogotipo():new(empresa)
 				if logotipo:Enviar(binaryFile, hb_FNameExt(fileLogo))
 					RegistryWrite(REGISTRY_PATH + "logotipo\LogoFile", fileLogo)
 					RegistryWrite(REGISTRY_PATH + "logotipo\uploaded", 1)
@@ -380,12 +388,13 @@ procedure setup_Button_Submit_Logotipo_action()
 	endif
 
 	SetProperty('setup', 'Button_Submit_Logotipo', 'Enabled', !Empty(GetProperty('setup', 'Image_logotipo', 'picture')))
-
+*/
 return
 
 procedure setup_button_delete_logotipo_action()
 	local cnpj, logo
 	local paswUser := GetProperty('setup', 'Text_password', 'Value')
+	local index := GetProperty("setup", "Grid_Empresas", "value")
 
 	if !(paswUser == cbxUsers:getCargo())
 		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + ;
@@ -394,7 +403,7 @@ procedure setup_button_delete_logotipo_action()
 		SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Deletando Logo...')
 		SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', YELLOW_OCRE)
 		cnpj := GetProperty('setup', 'Text_CNPJ', 'value')
-		logo := TApiLogotipo():new(cnpj)
+		logo := TApiLogotipo():new(appEmpresas:empresas[index])
 		if logo:Deletar()
 			SetProperty('setup', 'Image_logotipo', 'picture', NIL)
 			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Logotipo Removido com Sucesso!')

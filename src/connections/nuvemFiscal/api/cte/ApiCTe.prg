@@ -74,7 +74,7 @@ method new(cte) class TApiCTe
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/cte"
     endif
 
-    ::baseUrlID := ::baseUrl + "/" ::nuvemfiscal_uuid
+    ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
 
 return self
 

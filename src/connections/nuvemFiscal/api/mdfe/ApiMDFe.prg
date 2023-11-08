@@ -72,7 +72,7 @@ method new(mdfe) class TApiMDFe
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe"
     endif
 
-    ::baseUrlID := ::baseUrl + "/" ::nuvemfiscal_uuid
+    ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
 
 return self
 

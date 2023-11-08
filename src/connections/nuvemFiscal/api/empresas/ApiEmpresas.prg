@@ -4,6 +4,7 @@
 
 class TApiEmpresas
 
+    data empresa
     data token
     data connection
     data connected readonly
@@ -11,18 +12,21 @@ class TApiEmpresas
     data response readonly
     data httpStatus readonly
     data ContentType readonly
+    data baseUrl readonly
+    data baseUrlCnpj readonly
 
-    method new() constructor
-    method Alterar(empresa)
-    method Cadastrar(empresa)
-    method Consultar(empresa)
-    method defineBody(empresa)
-    method putSetupCTe(empresa)
+    method new(empresa) constructor
+    method Alterar()
+    method Cadastrar()
+    method Consultar()
+    method defineBody()
+    method putSetupCTe()
 
 end class
 
-method new() class TApiEmpresas
+method new(empresa) class TApiEmpresas
 
+    ::empresa := empresa
     ::connected := false
     ::response := ""
     ::httpStatus := 0
@@ -37,29 +41,31 @@ method new() class TApiEmpresas
         ::connected := !Empty(::connection)
     endif
 
+    if (::empresa:tpAmb == 1)
+        // API de Produção
+        ::baseUrl := "https://api.nuvemfiscal.com.br/empresas"
+    else
+        // API de Teste
+        ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas"
+    endif
+
+    ::baseUrlCnpj := ::baseUrl + "/" + ::empresa:CNPJ
+
 return self
 
 
-method Cadastrar(empresa) class TApiEmpresas
-    local res, apiUrl
+method Cadastrar() class TApiEmpresas
+    local res
 
     if !::connected
         return false
     endif
 
-    if (empresa:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/empresas"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas"
-    endif
-
     // Request Body
-    ::defineBody(empresa)
+    ::defineBody()
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "POST", apiUrl, ::token, "Cadastrar Empresa", ::body, "application/json")
+    res := Broadcast(::connection, "POST", ::baseUrl, ::token, "Cadastrar Empresa", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -69,29 +75,21 @@ method Cadastrar(empresa) class TApiEmpresas
         saveLog({"Erro ao cadastrar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     else
-        ::putSetupCTe(empresa)
+        ::putSetupCTe()
     endif
 
 return !res['error']
 
 
-method Consultar(empresa) class TApiEmpresas
-    local res, apiUrl
+method Consultar() class TApiEmpresas
+    local res
 
     if !::connected
         return false
     endif
 
-    if (empresa:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar Empresa")
+    res := Broadcast(::connection, "GET", ::baseUrlCnpj, ::token, "Consultar Empresa")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -105,26 +103,18 @@ method Consultar(empresa) class TApiEmpresas
 return !res['error']
 
 
-method Alterar(empresa) class TApiEmpresas
+method Alterar() class TApiEmpresas
     local res, apiUrl
 
     if !::connected
         return false
     endif
 
-    if (empresa:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ
-    endif
-
     // Request Body
-    ::defineBody(empresa)
+    ::defineBody()
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar Empresa", ::body, "application/json")
+    res := Broadcast(::connection, "PUT", ::baseUrlCnpj, ::token, "Alterar Empresa", ::body, "application/json")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -134,54 +124,48 @@ method Alterar(empresa) class TApiEmpresas
         saveLog({"Erro ao alterar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
                  "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     else
-        ::putSetupCTe(empresa)
+        ::putSetupCTe()
     endif
 
 return !res['error']
 
 // Request Body
-method defineBody(empresa) class TApiEmpresas
-    // Refatorar para Hash Table e depois usar hb_jsonEncode(hBody, 4)
-    ::body := '{' + hb_eol()
-    ::body += '  "cpf_cnpj": "' + empresa:cnpj + '",' + hb_eol()
-    ::body += '  "inscricao_estadual": "' + empresa:IE + '",' + hb_eol()
-    ::body += '  "inscricao_municipal": "' + empresa:IM + '",' + hb_eol()
-    ::body += '  "nome_razao_social": "' + empresa:xNome + '",' + hb_eol()
-    ::body += '  "nome_fantasia": "' + empresa:xFant + '",' + hb_eol()
-    ::body += '  "fone": "' + empresa:fone + '",' + hb_eol()
-    ::body += '  "email": "' + empresa:email + '",' + hb_eol()
-    ::body += '  "endereco": {' + hb_eol()
-    ::body += '    "logradouro": "' + empresa:xLgr + '",' + hb_eol()
-    ::body += '    "numero": "' + empresa:nro + '",' + hb_eol()
-    ::body += '    "complemento": "' + empresa:xCpl + '",' + hb_eol()
-    ::body += '    "bairro": "' + empresa:xBairro + '",' + hb_eol()
-    ::body += '    "codigo_municipio": "' + empresa:cMunEnv + '",' + hb_eol()
-    ::body += '    "cidade": "' + empresa:xMunEnv + '",' + hb_eol()
-    ::body += '    "uf": "' + empresa:UF + '",' + hb_eol()
-    ::body += '    "cep": "' + empresa:CEP + '"' + hb_eol()
-    ::body += '  }' + hb_eol()
-    ::body += '}'
+method defineBody() class TApiEmpresas
+    local hBody := {=>}, hEnde := {=>}
+
+    hBody["cpf_cnpj"] := ::empresa:cnpj
+    hBody["inscricao_estadual"] := ::empresa:IE
+    hBody["inscricao_municipal"] := ::empresa:IM
+    hBody["nome_razao_social"] := ::empresa:xNome
+    hBody["nome_fantasia"] := ::empresa:xFant
+    hBody["fone"] := ::empresa:fone
+    hBody["email"] := ::empresa:email
+    hEnde["logradouro"] := ::empresa:xLgr
+    hEnde["numero"] := ::empresa:nro
+    hEnde["complemento"] := ::empresa:xCpl
+    hEnde["bairro"] := ::empresa:xBairro
+    hEnde["codigo_municipio"] := ::empresa:cMunEnv
+    hEnde["cidade"] := ::empresa:xMunEnv
+    hEnde["uf"] := ::empresa:UF
+    hEnde["cep"] := ::empresa:CEP
+    hBody["endereco"] := hEnde
+
+    ::body := hb_jsonEncode(hBody, 4)
+    hBody := hEnder := nil
+
 return nil
 
-method putSetupCTe(empresa) class TApiEmpresas
-    local res, apiUrl, hBody
+method putSetupCTe() class TApiEmpresas
+    local res, hBody, apiUrl := ::baseUrlCnpj + "/cte"
 
     if !::connected
         return false
     endif
 
-    if (empresa:tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + empresa:CNPJ + "/cte"
-    endif
-
     // Request Body
     hBody := {=>}
-    hBody["CRT"] := empresa:CRT
-    hBody["ambiente"] := iif(empresa:tpAmb == 1, "producao", "homologacao")
+    hBody["CRT"] := ::empresa:CRT
+    hBody["ambiente"] := iif(::empresa:tpAmb == 1, "producao", "homologacao")
     ::body := hb_jsonEncode(hBody, 4)
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept

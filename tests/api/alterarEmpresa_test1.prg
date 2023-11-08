@@ -1,6 +1,6 @@
 procedure testAlterarEmpresa()
     local msgLog, empresa := appEmpresas:empresas[1]
-    local nuvemFiscal := TApiEmpresas():new()
+    local apiEmpresa := TApiEmpresas():new(empresa)
 
     msgLog := "INTEGRAÇÃO COM NUVEM FISCAL: TESTANDO ALTERAR EMPRESA EMITENTE" + hb_eol() + hb_eol()
     msgLog += ">> ESPERA-SE SUCESSO AO ALTERAR O COMPLEMENTO DO ENDEREÇO <<" + hb_eol() + hb_eol()
@@ -8,8 +8,8 @@ procedure testAlterarEmpresa()
 
     empresa:xCpl := "Complemento teste"
 
-    if nuvemFiscal:connected
-        if nuvemFiscal:Alterar(empresa)
+    if apiEmpresa:connected
+        if apiEmpresa:Alterar()
             MsgBox("Empresa alterada com sucesso!", "API Nuvem Fiscal")
             consoleLog("Empresa alterada com sucesso!")
         else

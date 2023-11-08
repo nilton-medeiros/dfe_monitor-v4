@@ -12,6 +12,7 @@ class TApiLogotipo
     data response readonly
     data httpStatus readonly
     data ContentType readonly
+    data baseUrl readonly
 
     method new(cnpj) constructor
     method Baixar()
@@ -38,26 +39,26 @@ method new(empresa) class TApiLogotipo
         ::connected := !Empty(::connection)
     endif
 
+    if (::tpAmb == 1)
+        // API de Produção
+        ::baseUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
+    else
+        // API de Teste
+        ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
+    endif
+
 return self
 
 
 method Baixar() class TApiLogotipo
-    local res, apiUrl
+    local res
 
     if !::connected
         return false
     endif
 
-    if (::tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar Logotipo")
+    res := Broadcast(::connection, "GET", ::baseUrl, ::token, "Baixar Logotipo")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -71,21 +72,13 @@ return !res['error']
 
 
 method Enviar(imgLogotipo, cExt) class TApiLogotipo
-    local res, apiUrl, content_type := "image/png"
+    local res, content_type := "image/png"
 
     if !::connected
         return false
     endif
 
     default cExt := "png"
-
-    if (::tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    endif
 
     cExt := Lower(Token(cExt, "."))
 
@@ -96,7 +89,7 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
     content_type := "image/" + cExt
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "PUT", apiUrl, ::token, "Enviar Logotipo", imgLogotipo, content_type)
+    res := Broadcast(::connection, "PUT", ::baseUrl, ::token, "Enviar Logotipo", imgLogotipo, content_type)
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -111,18 +104,10 @@ return !res['error']
 
 
 method Deletar() class TApiLogotipo
-    local apiUrl, res
-
-    if (::tpAmb == 1)
-        // API de Produção
-        apiUrl := "https://api.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    else
-        // API de Teste
-        apiUrl := "https://api.sandbox.nuvemfiscal.com.br/empresas/" + ::cnpj + "/logotipo"
-    endif
+    local res
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "DELETE", apiUrl, ::token, "Deletar Logotipo")
+    res := Broadcast(::connection, "DELETE", ::baseUrl, ::token, "Deletar Logotipo")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']

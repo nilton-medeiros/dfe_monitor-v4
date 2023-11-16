@@ -973,4 +973,7 @@ method defineBody() class TApiCTe
     hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => ::cte:referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
 
+    // Debug
+    hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json")
+
 return nil

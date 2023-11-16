@@ -919,7 +919,7 @@ method defineBody() class TApiCTe
                     aereo["natCarga"] := ::cte:aereo
 
                     tarifa := ::cte:comp_calc[1]
-                    aereo["tarifa"] := {"CL" => tarifa["CL"], ;
+                    aereo["tarifa"] := {"CL" => Left(tarifa["CL"],1), ;
                                         "cTar" => ::cte:cTar, ;
                                         "vTar" => tarifa["vTar"] ;
                                         }

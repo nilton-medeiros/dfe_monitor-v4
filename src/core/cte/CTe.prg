@@ -192,7 +192,12 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
 
     ::id := cte["id"]
     ::emp_id := cte["emp_id"]
-    ::versao_xml := cte["versao_xml"]
+    ::versao_xml := hb_ntos(cte["versao_xml"])
+
+    if (Len(Token(::versao_xml, ".")) == 1)
+        ::versao_xml += "0"
+    endif
+
     ::dhEmi := string_as_DateTime(cte["dhEmi"], TDZ_TRUE)
     ::modelo := number_format(cte["modelo"])
     ::serie := cte["serie"]

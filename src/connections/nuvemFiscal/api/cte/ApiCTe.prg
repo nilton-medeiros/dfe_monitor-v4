@@ -974,6 +974,6 @@ method defineBody() class TApiCTe
     ::body := hb_jsonEncode(hBody, 4)
 
     // Debug
-    hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json")
+    hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json", ::body)
 
 return nil

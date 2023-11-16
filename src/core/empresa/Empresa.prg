@@ -43,6 +43,7 @@ end class
 
 method new(empresa) class TEmpresa
     local versao := hb_ntos(empresa['cte_versao_xml'])
+    // Converte numérico para string
 
     if (Len(Token(versao, ".")) == 1)
         versao += "0"

@@ -140,6 +140,7 @@ procedure main_form_oninit()
     next
 
     SetProperty("main", "notifyIcon", "serverON")
+    MessageBoxTimeout("O DFeMonitor ficará oculto na barra de tarefa", "DFeMonitor inicializado", MB_ICONEXCLAMATION, 3000)
     startTimer()
 
 return

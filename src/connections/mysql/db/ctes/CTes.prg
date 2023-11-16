@@ -474,7 +474,8 @@ method getAereoCub3(id) class TDbCTes
 
     if (dim:count == 1)
         aereo["xDime"] := PadL(dim:FieldGet("cumprimento"), 4, "0") + "X" + PadL(dim:FieldGet("altura"), 4, "0") + "X" + PadL(dim:FieldGet("largura"), 4, "0")
-        aereo["cInfManu"] := {"99 - outro (especificar no campo observações)"}
+        // aereo["cInfManu"] := {"99 - outro (especificar no campo observações)"}
+        aereo["cInfManu"] := {"99"}
     else
         // Debug: Após testes, trocar por saveLog() e não passar o s:value
         consoleLog({"dim:count = ", dim:count, hb_eol(), s:value})

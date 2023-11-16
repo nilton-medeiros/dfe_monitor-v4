@@ -1,3 +1,5 @@
+#define false .F.
+#define true .T. 
 
 procedure cteUploadFiles(upload)
     local cte := upload["cte"], empresa := upload["empresa"]

@@ -14,7 +14,9 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         connection:Open(httpMethod, apiUrl, false)
         connection:SetRequestHeader("Authorization", "Bearer " + token)
 
-        if !Empty(content_type)
+        if Empty(content_type)
+            content_type := ""
+        else
             connection:SetRequestHeader("Content-Type", content_type)   // Request Body Schema
         endif
         if !Empty(accept)

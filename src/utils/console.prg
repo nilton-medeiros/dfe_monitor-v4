@@ -31,6 +31,10 @@ procedure consoleLog(text)
          endif
          msg += t
       next
+   elseif ValType(text) == 'N'
+      msg := hb_ntos(text)
+   elseif ValType(text) == 'D'
+      msg := DtoC(text)
    else
       msg := text
    endif

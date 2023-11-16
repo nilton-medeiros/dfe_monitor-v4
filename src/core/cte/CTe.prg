@@ -431,7 +431,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
         !(::UFIni == ::UFFim) .and.;   // e UF de término do serviço de transporte na operação interestadual
         (::tpServ == 0) .and.; // e Tipo de Serviço = 0-Normal
         (::des_icms == 0) .and.; // e consumidor (destinatário) não contribuinte do ICMS
-        (::cte_tomador == 3) .and.; // Tomador tem que ser o DESTINATÁRIO
+        (::tomador == 3) .and.; // Tomador tem que ser o DESTINATÁRIO
         !(::codigo_sit_tributaria == "SIMPLES NACIONAL") // O STF decidiu que essa cobrança do ICMS do Diferencial de Alíquota – DIFAL, para empresas Optantes pelo Simples é inconstitucional, pois seu recolhimento foi previsto pela Lei Complementar n° 123, de 14 de dezembro de 2006, e seu recolhimento é feito pela guia unificada do Simples Nacional – DAS
 
         saveLog("DIFAL CALCULADO")

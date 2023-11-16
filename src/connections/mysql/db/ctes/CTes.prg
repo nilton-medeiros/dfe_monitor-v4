@@ -536,7 +536,7 @@ method insertEventos(aEvents) class TDbCTes
         sql:add(hEvent["cte_id"] + ", ")
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_protocolo"]) + "', ")
         sql:add("'" + hEvent["cte_ev_data_hora"] + "', ")
-        sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_evento"]) + "', ")
+        sql:add("'" + hEvent["cte_ev_evento"] + "', ")
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_detalhe"]) + "')")
     next
     ctes_eventos := TQuery():new(sql:value)

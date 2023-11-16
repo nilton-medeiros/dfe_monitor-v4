@@ -958,10 +958,10 @@ method defineBody() class TApiCTe
     */
 
     if !Empty(RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"))
-        infCte["respTec"] := {"CNPJ" => RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"), ;
-                              "xContato" => RegistryRead(appData:winRegistryPath + "Host\respTec\xContato"), ;
-                              "email" => RegistryRead(appData:winRegistryPath + "Host\respTec\email"), ;
-                              "fone" => RegistryRead(appData:winRegistryPath + "Host\respTec\fone")}
+        infCte["infRespTec"] := {"CNPJ" => RegistryRead(appData:winRegistryPath + "Host\respTec\CNPJ"), ;
+                                 "xContato" => RegistryRead(appData:winRegistryPath + "Host\respTec\xContato"), ;
+                                 "email" => RegistryRead(appData:winRegistryPath + "Host\respTec\email"), ;
+                                 "fone" => RegistryRead(appData:winRegistryPath + "Host\respTec\fone")}
     endif
 
     // infSolicNFF: Não utilizado
@@ -974,6 +974,6 @@ method defineBody() class TApiCTe
     ::body := hb_jsonEncode(hBody, 4)
 
     // Debug
-    hb_MemoWrit("CTe" + hb_ntos(::cte:nCT) + ".json", ::body)
+    hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json", ::body)
 
 return nil

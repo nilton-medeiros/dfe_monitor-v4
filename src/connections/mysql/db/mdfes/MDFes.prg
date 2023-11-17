@@ -350,7 +350,7 @@ method getInfDescarga(cId) class TDbMDFes
             cMunDescarga := infCarga:FieldGet("cMunDescarga")
             xMunDescarga := infCarga:FieldGet("xMunDescarga")
 
-            AAdd(aInfCarga, {"cMunDescarga" => cMunDescarga, "xMunDescarga" => xMunDescarga, "infCTe" => aInfCTe})
+            AAdd(aInfCarga, {"cMunDescarga" => hb_ntos(cMunDescarga), "xMunDescarga" => xMunDescarga, "infCTe" => aInfCTe})
 
             aInfCTe := {}
             chCTes:Destroy()

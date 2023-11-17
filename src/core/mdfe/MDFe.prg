@@ -147,10 +147,10 @@ return nil
 
 method saveEventos() class TMDFe
     local db
-    if !Empty(::updateEventos)
+    if !Empty(::updateEvents)
         db := TDbMDFes():new()
-        if db:insertEventos(::updateEventos)
-            ::updateEventos := {}
+        if db:insertEventos(::updateEvents)
+            ::updateEvents := {}
         endif
     endif
 return nil

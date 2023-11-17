@@ -552,7 +552,7 @@ method defineBody() class TApiMDFe
     // lacres: Não usado, opcional
 
     // autXML
-    if !Empty(mdfe:autXML)
+    if !Empty(::mdfe:autXML)
         infMDFe["autXML"] := ::mdfe:autXML
     endif
 

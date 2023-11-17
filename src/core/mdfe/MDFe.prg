@@ -64,7 +64,7 @@ method new(hMDFe) class TMDFe
     ::mod := mdfe["modelo"]         // Modelo do MDFe
     ::serie := mdfe["serie"]
     ::nMDF := mdfe["nMDF"]
-    ::cMDF := hb_ntos(mdfe["id"])            // Código (id) que compõe a chave do MDFe
+    ::cMDF := PadL(mdfe["id"], 8, "0")            // Código (id) que compõe a chave do MDFe
     ::chMDFe := mdfe["chMDFe"]      // Chave do MDFe
     ::modal := 1                    // MDFe sempre é = 1: Rodoviário
     ::dhEmi := mdfe["dhEmi"]

@@ -364,6 +364,7 @@ method defineBody() class TApiMDFe
     ide["mod"] := ::mdfe:mod
     ide["serie"] := ::mdfe:serie
     ide["nMDF"] := ::mdfe:nMDF
+    // cMDF omitido, Nuvem fiscal gera automático
     // ide["cMDF"] := ::mdfe:cMDF
     ide["modal"] := ::mdfe:modal
     ide["dhEmi"] := ::mdfe:dhEmi
@@ -410,7 +411,7 @@ method defineBody() class TApiMDFe
 
     infModal := {=>}
     // Versão do layout dos CTes anexos do modal rodo (CTe 4.00), porem a versão de Layout XML do MDFe é independente do CTe
-    infModal["versaoModal"] := emitente:cte_versao_xml
+    infModal["versaoModal"] := emitente:mdfe_versao_xml
 
     if !Empty(emitente:RNTRC)
         infANTT := {=>}

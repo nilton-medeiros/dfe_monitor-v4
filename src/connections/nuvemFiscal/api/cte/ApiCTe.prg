@@ -922,6 +922,7 @@ method defineBody() class TApiCTe
                 else
                     // Aéreo: Informação do modal Aéreo
                     aereo := {=>}
+                    // nMinu omitido, Nuvem fiscal gera automático
                     // aereo["nMinu"] := ::cte:cCT
 
                     if !Empty(::cte:nOCA)

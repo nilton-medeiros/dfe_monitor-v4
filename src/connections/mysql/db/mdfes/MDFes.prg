@@ -342,7 +342,7 @@ method getInfDescarga(cId) class TDbMDFes
 
             if !(chCTes:count == 0)
                 do while !chCTes:eof()
-                    AAdd(aInfCTe, {"chCTe" => chCTes:FieldGet("chCTes")})
+                    AAdd(aInfCTe, {"chCTe" => chCTes:FieldGet("chCTe")})
                     chCTes:Skip()
                 enddo
             endif

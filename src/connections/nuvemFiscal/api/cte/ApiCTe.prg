@@ -74,10 +74,9 @@ method new(cte) class TApiCTe
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/cte"
     endif
 
-    if Empty(::nuvemfiscal_uuid)
-        saveLog("ID do CTe na Nuvem Fiscal não foi obtido, está vazio")
+    if !Empty(::nuvemfiscal_uuid)
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
     endif
-    ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
 
 return self
 
@@ -106,6 +105,7 @@ method Emitir() class TApiCTe
     else
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
         ::ambiente := hRes['ambiente']
         ::created_at := DateTime_to_mysql(hRes['created_at'])
         ::status := hRes['status']
@@ -231,7 +231,8 @@ return !res['error']
 method BaixarPDFdoDACTE() class TApiCTe
     local res, hRes, apiUrl := ::baseUrlID + "/pdf"
 
-    if !::connected
+    if !::connected .or. Empty(::nuvemfiscal_uuid)
+        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF", "API Nuvem Fiscal não conectado"))
         return false
     endif
 
@@ -258,7 +259,8 @@ return !res['error']
 method BaixarPDFdoCancelamento() class TApiCTe
     local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/pdf"
 
-    if !::connected
+    if !::connected .or. Empty(::nuvemfiscal_uuid)
+        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF", "API Nuvem Fiscal não conectado"))
         return false
     endif
 
@@ -285,7 +287,8 @@ return !res['error']
 method BaixarXMLdoCTe() class TApiCTe
     local res, hRes, apiUrl := ::baseUrlID + "/xml"
 
-    if !::connected
+    if !::connected .or. Empty(::nuvemfiscal_uuid)
+        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML", "API Nuvem Fiscal não conectado"))
         return false
     endif
 
@@ -310,7 +313,8 @@ return !res['error']
 method BaixarXMLdoCancelamento() class TApiCTe
     local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/xml"
 
-    if !::connected
+    if !::connected .or. Empty(::nuvemfiscal_uuid)
+        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML", "API Nuvem Fiscal não conectado"))
         return false
     endif
 

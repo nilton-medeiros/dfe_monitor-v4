@@ -557,10 +557,10 @@ method defineBody() class TApiMDFe
     endif
 
     target := {=>}
-    if !Empty(mdfe:infAdFisco)
+    if !Empty(::mdfe:infAdFisco)
         target["infAdFisco"] := ::mdfe:infAdFisco
     endif
-    if !Empty(mdfe:infCpl)
+    if !Empty(::mdfe:infCpl)
         target["infCpl"] := ::mdfe:infCpl
     endif
 

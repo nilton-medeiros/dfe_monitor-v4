@@ -221,7 +221,7 @@ method Cancelar() class TApiCTe
             ::mensagem := res["response"]
         endif
         if hb_HGetRef(hRes, 'tipo_evento')
-            ::tipo_evento := res['tipo_evento']
+            ::tipo_evento := hRes['tipo_evento']
         endif
 
     endif

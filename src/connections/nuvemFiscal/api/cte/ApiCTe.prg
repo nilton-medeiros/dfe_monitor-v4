@@ -74,6 +74,9 @@ method new(cte) class TApiCTe
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/cte"
     endif
 
+    if Empty(::nuvemfiscal_uuid)
+        saveLog("ID do CTe na Nuvem Fiscal não foi obtido, está vazio")
+    endif
     ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
 
 return self

@@ -6,19 +6,21 @@ function cteGetFiles(cte, apiCTe)
     local directory, filePDF, fileXML, cancelPDF, cancelXML
     local empresa, anoMes, printPDF, printPath
 
+    default apiCTe := TApiCTe():new(cte)
+
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(cte:emp_id)
 
     // "2019-08-24T14:15:22Z"
     anoMes := Left(getNumbers(cte:dhEmi), 6)
     directory := appData:dfePath + empresa:CNPJ + '\CTe\' + anoMes + '\'
-    filePDF := cte:chCTe + '-cte.pdf'
-    fileXML := cte:chCTe + '-cte.xml'
-    cancelPDF := cte:chCTe + '-cteCancelado.pdf'
-    cancelXML := cte:chCTe + '-cteCancelado.xml'
+    filePDF := apiCTe:chave + '-cte.pdf'
+    fileXML := apiCTe:chave + '-cte.xml'
+    cancelPDF := apiCTe:chave + '-cteCancelado.pdf'
+    cancelXML := apiCTe:chave + '-cteCancelado.xml'
 
     if hb_DirExists(directory)
-        if (cte:situacao == "CANCELADO")
+        if (Upper(apiCTe:status) == "CANCELADO")
             lExisteAutorizado := true
             lExisteCancelado := hb_FileExists(directory + cancelPDF) .and. hb_FileExists(directory + cancelXML)
             if lExisteCancelado
@@ -35,8 +37,6 @@ function cteGetFiles(cte, apiCTe)
     else
         hb_DirBuild(directory)
     endif
-
-    default apiCTe := TApiCTe():new(cte)
 
     if !lExisteAutorizado
 
@@ -68,7 +68,7 @@ function cteGetFiles(cte, apiCTe)
 
     endif
 
-    if (cte:situacao == "CANCELADO") .and. !lExisteCancelado
+    if (Upper(apiCTe:status) == "CANCELADO") .and. !lExisteCancelado
 
         if apiCTe:BaixarPDFdoCancelamento()
             if hb_MemoWrit(directory + cancelPDF, apiCTe:pdf_cancel)

@@ -188,7 +188,7 @@ method getMunCarregamento(cId) class TDbMDFes
 
     if carrega:executed
         do while !carrega:eof()
-            AAdd(aMunCarrega, {"cMunCarrega" => carrega:FieldGet("cMunCarrega"), "xMunCarrega" => ansi_to_unicode(carrega:FieldGet("xMunCarrega"))})
+            AAdd(aMunCarrega, {"cMunCarrega" => hb_ntos(carrega:FieldGet("cMunCarrega")), "xMunCarrega" => ansi_to_unicode(carrega:FieldGet("xMunCarrega"))})
             carrega:Skip()
         enddo
     endif

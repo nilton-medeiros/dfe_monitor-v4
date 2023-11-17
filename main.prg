@@ -163,7 +163,7 @@ procedure main_Timer_dfe_action()
         return
     endif
 
-    if (win_regRead(appData:winRegistryPath + "Monitorin\Stop_Execution") == 1)
+    if (win_regRead(appData:winRegistryPath + "Monitoring\Stop_Execution") == 1)
         saveLog("Parada forçada para atualização")
         turnOFF()
     endif

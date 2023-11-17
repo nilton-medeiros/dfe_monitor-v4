@@ -49,7 +49,7 @@ method new(mdfe) class TApiMDFe
     ::nuvemfiscal_uuid := ::mdfe:nuvemfiscal_uuid
     ::status := ::mdfe:situacao
     ::data_emissao := ::mdfe:dhEmi
-    ::chave_acesso := ::mdfe:chCTe
+    ::chave_acesso := ::mdfe:chMDFe
     ::codigo_status := 0
     ::motivo_status := ""
     ::numero_protocolo := ::mdfe:nProt

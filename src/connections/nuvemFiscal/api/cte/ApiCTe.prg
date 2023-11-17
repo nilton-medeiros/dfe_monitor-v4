@@ -860,7 +860,7 @@ method defineBody() class TApiCTe
             case 3 // 3-Declarações, outros
                 tag := "infOutros"
                 for each hDoc in ::cte:doc_anexo
-                    AAdd(docAnexos, {"tpDoc" => hb_ntos(hDoc["tpDoc"]), ;
+                    AAdd(docAnexos, {"tpDoc" => PadL(hDoc["tpDoc"], 2, "0"), ;
                                         "descOutros" => hDoc["descOutros"], ;
                                         "nDoc" => hb_ntos(hDoc["nDoc"]), ;
                                         "dEmi" => hDoc["dEmi"], ;

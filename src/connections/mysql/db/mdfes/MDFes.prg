@@ -332,9 +332,6 @@ method getInfDescarga(cId) class TDbMDFes
 
         do while !infCarga:eof()
 
-            cpf := PadL(infCarga:FieldGet("CPF"), 11, "0")
-            xNome := ansi_to_unicode(infCarga:FieldGet("xNome"))
-
             sql:setValue("SELECT t1.cte_chave AS chCTe FROM ctes AS t1 ")
             sql:add("INNER JOIN mdfes_ctes AS t2 ON t2.ctes_id = t1.cte_id ")
             sql:add("WHERE t2.mdfe_id = " + cId + " AND ")

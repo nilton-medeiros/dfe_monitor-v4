@@ -922,7 +922,7 @@ method defineBody() class TApiCTe
                 else
                     // Aéreo: Informação do modal Aéreo
                     aereo := {=>}
-                    // aereo["nMinu"] := Val(PadR(::cte:cCT, 9, "0"))
+                    aereo["nMinu"] := PadR(::cte:cCT, 9, "0")
 
                     if !Empty(::cte:nOCA)
                         aereo["nOCA"] := ::cte:nOCA

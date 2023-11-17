@@ -117,6 +117,8 @@ method serverBusy() class TQuery
     local ocupado := (::db:NetErr() .and. 'server has gone away' $ ::db:Error())
     if ocupado
         saveLog("Servidor ocupado... Fluxo continua! Erro: " + ::db:Error())
+        appDataSource:disconnect()
+        appDataSource:connect()
     endif
 return ocupado
 

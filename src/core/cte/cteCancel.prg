@@ -13,7 +13,7 @@ procedure cteCancel(cte)
         if (apiCTe:codigo_status == 135)
             cte:setSituacao("CANCELADO")
             consoleLog({"CTe: ", apiCTe:chave, " cancelado com sucesso, pegando PDF e XML de Cancelamento"})
-            cteGetFiles(cte)
+            cteGetFiles(cte, apiCTe)
         else
             cte:setSituacao(apiCTe:status)
         endif

@@ -224,6 +224,10 @@ method Cancelar() class TApiCTe
             ::tipo_evento := hRes['tipo_evento']
         endif
 
+        if (::codigo_status == 135)
+            ::status := "CANCELADO"
+        endif
+
     endif
 
 return !res['error']

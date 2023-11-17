@@ -348,7 +348,7 @@ method getInfDescarga(cId) class TDbMDFes
             endif
 
             cMunDescarga := infCarga:FieldGet("cMunDescarga")
-            xMunDescarga := infCarga:FieldGet("xMunDescarga")
+            xMunDescarga := ansi_to_unicode(infCarga:FieldGet("xMunDescarga"))
 
             AAdd(aInfCarga, {"cMunDescarga" => hb_ntos(cMunDescarga), "xMunDescarga" => xMunDescarga, "infCTe" => aInfCTe})
 

@@ -364,7 +364,7 @@ method defineBody() class TApiMDFe
     ide["mod"] := ::mdfe:mod
     ide["serie"] := ::mdfe:serie
     ide["nMDF"] := ::mdfe:nMDF
-    ide["cMDF"] := ::mdfe:cMDF
+    // ide["cMDF"] := ::mdfe:cMDF
     ide["modal"] := ::mdfe:modal
     ide["dhEmi"] := ::mdfe:dhEmi
     ide["tpEmis"] := ::mdfe:tpEmis

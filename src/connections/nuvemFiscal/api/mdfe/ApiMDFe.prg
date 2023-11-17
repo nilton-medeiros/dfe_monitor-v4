@@ -534,7 +534,7 @@ method defineBody() class TApiMDFe
     target["xProd"] := ::mdfe:prodPred["xProd"]
     target["cEAN"] := ::mdfe:prodPred["cEAN"]
     target["NCM"] := ::mdfe:prodPred["NCM"]
-    target["infLotacao"] := {"infLocalCarrega" => {"CEP" => emitente:CEP}, "infLocalDescarga" => {"CEP" => ::mdfe:prodPred["infLocalDescarrega"]}}
+    target["infLotacao"] := {"infLocalCarrega" => {"CEP" => emitente:CEP}, "infLocalDescarrega" => {"CEP" => ::mdfe:prodPred["infLocalDescarrega"]}}
 
     infMDFe["prodPred"] := target
     target := nil

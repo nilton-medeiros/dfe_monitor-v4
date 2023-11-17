@@ -13,7 +13,7 @@ class TMDFe
     data nMDF
     data cMDF
     data chMDFe
-    data modal 
+    data modal
     data nProt
     data dhEmi
     data tpEmis
@@ -88,7 +88,6 @@ method new(hMDFe) class TMDFe
     ::qCarga := mdfe["qCarga"]
     ::infAdFisco := mdfe["infAdFisco"]
     ::infCpl := mdfe["infCpl"]
-    ::lista_tomadores := mdfe["lista_tomadores"]
     ::situacao := mdfe["situacao"]
     ::monitor_action := mdfe["monitor_action"]
     ::nProt := mdfe["nProt"]

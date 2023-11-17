@@ -13,6 +13,7 @@ class TMDFe
     data nMDF
     data cMDF
     data chMDFe
+    data modal 
     data nProt
     data dhEmi
     data tpEmis

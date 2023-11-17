@@ -79,7 +79,7 @@ method getListMDFes() class TDbMDFes
         sql:add(")")
     endif
 
-    sql:add(" AND cte_monitor_action IN ('SUBMIT','CANCEL','CLOSE') AND ")
+    sql:add(" AND cte_monitor_action IN ('SUBMIT','CANCEL','GETFILES','CLOSE') AND ")
     sql:add("cte_versao_xml > 3.00 ")
     sql:add("ORDER BY monitor_action, emp_id, nMDF")
 

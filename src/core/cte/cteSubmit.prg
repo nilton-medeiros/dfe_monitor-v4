@@ -2,8 +2,7 @@
 
 procedure cteSubmit(cte)
     local apiCTe := TApiCTe():new(cte)
-    local startTimer, emitido
-    local targetFile, anoEmes, directory, aError, error
+    local startTimer, targetFile, anoEmes, directory, aError, error
 
     // Refatorado, na versão CTe 4.00 a transmissão é sincrono, já é retornado a autorização ou rejeição
 

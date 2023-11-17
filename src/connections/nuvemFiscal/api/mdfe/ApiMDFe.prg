@@ -412,7 +412,7 @@ method defineBody() class TApiMDFe
 
     infModal := {=>}
     // Versão do layout dos CTes anexos do modal rodo (CTe 4.00), porem a versão de Layout XML do MDFe é independente do CTe
-    infModal["versaoModal"] := emitente:mdfe_versao_xml
+    infModal["versaoModal"] := ::mdfe:versao
 
     if !Empty(emitente:RNTRC)
         infANTT := {=>}

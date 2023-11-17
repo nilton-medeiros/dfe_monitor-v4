@@ -35,6 +35,7 @@ class TEmpresa
     data nuvemfiscal_client_secret readonly
     data nuvemfiscal_cadastrar readonly
     data nuvemfiscal_alterar readonly
+    data tpEmit readonly
 
     method new(empresa) constructor
     method update()
@@ -81,6 +82,7 @@ method new(empresa) class TEmpresa
     ::nuvemfiscal_client_secret := empresa['nuvemfiscal_client_secret']
     ::nuvemfiscal_cadastrar := iif(empresa['nuvemfiscal_cadastrar'] == 1, true, false)
     ::nuvemfiscal_alterar := iif(empresa['nuvemfiscal_alterar'] == 1, true, false)
+    ::tpEmit := empresa['tpEmit']
 
 return self
 

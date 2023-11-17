@@ -12,6 +12,7 @@ procedure cteSubmit(cte)
         // Prepara os campos da tabela ctes para receber os updates
         cte:setSituacao(apiCTe:status)
         cte:setUpdateCte('cte_chave', apiCTe:chave)
+        cte:setUpdateCte('digest_value', apiCTe:digest_value)
         cte:setUpdateCte('cte_protocolo_autorizacao', apiCTe:numero_protocolo)
         cte:setUpdateCte('nuvemfiscal_uuid', apiCTe:nuvemfiscal_uuid)
 

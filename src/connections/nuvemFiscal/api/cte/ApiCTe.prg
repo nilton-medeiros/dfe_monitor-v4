@@ -862,7 +862,7 @@ method defineBody() class TApiCTe
                 for each hDoc in ::cte:doc_anexo
                     AAdd(docAnexos, {"tpDoc" => PadL(hDoc["tpDoc"], 2, "0"), ;
                                         "descOutros" => hDoc["descOutros"], ;
-                                        "nDoc" => hb_ntos(hDoc["nDoc"]), ;
+                                        "nDoc" => hDoc["nDoc"], ;
                                         "dEmi" => hDoc["dEmi"], ;
                                         "vDocFisc" => hDoc["vDocFisc"] ;
                                     })

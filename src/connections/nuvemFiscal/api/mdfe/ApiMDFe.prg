@@ -27,6 +27,7 @@ class TApiMDFe
     data digest_value readonly
     data baseUrl readonly
     data baseUrlID readonly
+    data created_at readonly
 
     method new(mdfe) constructor
     method Emitir()

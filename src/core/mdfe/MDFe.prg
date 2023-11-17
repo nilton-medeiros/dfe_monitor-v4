@@ -69,7 +69,7 @@ method new(hMDFe) class TMDFe
     ::modal := 1                    // MDFe sempre é = 1: Rodoviário
     ::dhEmi := mdfe["dhEmi"]
     ::tpEmis := mdfe["tpEmis"]
-    ::procEmi := 0                  // 0-Emissão de MDF-e com aplicativo do contribuinte
+    ::procEmi := "0"                  // 0-Emissão de MDF-e com aplicativo do contribuinte
     ::verProc := mdfe["verProc"]
     ::UFIni := mdfe["UFIni"]
     ::UFFim := mdfe["UFFim"]

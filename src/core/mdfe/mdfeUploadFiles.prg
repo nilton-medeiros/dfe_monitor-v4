@@ -1,3 +1,5 @@
+#define false .F.
+#define true .T.
 
 procedure mdfeUploadFiles(upload)
     local mdfe := upload["mdfe"], empresa := upload["empresa"]

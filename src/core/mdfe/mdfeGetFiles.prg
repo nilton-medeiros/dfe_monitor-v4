@@ -6,14 +6,17 @@ function mdfeGetFiles(mdfe, apiMDFe)
     local directory, filePDF, fileXML, status := ""
     local empresa, anoMes, printPath, printPDF
 
+    default apiMDFe := TApiMDFe():new(mdfe)
+
+    // Debug
+    consoleLog("Entrou em mdfeGetFiles()")
+
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(mdfe:emp_id)
 
     // "2019-08-24T14:15:22Z"
     anoMes := Left(getNumbers(mdfe:dhEmi), 6)
     directory := appData:dfePath + empresa:CNPJ + '\MDFe\' + anoMes + '\'
-
-    default apiMDFe := TApiMDFe():new(mdfe)
 
     if (mdfe:situacao == "AUTORIZADO")
         status := "-mdfe"

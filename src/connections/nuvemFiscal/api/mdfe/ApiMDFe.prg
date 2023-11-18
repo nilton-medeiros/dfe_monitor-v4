@@ -288,6 +288,7 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
             exit
     endswitch
 
+    apiUrl += "?logotipo=true"
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF de DAMDFE " + ::mdfe:situacao, nil, nil, "*/*")
 

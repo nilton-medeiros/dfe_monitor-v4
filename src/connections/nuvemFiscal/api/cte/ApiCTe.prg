@@ -233,17 +233,15 @@ method Cancelar() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoDACTE() class TApiCTe
-    local res, hRes, apiUrl := ::baseUrlID + "/pdf"
+    local res, hRes, apiUrl := ::baseUrlID + "/pdf?logotipo=true"
 
     if !::connected .or. Empty(::nuvemfiscal_uuid)
         saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF", "API Nuvem Fiscal não conectado"))
         return false
     endif
 
-    ::body := "logotipo=true"
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do DACTE", ::body, nil, "*/*")
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do DACTE", nil, nil, "*/*")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -261,17 +259,15 @@ method BaixarPDFdoDACTE() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoCancelamento() class TApiCTe
-    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/pdf"
+    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/pdf?logotipo=true"
 
     if !::connected .or. Empty(::nuvemfiscal_uuid)
         saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF", "API Nuvem Fiscal não conectado"))
         return false
     endif
 
-    ::body := "logotipo=true"
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do CTE CANCELADO", ::body, nil, "*/*")
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do CTE CANCELADO", nil, nil, "*/*")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']

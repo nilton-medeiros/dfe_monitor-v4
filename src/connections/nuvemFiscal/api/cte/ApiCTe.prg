@@ -142,7 +142,7 @@ method Consultar() class TApiCTe
         return false
     endif
 
-    if  Emplty(::nuvemfiscal_uuid)
+    if  Empty(::nuvemfiscal_uuid)
         consoleLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
         return false
@@ -196,7 +196,7 @@ method Cancelar() class TApiCTe
         return false
     endif
 
-    if  Emplty(::nuvemfiscal_uuid)
+    if  Empty(::nuvemfiscal_uuid)
         consoleLog("Não é possível Cancelar CTe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível encerrar CTe, ::nuvemviscal_uuid está vazio")
         return false

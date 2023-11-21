@@ -148,7 +148,7 @@ method Encerrar() class TApiMDFe
         return false
     endif
 
-    if  Emplty(::nuvemfiscal_uuid)
+    if  Empty(::nuvemfiscal_uuid)
         consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
         return false
@@ -246,7 +246,7 @@ method Cancelar() class TApiMDFe
         return false
     endif
 
-    if  Emplty(::nuvemfiscal_uuid)
+    if  Empty(::nuvemfiscal_uuid)
         consoleLog("Não é possível cancelar MDFe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível cancelar MDFe, ::nuvemviscal_uuid está vazio")
         return false
@@ -297,7 +297,7 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
         return false
     endif
 
-    if  Emplty(::nuvemfiscal_uuid)
+    if  Empty(::nuvemfiscal_uuid)
         consoleLog("Não é possível baixar PDF MDFe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível baixar PDF MDFe, ::nuvemviscal_uuid está vazio")
         return false
@@ -344,7 +344,7 @@ method BaixarXMLdoMDFe() class TApiMDFe
         return false
     endif
 
-    if  Emplty(::nuvemfiscal_uuid)
+    if  Empty(::nuvemfiscal_uuid)
         consoleLog("Não é possível baixar XML MDFe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível baixar XML MDFe, ::nuvemviscal_uuid está vazio")
         return false

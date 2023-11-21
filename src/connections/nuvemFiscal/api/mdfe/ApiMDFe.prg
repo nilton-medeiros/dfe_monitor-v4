@@ -286,6 +286,9 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
         case "encerrado"
             apiUrl += "/encerramento/pdf"
             exit
+        case "erro"
+            apiUrl += "/pdf"
+            exit
     endswitch
 
     apiUrl += "?logotipo=true"

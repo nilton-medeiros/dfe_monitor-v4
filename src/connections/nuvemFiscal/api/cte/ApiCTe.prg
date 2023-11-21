@@ -360,7 +360,7 @@ method defineBody() class TApiCTe
     ide["tpEmis"] := ::cte:tpEmis
     ide["tpAmb"] := ::cte:tpAmb
     ide["tpCTe"] := ::cte:tpCTe
-    ide["procEmi"] := "0"                     // 0 - Emissão de CT-e com aplicativo do contribuinte
+    ide["procEmi"] := 0                     // 0 - Emissão de CT-e com aplicativo do contribuinte
     ide["verProc"] := Left(appData:version, hb_RAt('.', appData:version)) + '0'
 
     if (::cte:indGlobalizado == 1)

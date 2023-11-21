@@ -168,10 +168,10 @@ method Encerrar() class TApiMDFe
             ::codigo_status := hRes['codigo_mensagem']
             ::motivo_status := hRes['mensagem']
         else
-            ::mensagem := res["response"]
+            ::mensagem := res["response"]   // Mensagem bruta (string)
         endif
         if hb_HGetRef(hRes, 'tipo_evento')
-            ::tipo_evento := res['tipo_evento']
+            ::tipo_evento := hRes['tipo_evento']
         endif
     endif
 

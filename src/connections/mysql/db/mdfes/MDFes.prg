@@ -305,7 +305,7 @@ method getCondutor(cId) class TDbMDFes
         do while !condutores:eof()
             cpf := PadL(condutores:FieldGet("CPF"), 11, "0")
             xNome := ansi_to_unicode(condutores:FieldGet("xNome"))
-            AAdd(aCondutores, {"CPF" => cpf, "xNome" => xNome})
+            AAdd(aCondutores, {"CPF" => cpf, "xNome" => desacentuar(AllTrim(xNome))})
             condutores:Skip()
         enddo
     endif

@@ -203,7 +203,7 @@ method Consultar() class TApiMDFe
         ::created_at := DateTime_to_mysql(hRes['created_at'])
         ::status := hRes['status']
         ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
-        ::chave := hRes['chave']
+        ::chave_acesso := hRes['chave']
 
         hAutorizacao := hRes['autorizacao']
 

@@ -49,7 +49,7 @@ function mdfeGetFiles(mdfe, apiMDFe)
             endif
         else
             mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Arquivo PDF do DAMDFE não retornado. Ver log servidor local")
-            saveLog("Arquivo PDF do DAMDFE não retornado; Chave MDFe: " + apiMDFe:chave)
+            saveLog("Arquivo PDF do DAMDFE não retornado; Chave MDFe: " + apiMDFe:chave_acesso)
         endif
 
         if apiMDFe:BaixarXMLdoMDFe()
@@ -62,7 +62,7 @@ function mdfeGetFiles(mdfe, apiMDFe)
             endif
         else
             mdfe:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "BINARY XML", "Arquivo XML do MDFe não retornado. Ver log servidor local")
-            saveLog("Arquivo XML do MDFe não retornado; Chave MDFe: " + apiMDFe:chave)
+            saveLog("Arquivo XML do MDFe não retornado; Chave MDFe: " + apiMDFe:chave_acesso)
         endif
 
     endif

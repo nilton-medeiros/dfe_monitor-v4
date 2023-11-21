@@ -400,7 +400,7 @@ method defineBody() class TApiCTe
     ide["indIEToma"] := ::cte:indIEToma
 
     // Tag toma3 ou toma4
-    if ::cte:tomador == 4
+    if (::cte:tomador == 4)
         toma := {=>}
         toma["toma"] := 4
 

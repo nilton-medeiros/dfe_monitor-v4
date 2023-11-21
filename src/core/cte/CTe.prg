@@ -167,7 +167,6 @@ class TCTe
     data comp_calc readonly
     data emitente readonly
     data tpImp readonly
-    data clie_emails readonly
     data calc_difal readonly
     data cUF readonly
     data tpAmb readonly
@@ -260,7 +259,8 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::hProg := cte["hProg"]
     ::hIni := cte["hIni"]
     ::hFim := cte["hFim"]
-    ::xObs := StrTran(desacentuar(cte["xObs"]), "\n", ";")
+    ::xObs := StrTran(cte["xObs"], "\n", "; ")
+    ::xObs := desacentuar(::xObs)
     ::clie_remetente_id := cte["clie_remetente_id"]
     ::rem_razao_social := cte["rem_razao_social"]
     ::rem_nome_fantasia := cte["rem_nome_fantasia"]

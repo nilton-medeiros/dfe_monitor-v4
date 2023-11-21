@@ -142,6 +142,13 @@ method Consultar() class TApiCTe
         return false
     endif
 
+    if  Emplty(::nuvemfiscal_uuid)
+        consoleLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
+        return false
+    endif
+
+
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", ::baseUrlID, ::token, "Consultar CTe")
 
@@ -186,6 +193,12 @@ method Cancelar() class TApiCTe
     local res, hRes, apiUrl := ::baseUrlID + "/cancelamento"
 
     if !::connected
+        return false
+    endif
+
+    if  Emplty(::nuvemfiscal_uuid)
+        consoleLog("Não é possível Cancelar CTe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível encerrar CTe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 

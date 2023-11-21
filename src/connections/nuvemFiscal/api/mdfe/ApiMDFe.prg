@@ -73,7 +73,9 @@ method new(mdfe) class TApiMDFe
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe"
     endif
 
-    ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
+    if !Empty(::nuvemfiscal_uuid)
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
+    endif
 
 return self
 
@@ -245,8 +247,8 @@ method Cancelar() class TApiMDFe
     endif
 
     if  Emplty(::nuvemfiscal_uuid)
-        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        consoleLog("Não é possível cancelar MDFe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível cancelar MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 
@@ -296,8 +298,8 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
     endif
 
     if  Emplty(::nuvemfiscal_uuid)
-        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        consoleLog("Não é possível baixar PDF MDFe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível baixar PDF MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 
@@ -343,8 +345,8 @@ method BaixarXMLdoMDFe() class TApiMDFe
     endif
 
     if  Emplty(::nuvemfiscal_uuid)
-        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        consoleLog("Não é possível baixar XML MDFe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível baixar XML MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 

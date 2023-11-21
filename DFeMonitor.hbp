@@ -24,6 +24,7 @@ src\connections\nuvemFiscal\shared\utils.prg
 src\core\AppData.prg
 src\core\cte\cte.prg
 src\core\cte\cteCancel.prg
+src\core\cte\cteConsult.prg
 src\core\cte\cteGetFiles.prg
 src\core\cte\cteSubmit.prg
 src\core\cte\cteUploadFiles.prg
@@ -32,6 +33,7 @@ src\core\empresa\cadastrarEmpresa.prg
 src\core\empresa\Empresa.prg
 src\core\mdfe\MDFe.prg
 src\core\mdfe\mdfeCancel.prg
+src\core\mdfe\mdfeConsult.prg
 src\core\mdfe\mdfeClose.prg
 src\core\mdfe\mdfeGetFiles.prg
 src\core\mdfe\mdfeSubmit.prg

@@ -20,7 +20,10 @@ procedure cteMonitoring()
             case "CANCEL"
                 cteCancel(cte)
                 exit
-        endswitch
+            case "CONSULT"
+                cteConsult(cte)
+                exit
+            endswitch
         cte:setUpdateCte('cte_monitor_action', "EXECUTED")
         cte:save()
         cte:saveEventos()

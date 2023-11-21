@@ -95,10 +95,17 @@ method Emitir() class TApiMDFe
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao emitir MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
-        ::status := "erro"
-        ::mensagem := res["response"]
+        if hb_HGetRef(::response, "error")
+            ::mensagem := ::response["message"]
+            if ("O campo 'referencia' deve ser único" $ ::mensagem)
+                res['error'] := ::Consultar()
+            endif
+        else
+            saveLog({"Erro ao emitir MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+                "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+            ::status := "erro"
+            ::mensagem := res["response"]
+        endif
     else
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
@@ -136,6 +143,12 @@ method Encerrar() class TApiMDFe
     loca emitente := ::mdfe:emitente
 
     if !::connected
+        return false
+    endif
+
+    if  Emplty(::nuvemfiscal_uuid)
+        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 
@@ -179,13 +192,14 @@ return !res['error']
 
 method Consultar() class TApiMDFe
     local res, hRes, hAutorizacao
+    local apiUrl := ::baseUrl + "/nao-encerrados?cpf_cnpj=" + ::mdfe:emitente:CNPJ
 
     if !::connected
         return false
     endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", ::baseUrlID, ::token, "Consultar MDFe")
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar MDFe")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
@@ -204,7 +218,6 @@ method Consultar() class TApiMDFe
         ::status := hRes['status']
         ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
         ::chave_acesso := hRes['chave']
-
         hAutorizacao := hRes['autorizacao']
 
         ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
@@ -228,6 +241,12 @@ method Cancelar() class TApiMDFe
     local res, hRes, apiUrl := ::baseUrlID + "/cancelamento"
 
     if !::connected
+        return false
+    endif
+
+    if  Emplty(::nuvemfiscal_uuid)
+        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 
@@ -276,6 +295,12 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
         return false
     endif
 
+    if  Emplty(::nuvemfiscal_uuid)
+        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        return false
+    endif
+
     switch Lower(::mdfe:situacao)
         case "autorizado"
             apiUrl += "/pdf"
@@ -314,6 +339,12 @@ method BaixarXMLdoMDFe() class TApiMDFe
     local res, hRes, apiUrl := ::baseUrlID
 
     if !::connected
+        return false
+    endif
+
+    if  Emplty(::nuvemfiscal_uuid)
+        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
+        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 

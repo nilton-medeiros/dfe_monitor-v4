@@ -23,6 +23,9 @@ procedure mdfeMonitoring()
             case "CLOSE"        // Encerrar
                 mdfeClose(mdfe)
                 exit
+            case "CONSULT"
+                mdfeConsult(mdfe)
+                exit
         endswitch
 
         // cte_monitor_action: Mesmo nome de campo nas tabelas ctes e mdfes

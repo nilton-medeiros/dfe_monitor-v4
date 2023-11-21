@@ -11,6 +11,9 @@ function mdfeGetFiles(mdfe, apiMDFe)
     // Debug
     consoleLog("Entrou em mdfeGetFiles()")
 
+    if apiMDFe:
+        
+    endif
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(mdfe:emp_id)
 

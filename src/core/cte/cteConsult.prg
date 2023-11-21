@@ -1,12 +1,12 @@
 #include "hmg.ch"
 
-procedure cteSubmit(cte)
+procedure cteConsult(cte)
     local apiCTe := TApiCTe():new(cte)
     local aError, error
 
     // Refatorado, na versão CTe 4.00 a transmissão é sincrono, já é retornado a autorização ou rejeição
 
-    if apiCTe:Emitir()
+    if apiCTe:Consultar()
 
         // Prepara os campos da tabela ctes para receber os updates
         cte:setSituacao(apiCTe:status)

@@ -2,20 +2,21 @@
 
 procedure cteSubmit(cte)
     local apiCTe := TApiCTe():new(cte)
-    local aError, error
 
     // Refatorado, na versão CTe 4.00 a transmissão é sincrono, já é retornado a autorização ou rejeição
 
     if apiCTe:Emitir()
-
         posEmissao(apiCTe)
+        return
+    endif
 
-    elseif !apiCTe:sefaz_em_operacao
+    // Não emitiu, Sefaz SP está indisponível, verifica se a Sefaz Virtual RS já está disponível
+    if apiCTe:sefaz_offline
 
         cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
         cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "Verificando ambiente de contigência SVC-RS (Sefaz Virtual do RS)")
 
-        // Consulta a SVC-RS
+        // Em contingência. Consulta a SVC-RS
         apiCTe:contingencia := true
         sefaz := apiCTe:ConsultarSefaz()
 
@@ -28,35 +29,21 @@ procedure cteSubmit(cte)
             cte:xJust := apiCTe:motivo_status
 
             if apiCTe:Emitir()
-
                 cte:setUpdateCte("cte_forma_emissao", 7)
+                cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + "\n") + "EMISSAO EM CONTINGENCIA: SVC-RS")
                 cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
                 posEmissao(apiCTe)
-
             else
-
-                aError := getMessageApiError(apiCTe, false)
-                for each error in aError
-                    cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
-                next
-                cte:setSituacao("ERRO")
-
+                errEmissao(apiCTe, cte)
             endif
 
         endif
 
     else
-
-        aError := getMessageApiError(apiCTe, false)
-        for each error in aError
-            cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
-        next
-        cte:setSituacao("ERRO")
-
+        errEmissao(apiCTe, cte)
     endif
 
 return
-
 
 procedure posEmissao(api)
 
@@ -77,4 +64,12 @@ procedure posEmissao(api)
 
     cteGetFiles(api)
 
+return
+
+procedure errEmissao(apiCTe, cte)
+    local error, aError := getMessageApiError(apiCTe, false)
+    for each error in aError
+        cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
+    next
+    cte:setSituacao("ERRO")
 return

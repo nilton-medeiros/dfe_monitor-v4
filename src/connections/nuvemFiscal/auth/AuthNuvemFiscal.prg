@@ -41,8 +41,8 @@ method getNewToken() class TAuthNuvemFiscal
     local hResp, objError, msgError, body
 
     begin sequence
-        // connection := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")
-        connection := win_oleCreateObject("Microsoft.XMLHTTP")
+        connection := win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0")   // usa msxml6.dll (esta funciona em Win10/11)
+        // connection := win_oleCreateObject("Microsoft.XMLHTTP")       // Usa msxml3.dll (não funciona Win7/10/11)
         if Empty(connection)
             saveLog("Erro na criação do serviço: MSXML2")
             // consoleLog({'win_oleCreateObject("MSXML2.ServerXMLHTTP.6.0") retornou type: ', ValType(connection), hb_eol()})

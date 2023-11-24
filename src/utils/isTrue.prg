@@ -16,6 +16,9 @@ function isTrue(boolean)
         case "A"
             res := (hmg_len(boolean) > 0)
             exit
+        case "O"
+            res := !Empty(boolean)
+            exit
         otherwise
             res := false
     endswitch

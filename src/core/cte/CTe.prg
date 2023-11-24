@@ -405,7 +405,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::infIndGlobalizado()
 
     if (::indGlobalizado == 1)
-        ::xObs := ::xObs + ";Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"
+        ::xObs := ::xObs + "; Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"
     endif
 
     for each clie in clie_emails

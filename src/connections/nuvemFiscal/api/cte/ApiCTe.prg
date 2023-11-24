@@ -31,7 +31,7 @@ class TApiCTe
     data digest_value readonly
     data baseUrl readonly
     data baseUrlID readonly
-    data sefaz_em_operacao readonly
+    data sefaz_offline readonly
     data contingencia
 
     method new(cte) constructor
@@ -64,7 +64,7 @@ method new(cte) class TApiCTe
     ::mensagem := ""
     ::tipo_evento := ""
     ::digest_value := ""
-    ::sefaz_em_operacao := true     // Padrão, caso haja erro na comunicação com a Sefaz, será consultado o status atual da mesma
+    ::sefaz_offline := false     // Caso haja erro na comunicação com a Sefaz, será consultado o status atual da mesma
     ::contingencia := false
 
     if Empty(::token)
@@ -115,9 +115,9 @@ method Emitir() class TApiCTe
         if !Empty(res["sefazOff"])
 
             sefazOff := res["sefazOff"]
+            ::numero_protocolo := sefazOff["id"]
             ::codigo_status := sefazOff["codigo_status"]
             ::motivo_status := sefazOff["motivo_status"]
-            ::numero_protocolo := sefazOff["id"]
             sefazStatus := ::ConsultarSefaz()
 
             if !Empty(sefazStatus)
@@ -127,7 +127,7 @@ method Emitir() class TApiCTe
                     ::ambiente := sefazStatus["ambiente"]
                     ::autorizador := sefazStatus["autorizador"]
                     ::data_evento := sefazStatus["data_hora_consulta"]
-                    ::sefaz_em_operacao := false
+                    ::sefaz_offline := true
                 endif
             endif
         endif
@@ -477,7 +477,7 @@ method defineBody() class TApiCTe
 
     // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
     if (::contingencia)
-        ide["tpEmis"] := 7
+        ide["tpEmis"] := 7      // 7 - Autorização pela SVC-RS
         ide["dhCont"] := ::data_evento
         ide["xJust"] := "SEFAZ SP: " + hb_ntos(::codigo_status) + " - " + ::motivo_status
     endif
@@ -533,7 +533,7 @@ method defineBody() class TApiCTe
     compl["destCalc"] := ::cte:xMunFim
 
     if !Empty(::cte:xObs)
-        compl["xObs"] :=::cte:xObs
+        compl["xObs"] := ::cte:xObs
     endif
 
     if !Empty(::cte:obs_contr)
@@ -543,6 +543,14 @@ method defineBody() class TApiCTe
         next
         compl["ObsCont"] := ObsContFisco
         ObsContFisco := nil
+    endif
+
+    if ::contingencia
+        if hb_HGetRef(compl, "ObsCont")
+            AAdd(compl["ObsCont"], {"xCampo" => "SVC-RS", "xTexto" => "EMISSAO EM CONTINGENCIA"})
+        else
+            compl["ObsCont"] := {{"xCampo" => "SVC-RS", "xTexto" => "EMISSAO EM CONTINGENCIA"}, {"xCampo" => "Emissor", "xTexto" => "DFeMonitor"}}
+        endif
     endif
 
     if !Empty(::cte:obs_fisco)
@@ -1034,6 +1042,7 @@ method ConsultarSefaz() class TApiCTe
     local res, hRes, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::cte:emitente:CNPJ
     local sefaz
 
+    // Se está em contigência, consulta a Sefaz Virtual SVC-RS se já está operando
     if ::contingencia
         apiUrl += chr(38) + "autorizador=RS"
     endif

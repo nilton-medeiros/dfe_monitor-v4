@@ -12,6 +12,7 @@ class TApiCTe
     data ContentType readonly
     data nuvemfiscal_uuid
     data ambiente readonly
+    data autorizador readonly
     data created_at readonly
     data data_emissao readonly
     data data_evento readonly
@@ -30,6 +31,8 @@ class TApiCTe
     data digest_value readonly
     data baseUrl readonly
     data baseUrlID readonly
+    data sefaz_em_operacao readonly
+    data contingencia
 
     method new(cte) constructor
     method Emitir()
@@ -40,6 +43,7 @@ class TApiCTe
     method BaixarXMLdoCTe()
     method BaixarXMLdoCancelamento()
     method defineBody()
+    method ConsultarSefaz()
 
 end class
 
@@ -60,6 +64,8 @@ method new(cte) class TApiCTe
     ::mensagem := ""
     ::tipo_evento := ""
     ::digest_value := ""
+    ::sefaz_em_operacao := true     // Padrão, caso haja erro na comunicação com a Sefaz, será consultado o status atual da mesma
+    ::contingencia := false
 
     if Empty(::token)
         saveLog("Token vazio para conexão com a Nuvem Fiscal")
@@ -82,6 +88,7 @@ return self
 
 method Emitir() class TApiCTe
     local res, hRes, hAutorizacao
+    local sefazOff, sefazStatus
 
     if !::connected
         return false
@@ -98,10 +105,32 @@ method Emitir() class TApiCTe
     ::response := res['response']
 
     if res['error']
+
         saveLog({"Erro ao emitir CTe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+
         ::status := "erro"
         ::mensagem := res["response"]
+
+        if !Empty(res["sefazOff"])
+
+            sefazOff := res["sefazOff"]
+            ::codigo_status := sefazOff["codigo_status"]
+            ::motivo_status := sefazOff["motivo_status"]
+            ::numero_protocolo := sefazOff["id"]
+            sefazStatus := ::ConsultarSefaz()
+
+            if !Empty(sefazStatus)
+                if !(sefazStatus["codigo_status"] == 107)
+                    ::codigo_status := sefazStatus["codigo_status"]
+                    ::motivo_status := sefazStatus["motivo_status"]
+                    ::ambiente := sefazStatus["ambiente"]
+                    ::autorizador := sefazStatus["autorizador"]
+                    ::data_evento := sefazStatus["data_hora_consulta"]
+                    ::sefaz_em_operacao := false
+                endif
+            endif
+        endif
     else
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
@@ -447,9 +476,10 @@ method defineBody() class TApiCTe
     endif
 
     // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
-    if (hb_ntos(::cte:tpEmis) $ '5|7|8')
-        ide["dhCont"] := date_as_DateTime()
-        ide["xJust"] := "Manutencao agendada na Sefaz"
+    if (::contingencia)
+        ide["tpEmis"] := 7
+        ide["dhCont"] := ::data_evento
+        ide["xJust"] := "SEFAZ SP: " + hb_ntos(::codigo_status) + " - " + ::motivo_status
     endif
 
     // Tag compl
@@ -999,3 +1029,25 @@ method defineBody() class TApiCTe
     hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json", ::body)
 
 return nil
+
+method ConsultarSefaz() class TApiCTe
+    local res, hRes, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::cte:emitente:CNPJ
+    local sefaz
+
+    if ::contingencia
+        apiUrl += chr(38) + "autorizador=RS"
+    endif
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", ::baseUrl, ::token, "Consultar Status Sefaz", nil, nil, "*/*")
+
+    if res["error"]
+        saveLog({"Erro ao consultar status SEFAZ, parece estar fora do ar", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    else
+        sefaz := hb_jsonDecode(res["response"])
+    endif
+
+return sefaz

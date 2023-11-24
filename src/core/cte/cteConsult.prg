@@ -23,7 +23,7 @@ procedure cteConsult(cte)
             cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_recebimento, apiCTe:codigo_mensagem, apiCTe:mensagem)
         endif
 
-        cteGetFiles(cte, apiCTe)
+        cteGetFiles(apiCTe)
 
     else
 

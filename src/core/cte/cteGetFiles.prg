@@ -1,13 +1,12 @@
 #include "hmg.ch"
 
-function cteGetFiles(cte, apiCTe)
+function cteGetFiles(apiCTe)
     local lExisteAutorizado := lExisteCancelado := false
     local upload := {=>}
     local directory, filePDF, fileXML, cancelPDF, cancelXML
     local empresa, anoMes, printPDF, printPath
-
-    default apiCTe := TApiCTe():new(cte)
-
+    local cte := apiCTe:cte
+    
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(cte:emp_id)
 

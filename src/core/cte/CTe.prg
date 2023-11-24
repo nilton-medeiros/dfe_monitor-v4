@@ -19,7 +19,9 @@ class TCTe
     data nProt readonly
     data CFOP readonly
     data natOp readonly
-    data tpEmis readonly
+    data tpEmis
+    data dhCont
+    data xJust
     data tpCTe readonly
     data indGlobalizado readonly
     data modal readonly
@@ -208,6 +210,8 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::CFOP := hb_ntos(cte["CFOP"])
     ::natOp := cte["natOp"]
     ::tpEmis := cte["tpEmis"]
+    ::dhCont := ""
+    ::xJust := ""
     ::tpCTe := cte["tpCTe"]
     ::modal := PadL(cte["modal"], 2, "0")
     ::tpServ := cte["tpServ"]

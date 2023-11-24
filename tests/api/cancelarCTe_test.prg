@@ -12,7 +12,7 @@ procedure testCancelarCTe()
 
         if apiCTe:codigo_status == 135
             cte:setSituacao("CANCELADO")
-            cteGetFiles(cte, apiCTe)
+            cteGetFiles(apiCTe)
         endif
         consoleLog({"Código Status: ", apiCTe:codigo_status, ", nuvemfiscal_id: ", apiCTe:nuvemfiscal_uuid, " CANCELADO COM SUCESSO"})
     else

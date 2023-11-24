@@ -7,7 +7,8 @@
 */
 function Broadcast(connection, httpMethod, apiUrl, token, operation, body, content_type, accept)
     local objError
-    local response := {"error" => false, "status" => 0, "ContentType" => "", "response" => ""}
+    local response := {"error" => false, "status" => 0, "ContentType" => "", "response" => "", "sefazOff" => {=>}}
+    local sefazOFF
 
     begin sequence
 
@@ -39,11 +40,11 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
     recover using objError
         if (objError:genCode == 0)
             // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), hb_eol()})
-            saveLog({"Erro de conexão com o site em " + operation, hb_eol(), hb_eol(), hb_eol()})
+            saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), hb_eol(), hb_eol()})
             response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation
         else
-            // consoleLog({"Erro de conexão com o site", hb_eol(), "Error: ", objError:description, hb_eol(), hb_eol()})
-            saveLog({"Erro de conexão com o site em " + operation, hb_eol(), "Error: ", objError:description, hb_eol()})
+            // consoleLog({"Erro de conexão com API Nuvem Fiscal", hb_eol(), "Error: ", objError:description, hb_eol(), hb_eol()})
+            saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), "Error: ", objError:description, hb_eol()})
             response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation + " | " + objError:description
         endif
         response["error"] := true
@@ -72,12 +73,26 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
 
         else    // elseif (response["status"] > 399) .and. (response["status"] < 600)
 
-            response["error"] := true
-
             if ("json" $ connection:getResponseHeader("Content-Type"))
+
                 // "application/json"
                 response["ContentType"] := "json"
                 response["response"] := connection:ResponseBody
+
+                sefazOFF := hb_jsonDecode(response["response"])
+
+                if hb_HGetRef(sefazOFF, "status") .and. hb_HGetRef(sefazOFF, "autorizacao")
+
+                    sefazOFF := sefazOFF["autorizacao"]
+
+                    if hb_HGetRef(sefazOFF, "motivo_status") .and. "the server name cannot be resolved" $ Lower(sefazOFF["motivo_status"])
+                        response["sefazOff"]["id"] := sefazOFF["id"]
+                        response["sefazOff"]["codigo_status"] := sefazOFF["codigo_status"]
+                        response["sefazOff"]["motivo_status"] := sefazOFF["motivo_status"]
+                    endif
+
+                endif
+
             else
                 // "application/text"
                 response["ContentType"] := "text"
@@ -89,6 +104,8 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
                     response["response"] := "ResponseText e ResponseBody retornaram vazio, sem mensagem"
                 endif
             endif
+
+            response["error"] := true
 
         endif
 

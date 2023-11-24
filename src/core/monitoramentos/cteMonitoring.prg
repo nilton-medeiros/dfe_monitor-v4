@@ -15,7 +15,7 @@ procedure cteMonitoring()
                 cteSubmit(cte)
                 exit
             case "GETFILES"
-                cteGetFiles(cte)
+                cteGetFiles(TApiCTe():new(cte))
                 exit
             case "CANCEL"
                 cteCancel(cte)

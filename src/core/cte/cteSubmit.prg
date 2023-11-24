@@ -8,22 +8,42 @@ procedure cteSubmit(cte)
 
     if apiCTe:Emitir()
 
-        // Prepara os campos da tabela ctes para receber os updates
-        cte:setSituacao(apiCTe:status)
-        cte:setUpdateCte('cte_chave', apiCTe:chave)
-        cte:setUpdateCte('digest_value', apiCTe:digest_value)
-        cte:setUpdateCte('cte_protocolo_autorizacao', apiCTe:numero_protocolo)
-        cte:setUpdateCte('nuvemfiscal_uuid', apiCTe:nuvemfiscal_uuid)
+        posEmissao(apiCTe)
 
-        // Prepara os campos da tabela ctes_eventos para receber os updates
-        if !Empty(apiCTe:motivo_status)
-            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
-        endif
-        if !Empty(apiCTe:mensagem)
-            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_recebimento, apiCTe:codigo_mensagem, apiCTe:mensagem)
-        endif
+    elseif !apiCTe:sefaz_em_operacao
 
-        cteGetFiles(cte, apiCTe)
+        cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+        cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "Verificando ambiente de contigência SVC-RS (Sefaz Virtual do RS)")
+
+        // Consulta a SVC-RS
+        apiCTe:contingencia := true
+        sefaz := apiCTe:ConsultarSefaz()
+
+        if !Empty(sefaz) .and. (sefaz["codigo_status"] == 107)
+
+            // Sefaz Virtual RS em Operação
+            // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
+            cte:tpEmis := 7     // SVC-RS
+            cte:dhCont := apiCTe:data_evento
+            cte:xJust := apiCTe:motivo_status
+
+            if apiCTe:Emitir()
+
+                cte:setUpdateCte("cte_forma_emissao", 7)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+                posEmissao(apiCTe)
+
+            else
+
+                aError := getMessageApiError(apiCTe, false)
+                for each error in aError
+                    cte:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
+                next
+                cte:setSituacao("ERRO")
+
+            endif
+
+        endif
 
     else
 
@@ -34,5 +54,27 @@ procedure cteSubmit(cte)
         cte:setSituacao("ERRO")
 
     endif
+
+return
+
+
+procedure posEmissao(api)
+
+    // Prepara os campos da tabela ctes para receber os updates
+    api:cte:setSituacao(api:status)
+    api:cte:setUpdateCte('cte_chave', api:chave)
+    api:cte:setUpdateCte('digest_value', api:digest_value)
+    api:cte:setUpdateCte('cte_protocolo_autorizacao', api:numero_protocolo)
+    api:cte:setUpdateCte('nuvemfiscal_uuid', api:nuvemfiscal_uuid)
+
+    // Prepara os campos da tabela ctes_eventos para receber os updates
+    if !Empty(api:motivo_status)
+        api:cte:setUpdateEventos(api:numero_protocolo, api:data_evento, api:codigo_status, api:motivo_status)
+    endif
+    if !Empty(api:mensagem)
+        api:cte:setUpdateEventos(api:numero_protocolo, api:data_recebimento, api:codigo_mensagem, api:mensagem)
+    endif
+
+    cteGetFiles(api)
 
 return

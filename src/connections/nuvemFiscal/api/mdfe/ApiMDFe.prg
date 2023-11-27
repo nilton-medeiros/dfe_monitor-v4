@@ -406,6 +406,8 @@ method defineBody() class TApiMDFe
     // ide["cMDF"] := ::mdfe:cMDF
     ide["modal"] := ::mdfe:modal
     ide["dhEmi"] := ::mdfe:dhEmi
+
+    
     ide["tpEmis"] := ::mdfe:tpEmis
     ide["procEmi"] := ::mdfe:procEmi
     ide["verProc"] := ::mdfe:verProc

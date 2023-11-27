@@ -31,7 +31,6 @@ class TApiCTe
     data digest_value readonly
     data baseUrl readonly
     data baseUrlID readonly
-    data sefaz_offline readonly
     data contingencia
 
     method new(cte) constructor
@@ -64,7 +63,6 @@ method new(cte) class TApiCTe
     ::mensagem := ""
     ::tipo_evento := ""
     ::digest_value := ""
-    ::sefaz_offline := false     // Caso haja erro na comunicação com a Sefaz, será consultado o status atual da mesma
     ::contingencia := false
 
     if Empty(::token)
@@ -120,18 +118,19 @@ method Emitir() class TApiCTe
             ::motivo_status := sefazOff["motivo_status"]
             sefazStatus := ::ConsultarSefaz()
 
-            if !Empty(sefazStatus)
-                if !(sefazStatus["codigo_status"] == 107)
-                    ::codigo_status := sefazStatus["codigo_status"]
-                    ::motivo_status := sefazStatus["motivo_status"]
-                    ::ambiente := sefazStatus["ambiente"]
-                    ::autorizador := sefazStatus["autorizador"]
-                    ::data_evento := sefazStatus["data_hora_consulta"]
-                    ::sefaz_offline := true
-                endif
+            if !(sefazStatus["codigo_status"] == -1) .and. !(sefazStatus["codigo_status"] == 107)
+                ::codigo_status := sefazStatus["codigo_status"]
+                ::motivo_status := sefazStatus["motivo_status"]
+                ::ambiente := sefazStatus["ambiente"]
+                ::autorizador := sefazStatus["autorizador"]
+                ::data_evento := sefazStatus["data_hora_consulta"]
+                appData:sefaz_offline := true
             endif
+
         endif
+
     else
+
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
         ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
@@ -1040,7 +1039,7 @@ return nil
 
 method ConsultarSefaz() class TApiCTe
     local res, hRes, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::cte:emitente:CNPJ
-    local sefaz
+    local sefaz := {"codigo_status" => -1}
 
     // Se está em contigência, consulta a Sefaz Virtual SVC-RS se já está operando
     if ::contingencia
@@ -1051,7 +1050,7 @@ method ConsultarSefaz() class TApiCTe
     res := Broadcast(::connection, "GET", ::baseUrl, ::token, "Consultar Status Sefaz", nil, nil, "*/*")
 
     if res["error"]
-        saveLog({"Erro ao consultar status SEFAZ, parece estar fora do ar", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao consultar status SEFAZ, parece que SEFAZ/API-NUVEM FISCAL esta fora do ar", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
         ::mensagem := res["response"]

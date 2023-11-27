@@ -1,26 +1,76 @@
 #include "hmg.ch"
 
 procedure cteSubmit(cte)
-    local apiCTe := TApiCTe():new(cte)
+    local sefaz, apiCTe := TApiCTe():new(cte)
 
     // Refatorado, na versão CTe 4.00 a transmissão é sincrono, já é retornado a autorização ou rejeição
 
+    if appData:sefaz_offline
+
+        // Verifica se a Sefaz SP voltou a ficar disponível (online)
+        apiCTe:contingencia := false
+        sefaz := apiCTe:ConsultarSefaz()
+
+        if (sefaz["codigo_status"] == 107)
+            // Sefaz SP voltou a fica disponível, sai do módo contingência
+            appData:sefaz_offline := false
+        elseif (sefaz["codigo_status"] == -1)
+            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:status, apiCTe:mensagem)
+            errEmissao(apiCTe, cte)
+            return
+        else
+
+            // Verifica se a Sefaz Virtual de Contingência (SVC-RS) do RS está disponível (online)
+            apiCTe:contingencia := true
+            sefaz := apiCTe:ConsultarSefaz()
+
+            if (sefaz["codigo_status"] == -1)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:status, apiCTe:mensagem)
+                errEmissao(apiCTe, cte)
+                apiCTe:contingencia := false
+                return
+            elseif !(sefaz["codigo_status"] == 107)
+                // Sefaz SP OFFLINE e SVC-RS ainda não está disponível!
+                apiCTe:contingencia := false
+                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP E SEFAZ VIRUTAL DE CONTINGENCIA RS INDISPONIVEIS!")
+                errEmissao(apiCTe, cte)
+                return
+            else
+                // Sefaz Virtual RS em Operação
+                // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
+                cte:tpEmis := 7     // SVC-RS
+                cte:dhCont := apiCTe:data_evento
+                cte:xJust := apiCTe:motivo_status
+                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+            endif
+
+        endif
+
+    endif
+
     if apiCTe:Emitir()
+        if apiCTe:contingencia
+            cte:setUpdateCte("cte_forma_emissao", 7)
+            cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + "\n") + "EMISSAO EM CONTINGENCIA: SVC-RS")
+            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP INDISPONIVEL, EMISSAO EM CONTINGENCIA PELA SVC-RS")
+            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+        endif
         posEmissao(apiCTe)
         return
     endif
 
     // Não emitiu, Sefaz SP está indisponível, verifica se a Sefaz Virtual RS já está disponível
-    if apiCTe:sefaz_offline
+    if appData:sefaz_offline .and. !apiCTe:contingencia
 
         cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
-        cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "Verificando ambiente de contigência SVC-RS (Sefaz Virtual do RS)")
+        cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "Verificando ambiente de contigência SVC-RS (Sefaz Virtual de Contingencia do RS)")
 
         // Em contingência. Consulta a SVC-RS
         apiCTe:contingencia := true
         sefaz := apiCTe:ConsultarSefaz()
 
-        if !Empty(sefaz) .and. (sefaz["codigo_status"] == 107)
+        if (sefaz["codigo_status"] == 107)
 
             // Sefaz Virtual RS em Operação
             // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
@@ -33,15 +83,21 @@ procedure cteSubmit(cte)
                 cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + "\n") + "EMISSAO EM CONTINGENCIA: SVC-RS")
                 cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
                 posEmissao(apiCTe)
-            else
-                errEmissao(apiCTe, cte)
+                return
             endif
 
+        elseif (sefaz["codigo_status"] == -1)
+            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:status, apiCTe:mensagem)
+        else
+            // Sefaz SP OFFLINE e SVC-RS ainda não está disponível!
+            apiCTe:contingencia := false
+            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP E SEFAZ VIRUTAL DE CONTINGENCIA RS INDISPONIVEIS!")
         endif
 
-    else
-        errEmissao(apiCTe, cte)
     endif
+
+    errEmissao(apiCTe, cte)
 
 return
 

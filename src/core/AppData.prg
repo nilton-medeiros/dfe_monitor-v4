@@ -18,6 +18,7 @@ class TAppData
     data timerEnd readonly
     data frequency readonly
     data lastMessage
+    data emContingencia
 
     method new(version) constructor
     method registerSystem()
@@ -31,6 +32,7 @@ end class
 
 method new(version) class TAppData
     default version := "4.0.00"
+
     ::version := version
     ::utc := "-03:00"
     ::systemPath := hb_cwd()
@@ -41,6 +43,7 @@ method new(version) class TAppData
     ::winRegistryPath := ::winRegistryRoot + ::executableName + "\"
     ::displayName := "DFeMonitor " + ::version + " (32-bit)"
     ::supportUrl := "https://www.sistrom.com.br"
+    ::sefaz_offline := false
 
 return self
 

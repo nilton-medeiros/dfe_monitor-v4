@@ -18,7 +18,7 @@ class TAppData
     data timerEnd readonly
     data frequency readonly
     data lastMessage
-    data emContingencia
+    data sefaz_offline
 
     method new(version) constructor
     method registerSystem()

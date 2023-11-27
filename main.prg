@@ -71,7 +71,7 @@ procedure main_form_oninit()
 
     if (win_regRead(appData:winRegistryPath + "Monitoring\DontRun") == 1)
         saveLog("Parada forçada: O parâmetro DontRun está ativo")
-        MessageBoxTimeout("O parâmetro DontRun está ativo!", "Parada forçada", MB_ICONEXCLAMATION, 5000)
+        MessageBoxTimeout("O parâmetro DontRun está ativo!", "DFeMonitor " + appData:version + ": Parada forçada", MB_ICONEXCLAMATION, 5000)
         turnOFF()
     endif
 
@@ -108,7 +108,7 @@ procedure main_form_oninit()
 
         if !appEmpresas:ok
             saveLog("Nenhuma empresa foi retornada do banco de dados")
-            MessageBoxTimeout('Nenhuma empresa foi retornada do banco de dados' + hb_eol() + 'Avise ao suporte!', 'Parada forçada', MB_ICONEXCLAMATION, 300000)
+            MessageBoxTimeout('Nenhuma empresa foi retornada do banco de dados' + hb_eol() + 'Avise ao suporte!', "DFeMonitor " + appData:version + ": Parada forçada", MB_ICONEXCLAMATION, 300000)
             turnOFF()
         endif
 
@@ -140,7 +140,7 @@ procedure main_form_oninit()
     next
 
     SetProperty("main", "notifyIcon", "serverON")
-    MessageBoxTimeout("O DFeMonitor ficará oculto na barra de tarefa", "DFeMonitor inicializado", MB_ICONEXCLAMATION, 3000)
+    MessageBoxTimeout("O DFeMonitor ficará oculto na barra de tarefa", "DFeMonitor " + appData:version + ": Inicializado", MB_ICONEXCLAMATION, 3000)
     startTimer()
 
 return

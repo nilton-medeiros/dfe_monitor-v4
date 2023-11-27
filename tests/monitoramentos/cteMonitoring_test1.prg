@@ -162,7 +162,7 @@ procedure getSubmit(cte)
     msgLog += space(4) + '"monitor_action":"' + cte:monitor_action + '"' + hb_eol()
     msgLog += "}" + hb_eol() + hb_eol()
     saveLog(msgLog)
-    // MsgBox({"Teste concluído, verificar arquivo de log", hb_eol(), "O Timer foi desativado"}, "Teste SUBMIT")
+    // MsgBox({"Teste concluído, verificar arquivo de log", hb_eol(), "O Timer foi desativado"}, "DFeMonitor " + appData:version + " - Teste SUBMIT")
 return
 
 procedure getGetFiles(cte)
@@ -177,7 +177,7 @@ procedure getGetFiles(cte)
     msgLog += space(4) + '"nRPCStatus":"' + hb_ntos(nRPCStatus) + '"' + hb_eol()
     msgLog += "}" + hb_eol() + hb_eol()
     saveLog(msgLog)
-    // MsgBox("Teste concluído, verificar arquivo de log", "Teste GETFILES")
+    // MsgBox("Teste concluído, verificar arquivo de log", "DFeMonitor " + appData:version + " - Teste GETFILES")
 return
 
 procedure getCancel(cte)
@@ -192,5 +192,5 @@ procedure getCancel(cte)
     msgLog += space(4) + '"nRPCStatus":"' + hb_ntos(nRPCStatus) + '"' + hb_eol()
     msgLog += "}" + hb_eol() + hb_eol()
     saveLog(msgLog)
-    // MsgBox("Testes concluídos, verificar arquivo de log", "Teste CANCEL")
+    // MsgBox("Testes concluídos, verificar arquivo de log", "DFeMonitor " + appData:version + " - Teste CANCEL")
 return

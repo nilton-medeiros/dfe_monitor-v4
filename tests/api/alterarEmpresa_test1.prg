@@ -10,14 +10,14 @@ procedure testAlterarEmpresa()
 
     if apiEmpresa:connected
         if apiEmpresa:Alterar()
-            MsgBox("Empresa alterada com sucesso!", "API Nuvem Fiscal")
+            MsgBox("Empresa alterada com sucesso!", "DFeMonitor " + appData:version + " - API Nuvem Fiscal")
             consoleLog("Empresa alterada com sucesso!")
         else
-            MsgExclamation("Falha ao alterar empresa, ver consoleLog", "API Nuvem Fiscal")
+            MsgExclamation("Falha ao alterar empresa, ver consoleLog", "DFeMonitor " + appData:version + " - API Nuvem Fiscal")
             consoleLog("Falha ao alterar empresa!")
         endif
     else
-        MsgExclamation("Falha de conexão com a Nuvem Fiscal, ver consoleLog", "API Nuvem Fiscal")
+        MsgExclamation("Falha de conexão com a Nuvem Fiscal, ver consoleLog", "DFeMonitor " + appData:version + " - API Nuvem Fiscal")
     endif
 
 return

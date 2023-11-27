@@ -93,7 +93,7 @@ method update() class TEmpresa
         ::nuvemfiscal_alterar := false
     else
         saveLog("Erro ao atualizar banco de dados tabela empresa! Sistema abortado")
-        MsgExclamation("Erro ao atualizar empresa, avise ao suporte!", "Erro! Sistema será parado")
+        MsgExclamation("Erro ao atualizar empresa, avise ao suporte!", "DFeMonitor " + appData:version + ": Erro! Sistema será parado")
         turnOFF()
     endif
 return changed

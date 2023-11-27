@@ -60,7 +60,7 @@ method connect() class TMySQLDataSource
             hMsg["showMsg"] := {"message" => msgError, "title" => "Servidor indisponível!"}
             msgNotify(hMsg)
             saveLog(msgError)
-            msgBoxTimeout := MessageBoxTimeout(msgError, "Falha de Conexão!", MB_ICONERROR + MB_RETRYCANCEL, 300000)
+            msgBoxTimeout := MessageBoxTimeout(msgError, "DFeMonitor " + appData:version + ": Falha de Conexão!", MB_ICONERROR + MB_RETRYCANCEL, 300000)
             if (msgBoxTimeout == IDTIMEDOUT) .or. (msgBoxTimeout == IDRETRY)
                 if !::tryToConnect()
                     MsgStop(msgError, "Falha de Conexão!")

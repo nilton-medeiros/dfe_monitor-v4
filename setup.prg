@@ -95,11 +95,11 @@ procedure setup_button_save_action()
 	local fileLogo := GetProperty('setup', 'Image_logotipo', 'picture')
 
     if empty(dfePath)
-		MsgExclamation('Definir a pasta raiz dos XMLs & PDFs')
+		MsgExclamation('Definir a pasta raiz dos XMLs & PDFs', "DFeMonitor " + appData:version)
         return
     endif
 	if !hb_DirExists(dfePath) .and. !hb_DirBuild(dfePath)
-		MsgExclamation('Pasta para armazenar os XMLs e PDFs dos DFEs inválida, não pode ser criada', 'Pasta de DFEs')
+		MsgExclamation('Pasta para armazenar os XMLs e PDFs dos DFEs inválida, não pode ser criada', "DFeMonitor " + appData:version + ": Pasta de DFEs")
         return
 	endif
 
@@ -116,7 +116,7 @@ procedure setup_button_save_action()
         saveLog('Usuario ' + cbxUsers:getDisplay() + ' alterou campos do setup')
         doMethod('setup', 'RELEASE')
 	else
-		MsgExclamation('Senha Inválida para o usuário ' + cbxUsers:getDisplay() + "!", 'Senha')
+		MsgExclamation('Senha Inválida para o usuário ' + cbxUsers:getDisplay() + "!", "DFeMonitor " + appData:version + ': Senha')
 	endif
 
 return
@@ -209,7 +209,7 @@ procedure setup_button_logotipo_action()
 	local nSize := hb_FSize(fileLogo)
 	if (nSize > 204800)
 		nSize := nSize / 1024
-		MsgExclamation({"Tamanho do logotipo maior que permitido!", hb_eol(), "Tamanho: " + hb_ntos(nSize) + " KB", hb_eol(), "Pemitido até: 200 KB"}, "Logotipo Recusado")
+		MsgExclamation({"Tamanho do logotipo maior que permitido!", hb_eol(), "Tamanho: " + hb_ntos(nSize) + " KB", hb_eol(), "Pemitido até: 200 KB"}, "DFeMonitor " + appData:version + ": Logotipo Recusado")
 	else
 		SetProperty('setup', 'Image_logotipo', 'picture', fileLogo)
 	endif
@@ -236,15 +236,15 @@ procedure setup_Button_Submit_Certificado_action()
 	SetProperty('setup', 'Label_StatusPFX', 'value', '')
 
 	if Empty(filePFX)
-		MsgExclamation("Arquivo PFX não podem estar vazios!", "Arquivo PFX (Certificado A1)")
+		MsgExclamation("Arquivo PFX não podem estar vazios!", "DFeMonitor " + appData:version + ": Arquivo PFX (Certificado A1)")
 	elseif  Empty(paswPFX)
-		MsgExclamation("Senha do certificado A1 inválida!", "Senha (Certificado A1)")
+		MsgExclamation("Senha do certificado A1 inválida!", "DFeMonitor " + appData:version + ": Senha (Certificado A1)")
 	elseif !hb_FileExists(filePFX)
-		MsgExclamation("Arquivo " + filePFX + hb_eol() + "não encontrado!", "Arquivo PFX (Certificado A1)")
+		MsgExclamation("Arquivo " + filePFX + hb_eol() + "não encontrado!", "DFeMonitor " + appData:version + ": Arquivo PFX (Certificado A1)")
 	elseif !(paswUser == cbxUsers:getCargo())
-		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + "Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
+		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + "Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "DFeMonitor " + appData:version + ": Senha")
 	elseif Empty(cnpj)
-		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "Selecione uma Empresa")
+		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "DFeMonitor " + appData:version + ": Selecione uma Empresa")
 	else
 		// Submeter a Nuvem Fiscal e obter resposta
 		SetProperty('setup', 'Label_StatusPFX', 'FontColor', YELLOW_OCRE)
@@ -310,7 +310,7 @@ procedure setup_Button_Submit_Certificado_action()
 		else
 			SetProperty('setup', 'Label_StatusPFX', 'value', 'Erro ao carregar Certificado!')
 			SetProperty('setup', 'Label_StatusPFX', 'FontColor', RED)
-			MsgStop(msgRetorno, "Erro ao carregar Certificado A1")
+			MsgStop(msgRetorno, "DFeMonitor " + appData:version + ": Erro ao carregar Certificado A1")
 		endif
 
 	endif
@@ -336,14 +336,14 @@ procedure setup_Button_Submit_Logotipo_action()
 	SetProperty('setup', 'Label_StatusLogotipo', 'value', '')
 
 	if Empty(fileLogo)
-		MsgExclamation("Arquivo Logotipo não pode estar vazio!", "Arquivo de Logotipo")
+		MsgExclamation("Arquivo Logotipo não pode estar vazio!", "DFeMonitor " + appData:version + ": Arquivo de Logotipo")
 	elseif !hb_FileExists(fileLogo)
-		MsgExclamation("Arquivo " + fileLogo + hb_eol() + "não encontrado!", "Arquivo de Logotipo")
+		MsgExclamation("Arquivo " + fileLogo + hb_eol() + "não encontrado!", "DFeMonitor " + appData:version + ": Arquivo de Logotipo")
 	elseif !(paswUser == cbxUsers:getCargo())
 		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + ;
-			"Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
+			"Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "DFeMonitor " + appData:version + ": Senha")
 	elseif Empty(cnpj)
-		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "Selecione uma Empresa")
+		MsgExclamation("Selecione a empresa na grade da guia Configurações!", "DFeMonitor " + appData:version + ": Selecione uma Empresa")
 	else
 		// Submeter a Nuvem Fiscal e obter resposta
 		SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Carregando...')
@@ -370,13 +370,13 @@ procedure setup_Button_Submit_Logotipo_action()
 				else
 					SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Erro ao carregar Logotipo!')
 					SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', RED)
-					MsgStop(getMessageApiError(logotipo), "Erro ao carregar Logotipo")
+					MsgStop(getMessageApiError(logotipo), "DFeMonitor " + appData:version + ": Erro ao carregar Logotipo")
 				endif
 			else
-				MsgStop({"Erro ao ler o arquivo de imagem.", hb_eol(), "Erro: ", }, "Erro ao ler Logotipo")
+				MsgStop({"Erro ao ler o arquivo de imagem.", hb_eol(), "Erro: ", }, "DFeMonitor " + appData:version + ": Erro ao ler Logotipo")
 			endif
 		else
-			MsgStop({"Erro ao abrir o arquivo de imagem.", "Erro: ", FError()}, "Erro ao carregar Logotipo")
+			MsgStop({"Erro ao abrir o arquivo de imagem.", "Erro: ", FError()}, "DFeMonitor " + appData:version + ": Erro ao carregar Logotipo")
 		endif
 
 	endif
@@ -398,7 +398,7 @@ procedure setup_button_delete_logotipo_action()
 
 	if !(paswUser == cbxUsers:getCargo())
 		MsgExclamation("Senha Inválida para o usuário " + cbxUsers:getDisplay() + "!" + hb_eol() + ;
-			"Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "Senha")
+			"Verifique na primeira guia (Configurações) se você digitou a senha correta do usuário selecionado.", "DFeMonitor " + appData:version + ": Senha")
 	elseif MsgYesNo("Confirme a remoção do logotipo no PDF da DACTE/DAMDFE", "Remover Logotipo", false)
 		SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Deletando Logo...')
 		SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', YELLOW_OCRE)
@@ -414,7 +414,7 @@ procedure setup_button_delete_logotipo_action()
 		else
 			SetProperty('setup', 'Label_StatusLogotipo', 'value', 'Erro ao Remover Logotipo!')
 			SetProperty('setup', 'Label_StatusLogotipo', 'FontColor', RED)
-			MsgStop(getMessageApiError(logo), "Erro ao remover Logo do PDF da DACTE/DAMDFE")
+			MsgStop(getMessageApiError(logo), "DFeMonitor " + appData:version + ": Erro ao remover Logo do PDF da DACTE/DAMDFE")
 		endif
 	endif
 

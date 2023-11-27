@@ -32,9 +32,9 @@ procedure msgNotify(msgNtfy)
 
        if !Empty(showMsg)
           if :connected
-             MsgExclamation(showMsg['message'], showMsg['title'])
+             MsgExclamation(showMsg['message'], "DFeMonitor " + appData:version + ": " + showMsg['title'])
           else
-             MsgStop(showMsg['message'], showMsg['title'])
+             MsgStop(showMsg['message'], "DFeMonitor " + appData:version + ": " + showMsg['title'])
           endif
        endif
     end

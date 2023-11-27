@@ -10,14 +10,14 @@ procedure testCadastrarEmpresa()
 
     if apiEmpresa:connected
         if apiEmpresa:Cadastrar()
-            MsgBox("Empresa cadastrada com sucesso!", "API Nuvem Fiscal")
+            MsgBox("Empresa cadastrada com sucesso!", "DFeMonitor " + appData:version + " - API Nuvem Fiscal")
             consoleLog("Empresa cadastrada com sucesso!")
         else
-            MsgExclamation("Falha ao cadastrar empresa, ver consoleLog", "API Nuvem Fiscal")
+            MsgExclamation("Falha ao cadastrar empresa, ver consoleLog", "DFeMonitor " + appData:version + " - API Nuvem Fiscal")
             consoleLog("Falha ao cadastrar empresa!")
         endif
     else
-        MsgExclamation("Falha de conexão com a Nuvem Fiscal, ver consoleLog", "API Nuvem Fiscal")
+        MsgExclamation("Falha de conexão com a Nuvem Fiscal, ver consoleLog", "DFeMonitor " + appData:version + " - API Nuvem Fiscal")
     endif
 
 return

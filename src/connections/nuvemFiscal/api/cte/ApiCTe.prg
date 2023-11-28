@@ -104,11 +104,21 @@ method Emitir() class TApiCTe
 
     if res['error']
 
-        saveLog({"Erro ao emitir CTe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
-
         ::status := "erro"
         ::mensagem := res["response"]
+
+        if (::ContentType == "json")
+            hRes := hb_jsonDecode(::response)
+            if hb_HGetRef(::hRes, "error")
+                ::mensagem := ::hRes["message"]
+                if ("O campo 'referencia' deve ser único" $ ::mensagem)
+                    res['error'] := ::Consultar()
+                endif
+            else
+                saveLog({"Erro ao emitir CTe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+                    "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", ::response})
+            endif
+        endif
 
         if !Empty(res["sefazOff"])
 
@@ -124,7 +134,7 @@ method Emitir() class TApiCTe
                 ::ambiente := sefazStatus["ambiente"]
                 ::autorizador := sefazStatus["autorizador"]
                 ::data_evento := sefazStatus["data_hora_consulta"]
-                appData:sefaz_offline := true
+                appData:cte_sefaz_offline := true
             endif
 
         endif
@@ -1047,10 +1057,10 @@ method ConsultarSefaz() class TApiCTe
     endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", ::baseUrl, ::token, "Consultar Status Sefaz", nil, nil, "*/*")
+    res := Broadcast(::connection, "GET", ::baseUrl, ::token, "CTe: Consultar Status Sefaz", nil, nil, "*/*")
 
     if res["error"]
-        saveLog({"Erro ao consultar status SEFAZ, parece que SEFAZ/API-NUVEM FISCAL esta fora do ar", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"CTe: Erro ao consultar status SEFAZ, parece que SEFAZ/API-NUVEM FISCAL esta fora do ar", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
         ::mensagem := res["response"]

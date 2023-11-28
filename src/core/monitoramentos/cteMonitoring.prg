@@ -23,7 +23,7 @@ procedure cteMonitoring()
             case "CONSULT"
                 cteConsult(cte)
                 exit
-            endswitch
+        endswitch
         cte:setUpdateCte('cte_monitor_action', "EXECUTED")
         cte:save()
         cte:saveEventos()

@@ -5,7 +5,7 @@ procedure cteSubmit(cte)
 
     // Refatorado, na versão CTe 4.00 a transmissão é sincrono, já é retornado a autorização ou rejeição
 
-    if appData:sefaz_offline
+    if appData:cte_sefaz_offline
 
         // Verifica se a Sefaz SP voltou a ficar disponível (online)
         apiCTe:contingencia := false
@@ -13,7 +13,7 @@ procedure cteSubmit(cte)
 
         if (sefaz["codigo_status"] == 107)
             // Sefaz SP voltou a fica disponível, sai do módo contingência
-            appData:sefaz_offline := false
+            appData:cte_sefaz_offline := false
         elseif (sefaz["codigo_status"] == -1)
             cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:status, apiCTe:mensagem)
             errEmissao(apiCTe, cte)
@@ -33,7 +33,7 @@ procedure cteSubmit(cte)
                 // Sefaz SP OFFLINE e SVC-RS ainda não está disponível!
                 apiCTe:contingencia := false
                 cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
-                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP E SEFAZ VIRUTAL DE CONTINGENCIA RS INDISPONIVEIS!")
+                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP E SEFAZ RS VIRUTAL DE CONTINGENCIA INDISPONIVEIS!")
                 errEmissao(apiCTe, cte)
                 return
             else
@@ -61,7 +61,7 @@ procedure cteSubmit(cte)
     endif
 
     // Não emitiu, Sefaz SP está indisponível, verifica se a Sefaz Virtual RS já está disponível
-    if appData:sefaz_offline .and. !apiCTe:contingencia
+    if appData:cte_sefaz_offline .and. !apiCTe:contingencia
 
         cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
         cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "Verificando ambiente de contigência SVC-RS (Sefaz Virtual de Contingencia do RS)")

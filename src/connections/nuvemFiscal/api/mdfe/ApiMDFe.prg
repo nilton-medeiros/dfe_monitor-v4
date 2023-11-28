@@ -37,6 +37,7 @@ class TApiMDFe
     method BaixarPDFdoDAMDFE()
     method BaixarXMLdoMDFe()
     method defineBody()
+    method ConsultarSVRS()
 
 end class
 
@@ -80,7 +81,7 @@ method new(mdfe) class TApiMDFe
 return self
 
 method Emitir() class TApiMDFe
-    local res, hRes
+    local res, hRes, sefazOff, sefazStatus
 
     if !::connected
         return false
@@ -97,18 +98,43 @@ method Emitir() class TApiMDFe
     ::response := res['response']
 
     if res['error']
-        if hb_HGetRef(::response, "error")
-            ::mensagem := ::response["message"]
-            if ("O campo 'referencia' deve ser único" $ ::mensagem)
-                res['error'] := ::Consultar()
+
+        if (::ContentType == "json")
+            hRes := hb_jsonDecode(::response)
+            if hb_HGetRef(::hRes, "error")
+                ::mensagem := ::hRes["message"]
+                if ("O campo 'referencia' deve ser único" $ ::mensagem)
+                    res['error'] := ::Consultar()
+                endif
+            else
+                saveLog({"Erro ao emitir MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+                    "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+                ::status := "erro"
+                ::mensagem := res["response"]
             endif
-        else
-            saveLog({"Erro ao emitir MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-                "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
-            ::status := "erro"
-            ::mensagem := res["response"]
         endif
+
+        if !Empty(res["sefazOff"])
+
+            sefazOff := res["sefazOff"]
+            ::numero_protocolo := sefazOff["id"]
+            ::codigo_status := sefazOff["codigo_status"]
+            ::motivo_status := sefazOff["motivo_status"]
+            sefazStatus := ::ConsultarSVRS()
+
+            if !(sefazStatus["codigo_status"] == -1) .and. !(sefazStatus["codigo_status"] == 107)
+                ::codigo_status := sefazStatus["codigo_status"]
+                ::motivo_status := sefazStatus["motivo_status"]
+                ::ambiente := sefazStatus["ambiente"]
+                ::autorizador := sefazStatus["autorizador"]
+                ::data_evento := sefazStatus["data_hora_consulta"]
+                appData:mdfe_sefaz_offline := true
+            endif
+
+        endif
+
     else
+
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
         ::ambiente := hRes['ambiente']
@@ -624,3 +650,21 @@ method defineBody() class TApiMDFe
     ::body := hb_jsonEncode(hBody, 4)
 
 return nil
+
+method ConsultarSVRS() class TApiMDFe
+    local res, hRes, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::mdfe:emitente:CNPJ
+    local sefaz := {"codigo_status" => -1}
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", ::baseUrl, ::token, "MDFe: Consultar Status Sefaz", nil, nil, "*/*")
+
+    if res["error"]
+        saveLog({"MDFe: Erro ao consultar status SEFAZ, parece que SEFAZ/API-NUVEM FISCAL esta fora do ar", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    else
+        sefaz := hb_jsonDecode(res["response"])
+    endif
+
+return sefaz

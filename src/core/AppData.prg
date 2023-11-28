@@ -18,7 +18,8 @@ class TAppData
     data timerEnd readonly
     data frequency readonly
     data lastMessage
-    data sefaz_offline
+    data cte_sefaz_offline
+    data mdfe_sefaz_offline
 
     method new(version) constructor
     method registerSystem()
@@ -43,7 +44,8 @@ method new(version) class TAppData
     ::winRegistryPath := ::winRegistryRoot + ::executableName + "\"
     ::displayName := "DFeMonitor " + ::version + " (32-bit)"
     ::supportUrl := "https://www.sistrom.com.br"
-    ::sefaz_offline := false
+    ::cte_sefaz_offline := false
+    ::mdfe_sefaz_offline := false
 
 return self
 

@@ -1,10 +1,31 @@
 #include "hmg.ch"
 
 procedure mdfeSubmit(mdfe)
-    local apiMDFe := TApiMDFe():new(mdfe)
+    local svrs, apiMDFe := TApiMDFe():new(mdfe)
     local startTimer, targetFile, anoEmes, directory, aError, error
 
     // Refatorado, na versão CTe 4.00 e MDFe 3.00 a transmissão é sincrono, já é retornado a autorização ou rejeição
+
+    if appData:mdfe_sefaz_offline
+        // Verifica se SVRS voltou a ficar disponível (online)
+        svrs := apiMDFe:ConsultarSVRS()
+        if (svrs["codigo_status"] == 107)
+            // SVRS voltou a fica disponível
+            appData:mdfe_sefaz_offline := false
+        elseif (svrs["codigo_status"] == -1)
+            mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_recebimento, apiMDFe:codigo_mensagem, apiMDFe:mensagem)
+            aError := getMessageApiError(apiMDFe, false)
+            for each error in aError
+                mdfe:setUpdateEventos("Erro", date_as_DateTime(date(), false, false), error["code"], error["message"])
+            next
+            mdfe:setSituacao("ERRO")
+            return
+        else
+            mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_evento, "SVRS", "SEFAZ MDFe:RS INDISPONÍVEL, TENTE MAIS TARDE!")
+            mdfe:setSituacao("ERRO")
+            return
+        endif
+    endif
 
     if apiMDFe:Emitir()
 
@@ -25,6 +46,9 @@ procedure mdfeSubmit(mdfe)
 
         mdfeGetFiles(mdfe, apiMDFe)
 
+    elseif apiMDFe:mdfe_sefaz_offline
+        mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_evento, "SVRS", "SEFAZ MDFe:RS INDISPONÍVEL, TENTE MAIS TARDE!")
+        mdfe:setSituacao("ERRO")
     else
 
         aError := getMessageApiError(apiMDFe, false)

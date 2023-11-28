@@ -21,19 +21,39 @@ class TQuery
 end class
 
 method new(cSql) class TQuery
+
     ::sql := cSql
     ::executed := false
     ::count := 0
+    
     if appDataSource:connected .or. appDataSource:connect()
         SetProperty("main", "NotifyIcon", "serverWAIT")
         msgNotify({'notifyTooltip' => "Executando query..."})
         if ::runQuery()
             ::count := ::db:LastRec()
             ::db:GoTop()
+            msgNotify()
+            SetProperty("main", "NotifyIcon", "serverON")
+        elseif (::db:Error() == "Lost connection to MySQL server during query")
+            if appDataSource:connect()
+                if ::runQuery()
+                    ::count := ::db:LastRec()
+                    ::db:GoTop()
+                    msgNotify()
+                    SetProperty("main", "NotifyIcon", "serverON")
+                else
+                    msgNotify({"notifyTooltip" => "B.D. não conectado!"})
+                    saveLog("Banco de Dados não conectado!")
+                    SetProperty("main", "NotifyIcon", "serverOFF")
+                endif
+            endif
+        else
+            msgNotify({"notifyTooltip" => "B.D. não conectado!"})
+            saveLog("Banco de Dados não conectado!")
+            SetProperty("main", "NotifyIcon", "serverOFF")
         endif
-        msgNotify()
-        SetProperty("main", "NotifyIcon", "serverON")
     endif
+
 return self
 
 method runQuery() class TQuery
@@ -91,7 +111,7 @@ method runQuery() class TQuery
                     hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery))
         endif
         ::db:Destroy()
-        msgNotify({'notifyTooltip' => "Rejeição de SQL" + hb_eol() + "Ver Log do sistema"})
+        msgNotify({'notifyTooltip' => "Erro de conexão Database" + hb_eol() + "Ver Log do sistema"})
     elseif (command $ "SELECT|START|ROOLBACK|COMMIT")
         // Query SELECT Executada com sucesso!
         ::executed := true

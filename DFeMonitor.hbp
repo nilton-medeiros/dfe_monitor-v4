@@ -33,8 +33,8 @@ src\core\empresa\cadastrarEmpresa.prg
 src\core\empresa\Empresa.prg
 src\core\mdfe\MDFe.prg
 src\core\mdfe\mdfeCancel.prg
-src\core\mdfe\mdfeConsult.prg
 src\core\mdfe\mdfeClose.prg
+src\core\mdfe\mdfeConsult.prg
 src\core\mdfe\mdfeGetFiles.prg
 src\core\mdfe\mdfeSubmit.prg
 src\core\mdfe\mdfeUploadFiles.prg

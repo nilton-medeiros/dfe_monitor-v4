@@ -1,4 +1,4 @@
-#include "dfemonitor.ch"
+#include "hmg.ch"
 
 procedure cteConsult(cte)
     local apiCTe := TApiCTe():new(cte)

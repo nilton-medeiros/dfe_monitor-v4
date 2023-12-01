@@ -1,4 +1,4 @@
-#include "dfemonitor.ch"
+#include "hmg.ch"
 
 Function Capitalize(cString)
     Local nPos

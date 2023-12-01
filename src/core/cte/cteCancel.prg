@@ -1,4 +1,4 @@
-#include "dfemonitor.ch"
+#include "hmg.ch"
 
 procedure cteCancel(cte)
     local apiCTe := TApiCTe():new(cte)

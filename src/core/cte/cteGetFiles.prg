@@ -1,4 +1,4 @@
-#include "dfemonitor.ch"
+#include "hmg.ch"
 
 function cteGetFiles(apiCTe)
     local lExisteAutorizado := lExisteCancelado := false

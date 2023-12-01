@@ -1,4 +1,4 @@
-#include "dfemonitor.ch"
+#include "hmg.ch"
 
 procedure mdfeClose(mdfe)
     local apiMDFe := TApiMDFe():new(mdfe)

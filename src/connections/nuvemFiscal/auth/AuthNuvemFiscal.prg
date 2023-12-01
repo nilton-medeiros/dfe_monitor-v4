@@ -1,4 +1,4 @@
-#include "dfemonitor.ch"
+#include "hmg.ch"
 #include <hbclass.ch>
 
 #define MODO_ASSINCRONO .F.

@@ -1,4 +1,5 @@
 #include "hmg.ch"
+#include "trycatch.ch"
 
 /*
     Broadcast: Transmitir
@@ -10,7 +11,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
     local response := {"error" => false, "status" => 0, "ContentType" => "", "response" => "", "sefazOff" => {=>}}
     local sefazOFF
 
-    begin sequence
+    try
 
         connection:Open(httpMethod, apiUrl, false)
         connection:SetRequestHeader("Authorization", "Bearer " + token)
@@ -37,7 +38,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
             connection:WaitForResponse(5000)
         endif
 
-    recover using objError
+    catch objError
         if (objError:genCode == 0)
             // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), hb_eol()})
             saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), hb_eol(), hb_eol()})
@@ -50,7 +51,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         response["error"] := true
         response["ContentType"] := "text"
         Break
-    end sequence
+    end
 
     if response["error"]
         // Debug: Remover esta linha e a debaixo após testes

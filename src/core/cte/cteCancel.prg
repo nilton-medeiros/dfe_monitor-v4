@@ -22,13 +22,13 @@ procedure cteCancel(cte)
         if !Empty(apiCTe:motivo_status)
             cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
             if !Empty(apiCTe:tipo_evento)
-                mdfe:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, "Tipo Evento: " + apiCTe:tipo_evento)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, "Tipo Evento: " + apiCTe:tipo_evento)
             endif
         endif
         if !Empty(apiCTe:mensagem)
             cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_recebimento, apiCTe:codigo_mensagem, apiCTe:mensagem)
             if !Empty(apiCTe:tipo_evento)
-                mdfe:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_recebimento, apiCTe:codigo_mensagem, "Tipo Evento: " + apiCTe:tipo_evento)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_recebimento, apiCTe:codigo_mensagem, "Tipo Evento: " + apiCTe:tipo_evento)
             endif
         endif
 

@@ -6,7 +6,7 @@
     (body) de acordo com o método http solicitado.
 */
 function Broadcast(connection, httpMethod, apiUrl, token, operation, body, content_type, accept)
-    local objError
+    local oError
     local response := {"error" => false, "status" => 0, "ContentType" => "", "response" => "", "sefazOff" => {=>}}
     local sefazOFF
 
@@ -25,10 +25,45 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         endif
 
         if Empty(body)
-            connection:Send()
+
+            try
+                connection:Send()
+            catch oError
+                if (oError:genCode == 0)
+                    saveLog("Erro em WinOle MSXML6.DLL")
+                    Break
+                else
+                    if ("O tempo limite da opera" $ oError:description)
+                        saveLog("Erro: " + oError:description + " ... Tentando mais uma vez...")
+                        SysWait(10)  // Aguarda 10 segundos e tenta novamente
+                        connection:Send()
+                    else
+                        saveLog("Erro em Send() para API Nuvem Fiscal: " + oError:description)
+                        Break
+                    endif
+                endif
+            end
+
         else
             // Request Body
-            connection:Send(body)
+            try
+                connection:Send(body)
+            catch oError
+                if (oError:genCode == 0)
+                    saveLog("Erro em WinOle MSXML6.DLL")
+                    Break
+                else
+                    if ("o tempo limite da opera" $ Lower(oError:description))
+                        saveLog("Erro: " + oError:description + " ... Tentando mais uma vez...")
+                        SysWait(10)  // Aguarda 10 segundos e tenta novamente
+                        connection:Send(body)
+                    else
+                        saveLog("Erro em Send() para API Nuvem Fiscal: " + oError:description)
+                        Break
+                    endif
+                endif
+            end
+
         endif
 
         if ("image" $ content_type)
@@ -37,15 +72,15 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
             connection:WaitForResponse(5000)
         endif
 
-    catch objError
-        if (objError:genCode == 0)
+    catch oError
+        if (oError:genCode == 0)
             // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), hb_eol()})
             saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), hb_eol(), hb_eol()})
             response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation
         else
-            // consoleLog({"Erro de conexão com API Nuvem Fiscal", hb_eol(), "Error: ", objError:description, hb_eol(), hb_eol()})
-            saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), "Error: ", objError:description, hb_eol()})
-            response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation + " | " + objError:description
+            // consoleLog({"Erro de conexão com API Nuvem Fiscal", hb_eol(), "Error: ", oError:description, hb_eol(), hb_eol()})
+            saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), "Error: ", oError:description, hb_eol()})
+            response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation + " | " + oError:description
         endif
         response["error"] := true
         response["ContentType"] := "text"

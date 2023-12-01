@@ -1,6 +1,6 @@
 // Função compartilhada entre as classes API Nuvem Fiscal para obter uma conexão MSXML2 objeto OLE
 
-#include "hmg.ch"
+#include "dfemonitor.ch"
 
 function GetMSXMLConnection()
 	local connection

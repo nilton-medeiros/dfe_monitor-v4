@@ -1,4 +1,4 @@
-#include "hmg.ch"
+#include "dfemonitor.ch"
 
 function cteGetFiles(apiCTe)
     local lExisteAutorizado := lExisteCancelado := false
@@ -6,7 +6,7 @@ function cteGetFiles(apiCTe)
     local directory, filePDF, fileXML, cancelPDF, cancelXML
     local empresa, anoMes, printPDF, printPath
     local cte := apiCTe:cte
-    
+
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(cte:emp_id)
 

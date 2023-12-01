@@ -1,4 +1,4 @@
-#include "hmg.ch"
+#include "dfemonitor.ch"
 #include <hbclass.ch>
 
 class TQuery
@@ -25,7 +25,7 @@ method new(cSql) class TQuery
     ::sql := cSql
     ::executed := false
     ::count := 0
-    
+
     if appDataSource:connected .or. appDataSource:connect()
         SetProperty("main", "NotifyIcon", "serverWAIT")
         msgNotify({'notifyTooltip' => "Executando query..."})

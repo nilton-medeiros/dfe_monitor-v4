@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "dfemonitor.ch"
 #include "hbclass.ch"
 
 /* ------- hbPDF (HPDFDOC) : Classe para gerenciar HMG HPDF ------- */

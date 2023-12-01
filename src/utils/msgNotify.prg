@@ -1,4 +1,4 @@
-#include "hmg.ch"
+#include "dfemonitor.ch"
 
 procedure msgNotify(msgNtfy)
     local notifyTooltip, showMsg

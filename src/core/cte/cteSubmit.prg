@@ -1,4 +1,4 @@
-#include "hmg.ch"
+#include "dfemonitor.ch"
 
 procedure cteSubmit(cte)
     local sefaz, apiCTe := TApiCTe():new(cte)

@@ -1,4 +1,4 @@
-#include "hmg.ch"
+#include "dfemonitor.ch"
 #include <hbclass.ch>
 
 class TDbIcms
@@ -40,7 +40,7 @@ method new(ufOrigem, ufDestino) class TDbIcms
             saveLog("Consuta a tabela de ICMS não retornou dois registros necessários")
         endif
     endif
-    
+
     icms:Destroy()
 
 return self

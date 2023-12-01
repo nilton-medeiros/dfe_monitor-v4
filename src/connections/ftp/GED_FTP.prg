@@ -1,4 +1,4 @@
-#include <hmg.ch>
+#include "dfemonitor.ch"
 #include "hbclass.ch"
 
 // GED - Gerenciador Eletrônico de Documentos - via FTP
@@ -8,8 +8,8 @@ class TGED_FTP
    data remotePath init '' protected
    data remoteFile init '' protected
    data urlFile init '' protected
-   data isUpload init False readonly
-   data deletedStatus init False protected
+   data isUpload init false readonly
+   data deletedStatus init false protected
 
    method new(host_file, remote_path, remote_file) constructor
    method upload()
@@ -31,7 +31,7 @@ method upload() class TGED_FTP
 
    saveLog({'Iniciando upload de arquivo: ', ::hostFile})
 
-   ::isUpload := False
+   ::isUpload := false
 
    if hb_FileExists(::hostFile)
       url := TUrl():new(appFTP:url)
@@ -72,10 +72,10 @@ method delete() class TGED_FTP
    local ftp := TIPClientFTP():new(url)
    local error := 'DELETE - Erro de FTP: '
 
-   ::deletedStatus := False
+   ::deletedStatus := false
 
    ftp:nConnTimeout := 20000
-   ftp:bUsePasv := True
+   ftp:bUsePasv := true
    ftp:oURL:cServer := appData:ftp_server
    ftp:oURL:cUserID := appData:ftp_userId
    ftp:oURL:cPassword := appData:ftp_password

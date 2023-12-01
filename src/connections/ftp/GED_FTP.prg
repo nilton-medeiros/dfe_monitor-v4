@@ -1,4 +1,4 @@
-#include "dfemonitor.ch"
+#include "hmg.ch"
 #include "hbclass.ch"
 
 // GED - Gerenciador Eletrônico de Documentos - via FTP

@@ -120,10 +120,24 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
 
                     sefazOFF := sefazOFF["autorizacao"]
 
-                    if hb_HGetRef(sefazOFF, "motivo_status") .and. "the server name cannot be resolved" $ Lower(sefazOFF["motivo_status"])
-                        response["sefazOff"]["id"] := sefazOFF["id"]
-                        response["sefazOff"]["codigo_status"] := sefazOFF["codigo_status"]
-                        response["sefazOff"]["motivo_status"] := sefazOFF["motivo_status"]
+                    if hb_HGetRef(sefazOFF, "motivo_status")
+                        if "the server name cannot be resolved" $ Lower(sefazOFF["motivo_status"])
+                            response["sefazOff"]["id"] := sefazOFF["id"]
+                            response["sefazOff"]["codigo_status"] := sefazOFF["codigo_status"]
+                            response["sefazOff"]["motivo_status"] := sefazOFF["motivo_status"]
+                        elseif response["status"] == 500 .and. ("internal server error" $ Lower(sefazOFF["motivo_status"]))
+                            consoleLog({"Debug: " + operation + ;
+                                " | HTTP Status: ", response["status"], hb_eol(), ;
+                                "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
+                                "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), ;
+                                "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
+                                "Body: ", iif(body == nil, "NULL", iif("image" $ content_type, "[ ARQUIVO BINARIO DA IMAGEM ]", body)), hb_eol(), ;
+                                "Response: ", iif(response["response"] == nil .or. Empty(response["response"]), "NULL", ;
+                                            iif((Lower(Left(operation, 6)) == "baixar"), "Response é um ARQUIVO BINÁRIO", response["response"])) ;
+                            })
+                            MsgStop({"Erro no servidor da api de DFe", hb_eol(), "Erro: ", sefazOFF["motivo_status"]}, "DFeMonitor " + appData:version + ": Erro HTTP:500")
+                            turnOFF()
+                        endif
                     endif
 
                 endif

@@ -38,6 +38,7 @@ class TApiMDFe
     method BaixarXMLdoMDFe()
     method defineBody()
     method ConsultarSVRS()
+    method Sincronizar()
 
 end class
 
@@ -668,3 +669,34 @@ method ConsultarSVRS() class TApiMDFe
     endif
 
 return sefaz
+
+method Sincronizar() class TApiMDFe
+    local res, apiUrl := ::baseUrlID + "/sincronizar"
+
+    if !::connected
+        ::mdfe:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincroinizar MDFe, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
+        return false
+    endif
+
+    if Empty(::nuvemfiscal_uuid)
+        ::mdfe:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincronizar MDFe, falta id da Nuvem Fiscal")
+        saveLog("ID do MDFe na Nuvem Fiscal está fazio, não é possível sincronizar MDFe")
+        return false
+    endif
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "POST", apiUrl, ::token, "Sincronizar MDFe a partir da SEFAZ", nil, nil, "*/*")
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao sincronizar MDFe", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    endif
+
+return !res['error']

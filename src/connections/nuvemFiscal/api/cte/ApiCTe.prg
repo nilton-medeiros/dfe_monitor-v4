@@ -43,6 +43,7 @@ class TApiCTe
     method BaixarXMLdoCancelamento()
     method defineBody()
     method ConsultarSefaz()
+    method Sincronizar()
 
 end class
 
@@ -111,7 +112,7 @@ method Emitir() class TApiCTe
             hRes := hb_jsonDecode(::response)
             if hb_HGetRef(::hRes, "error")
                 ::mensagem := ::hRes["message"]
-                if ("O campo 'referencia' deve ser único" $ ::mensagem)
+                if ("O campo 'referencia' deve ser unico" $ desacentuar(::mensagem))
                     res['error'] := ::Consultar()
                 endif
             else
@@ -181,6 +182,7 @@ method Consultar() class TApiCTe
     endif
 
     if  Empty(::nuvemfiscal_uuid)
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível consultar CTe, falta id da Nuvem Fiscal")
         consoleLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
         return false
@@ -235,6 +237,7 @@ method Cancelar() class TApiCTe
     endif
 
     if  Empty(::nuvemfiscal_uuid)
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível cancelar CTe, falta id da Nuvem Fiscal")
         consoleLog("Não é possível Cancelar CTe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível encerrar CTe, ::nuvemviscal_uuid está vazio")
         return false
@@ -284,10 +287,17 @@ method Cancelar() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoDACTE() class TApiCTe
-    local res, hRes, apiUrl := ::baseUrlID + "/pdf?logotipo=true"
+    local res, apiUrl := ::baseUrlID + "/pdf?logotipo=true"
 
-    if !::connected .or. Empty(::nuvemfiscal_uuid)
-        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF", "API Nuvem Fiscal não conectado"))
+    if !::connected
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
+        return false
+    endif
+
+    if Empty(::nuvemfiscal_uuid)
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF, falta id da Nuvem Fiscal")
+        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF")
         return false
     endif
 
@@ -310,10 +320,17 @@ method BaixarPDFdoDACTE() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoCancelamento() class TApiCTe
-    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/pdf?logotipo=true"
+    local res, apiUrl := ::baseUrlID + "/cancelamento/pdf?logotipo=true"
 
-    if !::connected .or. Empty(::nuvemfiscal_uuid)
-        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF", "API Nuvem Fiscal não conectado"))
+    if !::connected
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF do Cancelamento, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
+        return false
+    endif
+
+    if Empty(::nuvemfiscal_uuid)
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF do Cancelamento, falta id da Nuvem Fiscal")
+        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF do cancelamento")
         return false
     endif
 
@@ -336,10 +353,17 @@ method BaixarPDFdoCancelamento() class TApiCTe
 return !res['error']
 
 method BaixarXMLdoCTe() class TApiCTe
-    local res, hRes, apiUrl := ::baseUrlID + "/xml"
+    local res, apiUrl := ::baseUrlID + "/xml"
 
-    if !::connected .or. Empty(::nuvemfiscal_uuid)
-        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML", "API Nuvem Fiscal não conectado"))
+    if !::connected
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
+        return false
+    endif
+
+    if Empty(::nuvemfiscal_uuid)
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML, falta id da Nuvem Fiscal")
+        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML")
         return false
     endif
 
@@ -362,10 +386,17 @@ method BaixarXMLdoCTe() class TApiCTe
 return !res['error']
 
 method BaixarXMLdoCancelamento() class TApiCTe
-    local res, hRes, apiUrl := ::baseUrlID + "/cancelamento/xml"
+    local res, apiUrl := ::baseUrlID + "/cancelamento/xml"
 
-    if !::connected .or. Empty(::nuvemfiscal_uuid)
-        saveLog(iif(::connected, "ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML", "API Nuvem Fiscal não conectado"))
+    if !::connected
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML do Cancelamento, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
+        return false
+    endif
+
+    if Empty(::nuvemfiscal_uuid)
+        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML do Cancelamento, falta id da Nuvem Fiscal")
+        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML do cancelamento")
         return false
     endif
 
@@ -1048,7 +1079,7 @@ method defineBody() class TApiCTe
 return nil
 
 method ConsultarSefaz() class TApiCTe
-    local res, hRes, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::cte:emitente:CNPJ
+    local res, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::cte:emitente:CNPJ
     local sefaz := {"codigo_status" => -1}
 
     // Se está em contigência, consulta a Sefaz Virtual SVC-RS se já está operando
@@ -1069,3 +1100,34 @@ method ConsultarSefaz() class TApiCTe
     endif
 
 return sefaz
+
+method Sincronizar() class TApiCTe
+    local res, apiUrl := ::baseUrlID + "/sincronizar"
+
+    if !::connected
+        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincroinizar CTe, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
+        return false
+    endif
+
+    if Empty(::nuvemfiscal_uuid)
+        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincronizar CTe, falta id da Nuvem Fiscal")
+        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível sincronizar CTe")
+        return false
+    endif
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "POST", apiUrl, ::token, "Sincronizar CTe a partir da SEFAZ", nil, nil, "*/*")
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao sincronizar CTe", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    endif
+
+return !res['error']

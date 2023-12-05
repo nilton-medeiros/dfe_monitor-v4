@@ -101,8 +101,8 @@ method Emitir() class TApiMDFe
 
         if (::ContentType == "json")
             hRes := hb_jsonDecode(::response)
-            if hb_HGetRef(::hRes, "error")
-                ::mensagem := ::hRes["message"]
+            if hb_HGetRef(hRes, "error")
+                ::mensagem := hRes["message"]
                 if ("O campo 'referencia' deve ser único" $ ::mensagem)
                     res['error'] := ::Consultar()
                 endif

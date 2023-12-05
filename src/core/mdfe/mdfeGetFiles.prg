@@ -12,7 +12,7 @@ function mdfeGetFiles(mdfe, apiMDFe)
     consoleLog("Entrou em mdfeGetFiles()")
 
     if Empty(apiMDFe:nuvemfiscal_uuid)
-
+        apiMDFe:Consultar()
     endif
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(mdfe:emp_id)

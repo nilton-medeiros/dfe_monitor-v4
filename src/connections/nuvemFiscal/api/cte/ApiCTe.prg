@@ -110,8 +110,8 @@ method Emitir() class TApiCTe
 
         if (::ContentType == "json")
             hRes := hb_jsonDecode(::response)
-            if hb_HGetRef(::hRes, "error")
-                ::mensagem := ::hRes["message"]
+            if hb_HGetRef(hRes, "error")
+                ::mensagem := hRes["message"]
                 if ("O campo 'referencia' deve ser unico" $ desacentuar(::mensagem))
                     res['error'] := ::Consultar()
                 endif

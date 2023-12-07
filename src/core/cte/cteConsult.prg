@@ -9,7 +9,7 @@ procedure cteConsult(cte)
         nesse caso, solicita uma Sincronização entre SEFAZ e NUVEM FISCAL antes de consultar.
     */
 
-    saveLog("Entrou em cteConsult(), sincronizando cte...")
+    // saveLog("Entrou em cteConsult(), sincronizando cte...")
 
     if apiCTe:Sincronizar()
         if apiCTe:Consultar()

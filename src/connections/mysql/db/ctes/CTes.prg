@@ -194,7 +194,7 @@ method getListCTes() class TDbCTes
         sql:add(")")
     endif
 
-    sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL') AND ")
+    sql:add(" AND cte_monitor_action IN ('SUBMIT','GETFILES','CANCEL','CONSULT') AND ")
     sql:add("cte_versao_leiaute_xml > 3.00 ")
     sql:add("ORDER BY cte_monitor_action, emp_id, cte_numero")
 
@@ -544,7 +544,7 @@ method insertEventos(aEvents) class TDbCTes
             codEvent := ""
             consoleLog("Código do Evento não definido para tag cte_ev_evento")
         endif
-        
+
         sql:add("'" + codEvent + "', ")
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_detalhe"]) + "')")
     next

@@ -9,6 +9,8 @@ procedure cteConsult(cte)
         nesse caso, solicita uma Sincronização entre SEFAZ e NUVEM FISCAL antes de consultar.
     */
 
+    saveLog("Entrou em cteConsult(), sincronizando cte...")
+
     if apiCTe:Sincronizar()
         if apiCTe:Consultar()
             // Prepara os campos da tabela ctes para receber os updates
@@ -26,9 +28,11 @@ procedure cteConsult(cte)
             endif
             cteGetFiles(apiCTe)
         else
+            saveLog("Erro ao consultar CTe ref: " + cte:referencia_uuid)
             lError := true
         endif
     else
+        saveLog("Erro na sincronização do CTe ref: " + cte:referencia_uuid)
         lError := true
     endif
 

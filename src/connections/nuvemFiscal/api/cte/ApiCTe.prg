@@ -867,7 +867,11 @@ method defineBody() class TApiCTe
             endif
     endswitch
 
-    consoleLog(ICMS["CST"])
+    if Empty(ICMS)
+        msgLog := MsgDebug("Código Tributário: ", cod_sit_trib)
+        consoleLog(msgLog)
+        turnOFF()
+    endif
 
     imp := {=>}
     imp["ICMS"] := ICMS

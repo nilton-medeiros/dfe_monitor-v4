@@ -922,6 +922,8 @@ method defineBody() class TApiCTe
             case 1 // 1-Nota Fiscal
                 tag := "infNF"
                 for each hDoc in ::cte:doc_anexo
+                    msgLog := MsgDebug(hDoc["modelo"], hDoc["serie"], hDoc["nDoc"], hDoc["dEmi"], hDoc["vBC"], hDoc["vICMS"], hDoc["vBCST"], hDoc["vST"], hDoc["vProd"], hDoc["vNF"], hDoc["nCFOP"], hDoc["PIN"], hDoc["dPrev"])
+                    consoleLog(msgLog)
                     AAdd(docAnexos, {"mod" => PadL(hDoc["modelo"], 2, "0"), ;
                                      "serie" => PadL(hDoc["serie"], 3, "0"), ;
                                      "nDoc" => hDoc["nDoc"], ;

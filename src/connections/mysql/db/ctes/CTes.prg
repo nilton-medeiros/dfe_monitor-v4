@@ -544,6 +544,7 @@ method insertEventos(aEvents) class TDbCTes
             codEvent := ""
             consoleLog("Código do Evento não definido para tag cte_ev_evento")
         endif
+        
         sql:add("'" + codEvent + "', ")
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_detalhe"]) + "')")
     next

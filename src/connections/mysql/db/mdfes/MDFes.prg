@@ -149,20 +149,32 @@ return updated
 
 method insertEventos(aEvents) class TDbMDFes
     local inserted, ctes_eventos, sql := TSQLString():new()
-    local hEvent, n := 0
+    local hEvent, n := 0, codEvent
 
     sql:setValue("INSERT INTO mdfes_eventos (mdfe_id, protocolo, data_hora, evento, motivo, detalhe) VALUES ")
 
     for each hEvent in aEvents
+
         n++
         sql:add(iif((n==1), "(", ", ("))
         sql:add(hEvent["mdfe_id"] + ", ")
         sql:add("'" + string_hb_to_mysql(hEvent["protocolo"]) + "', ")
         sql:add("'" + hEvent["data_hora"] + "', ")
-        sql:add("'" + string_hb_to_mysql(hEvent["evento"]) + "', ")
+
+        codEvent := hEvent["evento"]
+        if (ValType(codEvent) == "N")
+            codEvent := hb_ntos(codEvent)
+        elseif !(ValType(codEvent) == "C")
+            codEvent := ""
+            consoleLog("Código do Evento não definido para tag evento")
+        endif
+
+        sql:add("'" + string_hb_to_mysql(codEvent) + "', ")
         sql:add("'" + string_hb_to_mysql(hEvent["motivo"]) + "', ")
         sql:add("'" + string_hb_to_mysql(hEvent["detalhe"]) + "')")
+
     next
+
     ctes_eventos := TQuery():new(sql:value)
     inserted := ctes_eventos:executed
     ctes_eventos:Destroy()

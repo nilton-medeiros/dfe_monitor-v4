@@ -47,11 +47,11 @@ function mdfeGetFiles(mdfe, apiMDFe)
                 upload["pdf"] := directory + filePDF
                 saveLog("Arquivo PDF do DAMDFE salvo com sucesso: " + directory + filePDF)
             else
-                mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Erro ao escrever PDF em arquivo. Ver log servidor local")
+                mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "PDF", "Erro ao escrever PDF em arquivo. Ver log servidor local")
                 saveLog("Erro ao escrever pdf binary em arquivo " + filePDF + " na pasta " + directory)
             endif
         else
-            mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "BINARY PDF", "Arquivo PDF do DAMDFE não retornado. Ver log servidor local")
+            mdfe:setUpdateEventos("OBTER PDF", date_as_DateTime(date(), false, false), "PDF", "Arquivo PDF do DAMDFE não retornado. Ver log servidor local")
             saveLog("Arquivo PDF do DAMDFE não retornado; Chave MDFe: " + apiMDFe:chave_acesso)
         endif
 
@@ -60,11 +60,11 @@ function mdfeGetFiles(mdfe, apiMDFe)
                 upload["xml"] := directory + fileXML
                 saveLog("Arquivo XML do MDFe salvo com sucesso: " + directory + fileXML)
             else
-                mdfe:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "BINARY XML", "Erro ao escrever XML em arquivo. Ver log servidor local")
+                mdfe:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "XML", "Erro ao escrever XML em arquivo. Ver log servidor local")
                 saveLog("Erro ao escrever xml binary em arquivo " + fileXML + " na pasta " + directory)
             endif
         else
-            mdfe:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "BINARY XML", "Arquivo XML do MDFe não retornado. Ver log servidor local")
+            mdfe:setUpdateEventos("OBTER XML", date_as_DateTime(date(), false, false), "XML", "Arquivo XML do MDFe não retornado. Ver log servidor local")
             saveLog("Arquivo XML do MDFe não retornado; Chave MDFe: " + apiMDFe:chave_acesso)
         endif
 

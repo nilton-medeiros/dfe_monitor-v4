@@ -81,6 +81,8 @@ method new(cte) class TApiCTe
 
     if !Empty(::nuvemfiscal_uuid)
         ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
+    else
+        consoleLog("nuvemfiscal_uuid está vazio!!, ::baseUrlID Vazio")
     endif
 
 return self
@@ -288,6 +290,8 @@ method Cancelar() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoDACTE() class TApiCTe
+    local msgLog := MsgDebug(::baseUrlID)
+    consoleLog(msgLog)
     local res, apiUrl := ::baseUrlID + "/pdf?logotipo=true"
 
     if !::connected

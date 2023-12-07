@@ -290,10 +290,7 @@ method Cancelar() class TApiCTe
 return !res['error']
 
 method BaixarPDFdoDACTE() class TApiCTe
-    local res, apiUrl       // := ::baseUrlID + "/pdf?logotipo=true"
-    local msgLog := MsgDebug(::baseUrlID)
-    consoleLog(msgLog)
-    apiUrl := ::baseUrlID + "/pdf?logotipo=true"
+    local res, apiUrl := ::baseUrlID + "/pdf?logotipo=true"
 
     if !::connected
         ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF, API Nuvem Fiscal não conectado")

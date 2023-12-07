@@ -923,7 +923,7 @@ method defineBody() class TApiCTe
                 tag := "infNF"
                 for each hDoc in ::cte:doc_anexo
                     if !hb_HGetRef(hDoc, "dPrev")
-                        hDoc["dPrev"] := hDoc["dEmi"] + 2
+                        hDoc["dPrev"] := Date() + 2
                     endif
 
                     AAdd(docAnexos, {"mod" => PadL(hDoc["modelo"], 2, "0"), ;

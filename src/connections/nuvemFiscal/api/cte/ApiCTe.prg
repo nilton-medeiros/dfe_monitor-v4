@@ -183,7 +183,7 @@ method Consultar() class TApiCTe
     endif
 
     if  Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível consultar CTe, falta id da Nuvem Fiscal")
+        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível consultar CTe, falta id da Nuvem Fiscal")
         consoleLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
         saveLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
         return false

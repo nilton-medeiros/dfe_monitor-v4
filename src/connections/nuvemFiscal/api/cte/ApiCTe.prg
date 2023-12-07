@@ -839,24 +839,25 @@ method defineBody() class TApiCTe
     vPrest := nil
 
     ICMS := {=>}
+    cod_sit_trib := AllTrim(Lower(desacentuar(::cte:codigo_sit_tributaria)))
 
-    switch ::cte:codigo_sit_tributaria
-        case "00 - Tributação normal do ICMS"
+    switch cod_sit_trib
+        case "00 - tributacao normal do icms"
             ICMS["ICMS00"] := {"CST" => "00", "vBC" => ::cte:vBC, "pICMS" => ::cte:pICMS, "vICMS" => ::cte:vICMS}
             exit
-        case "20 - Tributação com redução de BC do ICMS"
+        case "20 - tributacao com reducao de bc do icms"
             ICMS["ICMS20"] := {"CST" => "20", "pRedBC" => ::cte:pRedBC, "vBC" => ::cte:vBC, "pICMS" => ::cte:pICMS, "vICMS" => ::cte:vICMS}
             exit
-        case "60 - ICMS cobrado anteriormente por substituição tributária"
+        case "60 - icms cobrado anteriormente por substituicao tributaria"
             ICMS["ICMS60"] := {"CST" => "60", "vBCSTRet" => ::cte:vBC, "vICMSSTRet" => ::cte:vICMS, "pICMSSTRet" => ::cte:pICMS, "vCred" => ::cte:vCred}
             exit
-        case "90 - ICMS outros"
+        case "90 - icms outros"
             ICMS["ICMS90"] := {"CST" => "90", "pRedBC" => ::cte:pRedBC, "vBC" => ::cte:vBC, "pICMS" => ::cte:pICMS, "vICMS" => ::cte:vICMS, "vCred" => ::cte:vCred}
                 exit
-        case "90 - ICMS devido à UF de origem da prestação, quando diferente da UF emitente"
+        case "90 - icms devido a uf de origem da prestacao, quando diferente da uf emitente"
             ICMS["ICMSOutraUF"] := {"CST" => "90", "pRedBCOutraUF" => ::cte:pRedBC, "vBCOutraUF" => ::cte:vBC, "pICMSOutraUF" => ::cte:pICMS, "vICMSOutraUF" => ::cte:vICMS}
             exit
-        case "SIMPLES NACIONAL"
+        case "simples nacional"
             ICMS["ICMSSN"] := {"CST" => "90", "indSN" => 1}
             exit
         otherwise
@@ -865,6 +866,8 @@ method defineBody() class TApiCTe
                 ICMS["ICMS45"] := {"CST" => hb_ULeft(::cte:codigo_sit_tributaria, 2)}
             endif
     endswitch
+
+    consoleLog(ICMS["CST"])
 
     imp := {=>}
     imp["ICMS"] := ICMS

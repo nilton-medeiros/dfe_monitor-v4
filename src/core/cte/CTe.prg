@@ -190,8 +190,8 @@ end class
 
 method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     local clie, obs, nValFCP, percDIFAL, valorDIFAL
-    local msgLog
-    
+    // local msgLog
+
     ::id := cte["id"]
     ::emp_id := cte["emp_id"]
     ::versao_xml := hb_ntos(cte["versao_xml"])
@@ -392,14 +392,14 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     next
 
     if !Empty(::vTotTrib)
-        msgLog := MsgDebug({vPIS, Valtype(vPIS), hb_eol(), vCOFINS, Valtype(vCOFINS), hb_eol(), vICMS, Valtype(vICMS), hb_eol(), vTotTrib, Valtype(vTotTrib)})
+        // msgLog := MsgDebug({::vPIS, Valtype(::vPIS), hb_eol(), ::vCOFINS, Valtype(vCOFINS), hb_eol(), vICMS, Valtype(vICMS), hb_eol(), vTotTrib, Valtype(vTotTrib)})
         consoleLog(msgLog)
         AAdd(::obs_contr, {"xCampo" => "LEI DA TRANSPARENCIA",;
                            "xTexto" => "Lei da transparencia 12741/12, o valor aproximado dos tributos incidentes sobre o preço do serviço:" +;
                                 " PIS " + ::vPIS +;
                                 " COFINS " + ::vCOFINS +;
-                                " ICMS " + vICMS +;
-                                " TOTAL " + vTotTrib})
+                                " ICMS " + ::vICMS +;
+                                " TOTAL " + ::vTotTrib})
     endif
 
     ::comp_calc := hAnexos['comp_calc']

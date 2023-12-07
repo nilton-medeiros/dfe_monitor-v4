@@ -393,7 +393,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
 
     if !Empty(::vTotTrib)
         // msgLog := MsgDebug({::vPIS, Valtype(::vPIS), hb_eol(), ::vCOFINS, Valtype(vCOFINS), hb_eol(), vICMS, Valtype(vICMS), hb_eol(), vTotTrib, Valtype(vTotTrib)})
-        consoleLog(msgLog)
+        // consoleLog(msgLog)
         AAdd(::obs_contr, {"xCampo" => "LEI DA TRANSPARENCIA",;
                            "xTexto" => "Lei da transparencia 12741/12, o valor aproximado dos tributos incidentes sobre o preço do serviço:" +;
                                 " PIS " + ::vPIS +;

@@ -264,7 +264,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::hProg := cte["hProg"]
     ::hIni := cte["hIni"]
     ::hFim := cte["hFim"]
-    ::xObs := StrTran(StrTran(cte["xObs"], "\n", "; "), hb_eol(), "; ")
+    ::xObs := StrTran(StrTran(cte["xObs"], "\n", " | "), hb_eol(), " | ")
     ::xObs := desacentuar(::xObs)
     ::clie_remetente_id := cte["clie_remetente_id"]
     ::rem_razao_social := cte["rem_razao_social"]
@@ -408,7 +408,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::infIndGlobalizado()
 
     if (::indGlobalizado == 1)
-        ::xObs := ::xObs + "; Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"
+        ::xObs := iif(Empty(::xObs), "", ::xObs + " | ") + "Procedimento efetuado conforme Resolução/SEFAZ n. 2.833/2017"
     endif
 
     for each clie in clie_emails

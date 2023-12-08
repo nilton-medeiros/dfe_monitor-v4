@@ -52,7 +52,7 @@ procedure cteSubmit(cte)
     if apiCTe:Emitir()
         if apiCTe:contingencia
             cte:setUpdateCte("cte_forma_emissao", 7)
-            cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + "\n") + "EMISSAO EM CONTINGENCIA: SVC-RS")
+            cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + " | ") + "EMISSAO EM CONTINGENCIA: SVC-RS")
             cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP INDISPONIVEL, EMISSAO EM CONTINGENCIA PELA SVC-RS")
             cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
         endif
@@ -80,7 +80,7 @@ procedure cteSubmit(cte)
 
             if apiCTe:Emitir()
                 cte:setUpdateCte("cte_forma_emissao", 7)
-                cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + "\n") + "EMISSAO EM CONTINGENCIA: SVC-RS")
+                cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + " | ") + "EMISSAO EM CONTINGENCIA: SVC-RS")
                 cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP INDISPONIVEL, EMISSAO EM CONTINGENCIA PELA SVC-RS")
                 cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
                 posEmissao(apiCTe)

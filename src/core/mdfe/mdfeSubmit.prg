@@ -10,7 +10,7 @@ procedure mdfeSubmit(mdfe)
         // Verifica se SVRS voltou a ficar disponível (online)
         svrs := apiMDFe:ConsultarSVRS()
         if (svrs["codigo_status"] == 107)
-            // SVRS voltou a fica disponível
+            // SVRS voltou a ficar disponível
             appData:mdfe_sefaz_offline := false
         elseif (svrs["codigo_status"] == -1)
             mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_recebimento, apiMDFe:codigo_mensagem, apiMDFe:mensagem)
@@ -44,7 +44,7 @@ procedure mdfeSubmit(mdfe)
             mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_recebimento, apiMDFe:codigo_mensagem, apiMDFe:mensagem)
         endif
 
-        mdfeGetFiles(mdfe, apiMDFe)
+        mdfeGetFiles(apiMDFe)
 
     elseif apiMDFe:mdfe_sefaz_offline
         mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_evento, "SVRS", "SEFAZ MDFe:RS INDISPONÍVEL, TENTE MAIS TARDE!")

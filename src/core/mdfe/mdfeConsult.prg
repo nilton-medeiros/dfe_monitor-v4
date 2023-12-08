@@ -24,7 +24,7 @@ procedure mdfeConsult(mdfe)
             if !Empty(apiMDFe:mensagem)
                 mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_recebimento, apiMDFe:codigo_mensagem, apiMDFe:mensagem)
             endif
-            mdfeGetFiles(mdfe, apiMDFe)
+            mdfeGetFiles(apiMDFe)
         else
             lError := true
         endif

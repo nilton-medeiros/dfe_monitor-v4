@@ -39,6 +39,7 @@ class TApiMDFe
     method defineBody()
     method ConsultarSVRS()
     method Sincronizar()
+    method ListarMDFes()
 
 end class
 
@@ -104,8 +105,12 @@ method Emitir() class TApiMDFe
             hRes := hb_jsonDecode(::response)
             if hb_HGetRef(hRes, "error")
                 ::mensagem := hRes["message"]
-                if ("O campo 'referencia' deve ser único" $ ::mensagem)
-                    res['error'] := ::Consultar()
+                if ("o campo 'referencia' deve ser unico" $ desacentuar(Lower(::mensagem)))
+                    if Empty(::nuvemfiscal_uuid)
+                        res['error'] := ::ListarMDFes()
+                    else
+                        res['error'] := ::Consultar()
+                    endif
                 endif
             else
                 saveLog({"Erro ao emitir MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
@@ -172,12 +177,6 @@ method Encerrar() class TApiMDFe
     loca emitente := ::mdfe:emitente
 
     if !::connected
-        return false
-    endif
-
-    if  Empty(::nuvemfiscal_uuid)
-        consoleLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível encerrar MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 
@@ -273,12 +272,6 @@ method Cancelar() class TApiMDFe
         return false
     endif
 
-    if  Empty(::nuvemfiscal_uuid)
-        consoleLog("Não é possível cancelar MDFe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível cancelar MDFe, ::nuvemviscal_uuid está vazio")
-        return false
-    endif
-
     ::body := '{"justificativa":"Erro no preenchimento do Manifesto de Documentos Fiscais"}'
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
@@ -324,12 +317,6 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
         return false
     endif
 
-    if  Empty(::nuvemfiscal_uuid)
-        consoleLog("Não é possível baixar PDF MDFe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível baixar PDF MDFe, ::nuvemviscal_uuid está vazio")
-        return false
-    endif
-
     switch Lower(::mdfe:situacao)
         case "autorizado"
             apiUrl += "/pdf"
@@ -368,12 +355,6 @@ method BaixarXMLdoMDFe() class TApiMDFe
     local res, hRes, apiUrl := ::baseUrlID
 
     if !::connected
-        return false
-    endif
-
-    if  Empty(::nuvemfiscal_uuid)
-        consoleLog("Não é possível baixar XML MDFe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível baixar XML MDFe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 
@@ -679,12 +660,6 @@ method Sincronizar() class TApiMDFe
         return false
     endif
 
-    if Empty(::nuvemfiscal_uuid)
-        ::mdfe:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincronizar MDFe, falta id da Nuvem Fiscal")
-        saveLog("ID do MDFe na Nuvem Fiscal está fazio, não é possível sincronizar MDFe")
-        return false
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "POST", apiUrl, ::token, "Sincronizar MDFe a partir da SEFAZ", nil, nil, "*/*")
 
@@ -697,6 +672,87 @@ method Sincronizar() class TApiMDFe
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
         ::mensagem := res["response"]
+    endif
+
+return !res['error']
+
+method ListarMDFes() class TApiMDFe
+    local res, hRes, aRes := {}, mdfe, hAutorizacao
+    local apiUrl := ::baseUrl + "?cpf_cnpj=" + ::emitente:CNPJ
+
+    if !::connected
+        return false
+    endif
+
+    apiUrl += chr(38) + "referencia=" + ::referencia_uuid
+    apiUrl += chr(38) + "ambiente=" + ::ambiente
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Listar MDFes por referencia_uuid")
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao listar MDFes por referencia_uuid na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    else
+        hRes := hb_jsonDecode(::response)
+        if hb_HGetRef(hRes, "data")
+            aRes := hRes["data"]
+        endif
+
+        if Empty(aRes)
+            ::codigo_status := 0
+            ::motivo_status := "MDFe nao encontrado na Consulta por referencia_uuid"
+            res["error"] := true
+        else
+
+            // Por referencia, só retorna um elemento no array
+            mdfe := aRes[1]
+
+            ::nuvemfiscal_uuid := mdfe['id']
+            ::ambiente := mdfe['ambiente']
+            ::created_at := DateTime_to_mysql(mdfe['created_at'])
+            ::status := mdfe['status']
+            ::data_emissao := DateTime_to_mysql(mdfe['data_emissao'])
+            ::chave := mdfe['chave']
+
+            hAutorizacao := mdfe['autorizacao']
+
+            ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
+            ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
+            ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+
+            if hb_HGetRef(hAutorizacao, 'codigo_status')
+                ::codigo_status := hAutorizacao['codigo_status']
+                ::motivo_status := hAutorizacao['motivo_status']
+            else
+                if hb_HGetRef(hAutorizacao, 'codigo_mensagem')
+                    ::codigo_status := hAutorizacao['codigo_mensagem']
+                    ::motivo_status := hAutorizacao['mensagem']
+                endif
+            endif
+            if hb_HGetRef(hAutorizacao, "digest_value")
+                ::digest_value := hAutorizacao['digest_value']
+            endif
+            if (::status == "cancelado")
+                ::codigo_status := 135
+                ::motivo_status := "Evento registrado e vinculado ao CT-e"
+            endif
+
+            ::mdfe:setUpdateMDFe('cMDF', ::chave)
+            ::mdfe:setUpdateMDFe('nuvemfiscal_uuid', ::nuvemfiscal_uuid)
+
+        endif
+
+    endif
+
+    if !Empty(::nuvemfiscal_uuid) .and. !(::nuvemfiscal_uuid $ ::baseUrlID)
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
     endif
 
 return !res['error']

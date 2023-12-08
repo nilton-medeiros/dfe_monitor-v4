@@ -9,7 +9,7 @@ procedure mdfeClose(mdfe)
         // Prepara os campos da tabela mdfes para receber os updates
         if (apiMDFe:codigo_status == 135)
             mdfe:setSituacao("ENCERRADO")
-            mdfeGetFiles(mdfe, apiMDFe)
+            mdfeGetFiles(apiMDFe)
         else
             mdfe:setSituacao(apiMDFe:status)
             consoleLog({"Evento de Encerramento Registrado", hb_eol(), "apiMDFe:status " + apiMDFe:status, hb_eol(), "cStat: ", iif(!Empty(apiMDFe:codigo_status), apiMDFe:codigo_status, apiMDFe:codigo_mensagem)})

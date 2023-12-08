@@ -3,6 +3,7 @@
 
 class TApiCTe
     data cte readonly
+    data emitente readonly
     data token
     data connection
     data connected readonly
@@ -11,6 +12,7 @@ class TApiCTe
     data httpStatus readonly
     data ContentType readonly
     data nuvemfiscal_uuid
+    data referencia_uuid readonly
     data ambiente readonly
     data autorizador readonly
     data created_at readonly
@@ -44,17 +46,20 @@ class TApiCTe
     method defineBody()
     method ConsultarSefaz()
     method Sincronizar()
+    method ListarCTes()
 
 end class
 
 method new(cte) class TApiCTe
     ::cte := cte
+    ::emitente := cte:emitente
     ::connected := false
     ::response := ""
     ::httpStatus := 0
     ::ContentType := ""
     ::token := appNuvemFiscal:token
     ::nuvemfiscal_uuid := cte:nuvemfiscal_uuid
+    ::referencia_uuid := cte:referencia_uuid
     ::status := cte:situacao
     ::data_emissao := cte:dhEmi
     ::chave := cte:chCTe
@@ -74,8 +79,10 @@ method new(cte) class TApiCTe
     endif
 
     if (::cte:tpAmb == 1)   // API de Produção
+        ::ambiente := "producao"
         ::baseUrl := "https://api.nuvemfiscal.com.br/cte"
     else    // API de Teste
+        ::ambiente := "homologacao"
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/cte"
     endif
 
@@ -115,8 +122,12 @@ method Emitir() class TApiCTe
             if hb_HGetRef(hRes, "error")
                 hRes := hRes["error"]
                 ::mensagem := hRes["message"]
-                if ("O campo 'referencia' deve ser unico" $ desacentuar(::mensagem))
-                    res['error'] := ::Consultar()
+                if ("o campo 'referencia' deve ser unico" $ desacentuar(Lower(::mensagem)))
+                    if Empty(::nuvemfiscal_uuid)
+                        res['error'] := ::ListarCTes()
+                    else
+                        res['error'] := ::Consultar()
+                    endif
                 endif
             else
                 saveLog({"Erro ao emitir CTe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
@@ -175,6 +186,10 @@ method Emitir() class TApiCTe
 
     endif
 
+    if !Empty(::nuvemfiscal_uuid) .and. !(::nuvemfiscal_uuid $ ::baseUrlID)
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
+    endif
+
 return !res['error']
 
 method Consultar() class TApiCTe
@@ -183,14 +198,6 @@ method Consultar() class TApiCTe
     if !::connected
         return false
     endif
-
-    if  Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível consultar CTe, falta id da Nuvem Fiscal")
-        consoleLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível Consultar CTe, ::nuvemviscal_uuid está vazio")
-        return false
-    endif
-
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", ::baseUrlID, ::token, "Consultar CTe")
@@ -236,13 +243,6 @@ method Cancelar() class TApiCTe
     local res, hRes, apiUrl := ::baseUrlID + "/cancelamento"
 
     if !::connected
-        return false
-    endif
-
-    if  Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível cancelar CTe, falta id da Nuvem Fiscal")
-        consoleLog("Não é possível Cancelar CTe, ::nuvemviscal_uuid está vazio")
-        saveLog("Não é possível encerrar CTe, ::nuvemviscal_uuid está vazio")
         return false
     endif
 
@@ -298,12 +298,6 @@ method BaixarPDFdoDACTE() class TApiCTe
         return false
     endif
 
-    if Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF, falta id da Nuvem Fiscal")
-        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF")
-        return false
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF do DACTE", nil, nil, "*/*")
 
@@ -328,12 +322,6 @@ method BaixarPDFdoCancelamento() class TApiCTe
     if !::connected
         ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF do Cancelamento, API Nuvem Fiscal não conectado")
         saveLog("API Nuvem Fiscal não conectado")
-        return false
-    endif
-
-    if Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF do Cancelamento, falta id da Nuvem Fiscal")
-        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar PDF do cancelamento")
         return false
     endif
 
@@ -364,12 +352,6 @@ method BaixarXMLdoCTe() class TApiCTe
         return false
     endif
 
-    if Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML, falta id da Nuvem Fiscal")
-        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML")
-        return false
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar XML do CTe", nil, nil, "*/*")
 
@@ -394,12 +376,6 @@ method BaixarXMLdoCancelamento() class TApiCTe
     if !::connected
         ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML do Cancelamento, API Nuvem Fiscal não conectado")
         saveLog("API Nuvem Fiscal não conectado")
-        return false
-    endif
-
-    if Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML do Cancelamento, falta id da Nuvem Fiscal")
-        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível baixar XML do cancelamento")
         return false
     endif
 
@@ -452,9 +428,9 @@ method defineBody() class TApiCTe
         ide["indGlobalizado"] := 1
     endif
 
-    ide["cMunEnv"] := ::cte:emitente:cMunEnv
-    ide["xMunEnv"] := ::cte:emitente:xMunEnv
-    ide["UFEnv"] := ::cte:emitente:UF
+    ide["cMunEnv"] := ::emitente:cMunEnv
+    ide["xMunEnv"] := ::emitente:xMunEnv
+    ide["UFEnv"] := ::emitente:UF
     ide["modal"] := ::cte:modal
     ide["tpServ"] := ::cte:tpServ
     ide["cMunIni"] := ::cte:cMunIni
@@ -607,30 +583,30 @@ method defineBody() class TApiCTe
 
     // Tag emit
     emite := {=>}
-    emite["CNPJ"] := ::cte:emitente:CNPJ
+    emite["CNPJ"] := ::emitente:CNPJ
 
-    if !Empty(::cte:emitente:IE)
-        emite["IE"] := ::cte:emitente:IE
+    if !Empty(::emitente:IE)
+        emite["IE"] := ::emitente:IE
     endif
 
-    emite["xNome"] := ::cte:emitente:xNome
+    emite["xNome"] := ::emitente:xNome
 
-    if !Empty(::cte:emitente:xFant)
-        emite["xFant"] := ::cte:emitente:xFant
+    if !Empty(::emitente:xFant)
+        emite["xFant"] := ::emitente:xFant
     endif
 
     ender := {=>}
-    ender["xLgr"] := ::cte:emitente:xLgr
-    ender["nro"] := ::cte:emitente:nro
-    if !Empty(::cte:emitente:xCpl)
-        ender["xCpl"] := ::cte:emitente:xCpl
+    ender["xLgr"] := ::emitente:xLgr
+    ender["nro"] := ::emitente:nro
+    if !Empty(::emitente:xCpl)
+        ender["xCpl"] := ::emitente:xCpl
     endif
-    ender["xBairro"] := ::cte:emitente:xBairro
-    ender["cMun"] := ::cte:emitente:cMunEnv
-    ender["xMun"] := ::cte:emitente:xMunEnv
-    ender["CEP"] := ::cte:emitente:CEP
-    ender["UF"] := ::cte:emitente:UF
-    ender["fone"] :=::cte:emitente:fone
+    ender["xBairro"] := ::emitente:xBairro
+    ender["cMun"] := ::emitente:cMunEnv
+    ender["xMun"] := ::emitente:xMunEnv
+    ender["CEP"] := ::emitente:CEP
+    ender["UF"] := ::emitente:UF
+    ender["fone"] :=::emitente:fone
 
     emite["enderEmit"] := ender
     ender := nil
@@ -645,7 +621,7 @@ method defineBody() class TApiCTe
         ** Versão 3.00: Deveria ter entrado em 01/07 mas não entrou, Sefaz não seguiu data prevista no manual!
         ** Versão 4.00: Testar se aceita ou retorna erro como na versão 3.00 do CTe
     */
-    emite["CRT"] := ::cte:emitente:CRT
+    emite["CRT"] := ::emitente:CRT
 
     // Tag rem
     remet := {=>}
@@ -803,7 +779,7 @@ method defineBody() class TApiCTe
     endif
 
     infCte := {=>}
-    infCte["versao"] := ::cte:emitente:cte_versao_xml
+    infCte["versao"] := ::emitente:cte_versao_xml
     infCte["ide"] := ide
     infCte["compl"] := compl
     infCte["emit"] := emite
@@ -996,7 +972,7 @@ method defineBody() class TApiCTe
                     // Rodo: Informação do modal rodoviário
 
                     rodo := {=>}
-                    rodo["RNTRC"] := ::cte:emitente:RNTRC
+                    rodo["RNTRC"] := ::emitente:RNTRC
 
                     if !Empty(::cte:rodoOcc)
                         // Ordens de Coletas
@@ -1084,16 +1060,16 @@ method defineBody() class TApiCTe
     ambiente := iif(::cte:tpAmb == 1, "producao", "homologacao")
 
     // Cria o Body Hash Table
-    hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => ::cte:referencia_uuid}
+    hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => ::referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
 
     // Debug
-    hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json", ::body)
+    // hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json", ::body)
 
 return nil
 
 method ConsultarSefaz() class TApiCTe
-    local res, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::cte:emitente:CNPJ
+    local res, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::emitente:CNPJ
     local sefaz := {"codigo_status" => -1}
 
     // Se está em contigência, consulta a Sefaz Virtual SVC-RS se já está operando
@@ -1124,12 +1100,6 @@ method Sincronizar() class TApiCTe
         return false
     endif
 
-    if Empty(::nuvemfiscal_uuid)
-        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincronizar CTe, falta id da Nuvem Fiscal")
-        saveLog("ID do CTe na Nuvem Fiscal está fazio, não é possível sincronizar CTe")
-        return false
-    endif
-
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "POST", apiUrl, ::token, "Sincronizar CTe a partir da SEFAZ", nil, nil, "*/*")
 
@@ -1142,6 +1112,87 @@ method Sincronizar() class TApiCTe
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
         ::mensagem := res["response"]
+    endif
+
+return !res['error']
+
+method ListarCTes() class TApiCTe
+    local res, hRes, aRes := {}, cte, hAutorizacao
+    local apiUrl := ::baseUrl + "?cpf_cnpj=" + ::emitente:CNPJ
+
+    if !::connected
+        return false
+    endif
+
+    apiUrl += chr(38) + "referencia=" + ::referencia_uuid
+    apiUrl += chr(38) + "ambiente=" + ::ambiente
+
+    // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Listar CTes por referencia_uuid")
+
+    ::httpStatus := res['status']
+    ::ContentType := res['ContentType']
+    ::response := res['response']
+
+    if res['error']
+        saveLog({"Erro ao listar CTes por referencia_uuid na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+            "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        ::status := "erro"
+        ::mensagem := res["response"]
+    else
+        hRes := hb_jsonDecode(::response)
+        if hb_HGetRef(hRes, "data")
+            aRes := hRes["data"]
+        endif
+
+        if Empty(aRes)
+            ::codigo_status := 0
+            ::motivo_status := "CTe nao encontrado na Consulta por referencia_uuid"
+            res["error"] := true
+        else
+
+            // Por referencia, só retorna um elemento no array
+            cte := aRes[1]
+
+            ::nuvemfiscal_uuid := cte['id']
+            ::ambiente := cte['ambiente']
+            ::created_at := DateTime_to_mysql(cte['created_at'])
+            ::status := cte['status']
+            ::data_emissao := DateTime_to_mysql(cte['data_emissao'])
+            ::chave := cte['chave']
+
+            hAutorizacao := cte['autorizacao']
+
+            ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
+            ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
+            ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+
+            if hb_HGetRef(hAutorizacao, 'codigo_status')
+                ::codigo_status := hAutorizacao['codigo_status']
+                ::motivo_status := hAutorizacao['motivo_status']
+            else
+                if hb_HGetRef(hAutorizacao, 'codigo_mensagem')
+                    ::codigo_status := hAutorizacao['codigo_mensagem']
+                    ::motivo_status := hAutorizacao['mensagem']
+                endif
+            endif
+            if hb_HGetRef(hAutorizacao, "digest_value")
+                ::digest_value := hAutorizacao['digest_value']
+            endif
+            if (::status == "cancelado")
+                ::codigo_status := 135
+                ::motivo_status := "Evento registrado e vinculado ao CT-e"
+            endif
+
+            ::cte:setUpdateCte('cte_chave', ::chave)
+            ::cte:setUpdateCte('nuvemfiscal_uuid', ::nuvemfiscal_uuid)
+
+        endif
+
+    endif
+
+    if !Empty(::nuvemfiscal_uuid) .and. !(::nuvemfiscal_uuid $ ::baseUrlID)
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
     endif
 
 return !res['error']

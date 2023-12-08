@@ -1,19 +1,17 @@
 #include "hmg.ch"
 
-function mdfeGetFiles(mdfe, apiMDFe)
+function mdfeGetFiles(apiMDFe)
     local upload := {=>}
     local lFileExists := false
     local directory, filePDF, fileXML, status := ""
     local empresa, anoMes, printPath, printPDF
+    local mdfe := apiMDFe:mdfe
 
     default apiMDFe := TApiMDFe():new(mdfe)
 
     // Debug
     consoleLog("Entrou em mdfeGetFiles()")
 
-    if Empty(apiMDFe:nuvemfiscal_uuid)
-        apiMDFe:Consultar()
-    endif
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(mdfe:emp_id)
 

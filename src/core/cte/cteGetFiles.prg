@@ -7,10 +7,6 @@ function cteGetFiles(apiCTe)
     local empresa, anoMes, printPDF, printPath
     local cte := apiCTe:cte
 
-    if Empty(apiCTe:nuvemfiscal_uuid)
-        consoleLog("Erro: nuvemfiscal_uuid está vazio!!")
-        turnOFF()
-    endif
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(cte:emp_id)
 

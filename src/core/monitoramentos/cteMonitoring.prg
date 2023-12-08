@@ -10,20 +10,25 @@ procedure cteMonitoring()
     endif
 
     for each cte in dbCTes:ctes
-        switch cte:monitor_action
-            case "SUBMIT"
-                cteSubmit(cte)
-                exit
-            case "GETFILES"
-                cteGetFiles(TApiCTe():new(cte))
-                exit
-            case "CANCEL"
-                cteCancel(cte)
-                exit
-            case "CONSULT"
-                cteConsult(cte)
-                exit
-        endswitch
+
+        if Empty(cte:nuvemfiscal_uuid)
+            cteSubmit(cte)
+        else
+            switch cte:monitor_action
+                case "GETFILES"
+                    cteGetFiles(TApiCTe():new(cte))
+                    exit
+                case "CANCEL"
+                    cteCancel(cte)
+                    exit
+                case "CONSULT"
+                    cteConsult(cte)
+                    exit
+                case "SUBMIT"   // Consultar, pois já existe o id da nuvem fiscal
+                    cteConsult(cte)
+                    exit
+            endswitch
+        endif
         cte:setUpdateCte('cte_monitor_action', "EXECUTED")
         cte:save()
         cte:saveEventos()

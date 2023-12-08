@@ -264,7 +264,7 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::hProg := cte["hProg"]
     ::hIni := cte["hIni"]
     ::hFim := cte["hFim"]
-    ::xObs := StrTran(cte["xObs"], "\n", "; ")
+    ::xObs := StrTran(StrTran(cte["xObs"], "\n", "; "), hb_eol(), "; ")
     ::xObs := desacentuar(::xObs)
     ::clie_remetente_id := cte["clie_remetente_id"]
     ::rem_razao_social := cte["rem_razao_social"]
@@ -385,9 +385,9 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     // Docs anexos ao CTe
     for each obs in hAnexos["obs_fisco"]
         if (obs["interessado"] == "CONTRIBUINTE")
-            AAdd(::obs_contr, {"xCampo" => obs["xCampo"], "xTexto" => obs["xTexto"]})
+            AAdd(::obs_contr, {"xCampo" => Left(obs["xCampo"], 20), "xTexto" => obs["xTexto"]})
         else
-            AAdd(::obs_fisco, {"xCampo" => obs["xCampo"], "xTexto" => obs["xTexto"]})
+            AAdd(::obs_fisco, {"xCampo" => Left(obs["xCampo"], 20), "xTexto" => obs["xTexto"]})
         endif
     next
 

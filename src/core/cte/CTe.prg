@@ -394,12 +394,12 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     if !Empty(::vTotTrib)
         // msgLog := MsgDebug(Valtype(::vCOFINS), ::vCOFINS, Valtype(::vICMS), ::vICMS, Valtype(::vTotTrib), ::vTotTrib)
         // consoleLog(msgLog)
-        AAdd(::obs_contr, {"xCampo" => "LEI DA TRANSPARENCIA 12741/12",;
-                           "xTexto" => "O valor aproximado dos tributos incidentes sobre o preco do servico:" +;
-                                " |PIS " + hb_ntos(::vPIS) +;
-                                " |COFINS " + hb_ntos(::vCOFINS) +;
-                                " |ICMS " + hb_ntos(::vICMS) +;
-                                " |TOTAL " + hb_ntos(::vTotTrib)})
+        AAdd(::obs_contr, {"xCampo" => "LEI DA TRANSPARENCIA",;
+                           "xTexto" => "12741/12 O valor aproximado dos tributos incidentes sobre o preco do servico:" +;
+                                " PIS " + hb_ntos(::vPIS) +;
+                                " COFINS " + hb_ntos(::vCOFINS) +;
+                                " ICMS " + hb_ntos(::vICMS) +;
+                                " TOTAL " + hb_ntos(::vTotTrib)})
     endif
 
     ::comp_calc := hAnexos['comp_calc']

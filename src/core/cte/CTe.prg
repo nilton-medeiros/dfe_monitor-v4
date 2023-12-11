@@ -214,7 +214,15 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::dhCont := ""
     ::xJust := ""
     ::tpCTe := cte["tpCTe"]
-    ::modal := PadL(cte["modal"], 2, "0")
+
+    if (cte["modal"] == 2)
+        ::modal := "02" // Aereo
+    elseif (cte["modal"] == 6)
+        ::modal := "06" // Multimmodal
+    else
+        ::modal := "01" // Rodoviário
+    endif
+
     ::tpServ := cte["tpServ"]
     ::cMunIni := hb_ntos(cte["cMunIni"])
     ::xMunIni := cte["xMunIni"]

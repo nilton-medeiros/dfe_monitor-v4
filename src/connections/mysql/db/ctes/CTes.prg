@@ -209,7 +209,7 @@ method getListCTes() class TDbCTes
             if (hb_ntos(hCTe['tpServ']) $ "123")
                 docTransAnt := ::getDocAnteriores(hCTe["id"])
             endif
-            modalidade := iif(hCTe['modal'] == 1, ::getRodoOCC(hCTe["id"]), ::getAereoCub3(hCTe["id"]))
+            modalidade := iif((hCTe['modal'] == 1), ::getRodoOCC(hCTe["id"]), ::getAereoCub3(hCTe["id"]))
             AAdd(::ctes, TCTe():new(hCTe, hAnexos, emails, docTransAnt, modalidade))
             dbCTes:Skip()
         enddo

@@ -25,14 +25,20 @@ procedure cteMonitoring()
                     cteConsult(cte)
                     exit
                 case "SUBMIT"   // Consultar, pois já existe o id da nuvem fiscal
-                    cteConsult(cte)
+                    if (cte:situacao == "REJEITADO")
+                        cteSubmit(cte)  // Tem nuvemfiscal_uuid, mas foi rejeitado anteriormente, submete novamente para autorizar
+                    else
+                        cteConsult(cte)
+                    endif
                     exit
             endswitch
         endif
+
         cte:setUpdateCte('cte_monitor_action', "EXECUTED")
         cte:save()
         cte:saveEventos()
         DO EVENTS
+        
     next
 
 return

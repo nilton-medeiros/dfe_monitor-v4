@@ -38,7 +38,7 @@ procedure cteMonitoring()
         cte:save()
         cte:saveEventos()
         DO EVENTS
-        
+
     next
 
 return

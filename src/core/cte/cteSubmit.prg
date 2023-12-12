@@ -119,7 +119,9 @@ procedure posEmissao(api)
         api:cte:setUpdateEventos(api:numero_protocolo, api:data_recebimento, api:codigo_mensagem, api:mensagem)
     endif
 
-    cteGetFiles(api)
+    if (api:codigo_status == 100)
+        cteGetFiles(api)
+    endif
 
 return
 

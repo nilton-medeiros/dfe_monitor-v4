@@ -40,3 +40,29 @@ function number_format(number, decimal)
         format += "." + Replicate("9", decimal)
     endif
 return Val(LTrim(Transform(number, format)))
+
+
+function ConvertUTCdataStampToLocal(cDateTime)
+    local datetime := hb_CtoT(DateTime_to_mysql(cDateTime))
+    local dtNew := datetime - TimeDelta(0, 3, 0, 0)
+    cDateTime := DateTime_to_mysql(hb_TSToStr(dtNew))
+return cDateTime
+
+function TimeDelta(days, hours, minutes, seconds)
+    IF days > 0
+        days := ((days * 24) * 60 ) / (24 * 60)
+    ENDIF
+
+    IF hours > 0
+        hours := (hours * 60 ) / (24 * 60)
+    ENDIF
+
+    IF minutes > 0
+        minutes := minutes / (24 * 60)
+    ENDIF
+
+    IF seconds > 0
+        seconds := (seconds / 60) / (24 * 60)
+    ENDIF
+
+RETURN days + hours + minutes + seconds

@@ -148,7 +148,7 @@ method Emitir() class TApiCTe
                 ::motivo_status := sefazStatus["motivo_status"]
                 ::ambiente := sefazStatus["ambiente"]
                 ::autorizador := sefazStatus["autorizador"]
-                ::data_evento := sefazStatus["data_hora_consulta"]
+                ::data_evento := ConvertUTCdataStampToLocal(sefazStatus["data_hora_consulta"])
                 appData:cte_sefaz_offline := true
             endif
 
@@ -160,16 +160,16 @@ method Emitir() class TApiCTe
         ::nuvemfiscal_uuid := hRes['id']
         ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
         ::ambiente := hRes['ambiente']
-        ::created_at := DateTime_to_mysql(hRes['created_at'])
+        ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
         ::status := hRes['status']
-        ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
+        ::data_emissao := ConvertUTCdataStampToLocal(hRes['data_emissao'])
         ::chave := hRes['chave']
 
         hAutorizacao := hRes['autorizacao']
 
         ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
-        ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+        ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
+        ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
 
         if hb_HGetRef(hAutorizacao, 'codigo_status')
             ::codigo_status := hAutorizacao['codigo_status']
@@ -215,16 +215,16 @@ method Consultar() class TApiCTe
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
         ::ambiente := hRes['ambiente']
-        ::created_at := DateTime_to_mysql(hRes['created_at'])
+        ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
         ::status := hRes['status']
-        ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
+        ::data_emissao := ConvertUTCdataStampToLocal(hRes['data_emissao'])
         ::chave := hRes['chave']
 
         hAutorizacao := hRes['autorizacao']
 
         ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
-        ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+        ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
+        ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
 
         if hb_HGetRef(hAutorizacao, 'codigo_status')
             ::codigo_status := hAutorizacao['codigo_status']
@@ -264,8 +264,8 @@ method Cancelar() class TApiCTe
         hRes := hb_jsonDecode(::response)
         ::ambiente := hRes['ambiente']
         ::status := hRes['status']
-        ::data_evento := DateTime_to_mysql(hRes['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hRes['data_recebimento'])
+        ::data_evento := ConvertUTCdataStampToLocal(hRes['data_evento'])
+        ::data_recebimento := ConvertUTCdataStampToLocal(hRes['data_recebimento'])
         ::numero_protocolo := hb_HGetDef(hRes, 'numero_protocolo', hRes['id'])
 
         if hb_HGetRef(hRes, 'codigo_status')
@@ -1156,16 +1156,16 @@ method ListarCTes() class TApiCTe
 
             ::nuvemfiscal_uuid := cte['id']
             ::ambiente := cte['ambiente']
-            ::created_at := DateTime_to_mysql(cte['created_at'])
+            ::created_at := ConvertUTCdataStampToLocal(cte['created_at'])
             ::status := cte['status']
-            ::data_emissao := DateTime_to_mysql(cte['data_emissao'])
+            ::data_emissao := ConvertUTCdataStampToLocal(cte['data_emissao'])
             ::chave := cte['chave']
 
             hAutorizacao := cte['autorizacao']
 
             ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
-            ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
-            ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+            ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
+            ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
 
             if hb_HGetRef(hAutorizacao, 'codigo_status')
                 ::codigo_status := hAutorizacao['codigo_status']

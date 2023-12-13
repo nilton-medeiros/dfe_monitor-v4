@@ -14,6 +14,7 @@ class TApiMDFe
     data ambiente readonly
     data status readonly
     data chave_acesso readonly
+    data created_at readonly
     data data_emissao readonly
     data data_evento readonly
     data data_recebimento readonly
@@ -27,7 +28,6 @@ class TApiMDFe
     data digest_value readonly
     data baseUrl readonly
     data baseUrlID readonly
-    data created_at readonly
 
     method new(mdfe) constructor
     method Emitir()
@@ -144,16 +144,16 @@ method Emitir() class TApiMDFe
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
         ::ambiente := hRes['ambiente']
-        ::created_at := DateTime_to_mysql(hRes['created_at'])
+        ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
         ::status := hRes['status']
-        ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
+        ::data_emissao := ConvertUTCdataStampToLocal(hRes['data_emissao'])
         ::chave_acesso := hRes['chave']
 
         hAutorizacao := hRes['autorizacao']
 
         ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
-        ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+        ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
+        ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
 
         if hb_HGetRef(hAutorizacao, 'codigo_status')
             ::codigo_status := hAutorizacao['codigo_status']
@@ -198,8 +198,8 @@ method Encerrar() class TApiMDFe
         hRes := hb_jsonDecode(::response)
         ::ambiente := hRes['ambiente']
         ::status := hRes['status']
-        ::data_evento := DateTime_to_mysql(hRes['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hRes['data_recebimento'])
+        ::data_evento := ConvertUTCdataStampToLocal(hRes['data_evento'])
+        ::data_recebimento := ConvertUTCdataStampToLocal(hRes['data_recebimento'])
         ::numero_protocolo := hb_HGetDef(hRes, 'numero_protocolo', hRes['id'])
 
         if hb_HGetRef(hRes, 'codigo_status')
@@ -242,15 +242,15 @@ method Consultar() class TApiMDFe
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
         ::ambiente := hRes['ambiente']
-        ::created_at := DateTime_to_mysql(hRes['created_at'])
+        ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
         ::status := hRes['status']
-        ::data_emissao := DateTime_to_mysql(hRes['data_emissao'])
+        ::data_emissao := ConvertUTCdataStampToLocal(hRes['data_emissao'])
         ::chave_acesso := hRes['chave']
         hAutorizacao := hRes['autorizacao']
 
         ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
-        ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+        ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
+        ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
 
         if hb_HGetRef(hAutorizacao, 'codigo_status')
             ::codigo_status := hAutorizacao['codigo_status']
@@ -290,8 +290,8 @@ method Cancelar() class TApiMDFe
         hRes := hb_jsonDecode(::response)
         ::ambiente := hRes['ambiente']
         ::status := hRes['status']
-        ::data_evento := DateTime_to_mysql(hRes['data_evento'])
-        ::data_recebimento := DateTime_to_mysql(hRes['data_recebimento'])
+        ::data_evento := ConvertUTCdataStampToLocal(hRes['data_evento'])
+        ::data_recebimento := ConvertUTCdataStampToLocal(hRes['data_recebimento'])
         ::numero_protocolo := hb_HGetDef(hRes, 'numero_protocolo', hRes['id'])
 
         if hb_HGetRef(hRes, 'codigo_status')
@@ -716,16 +716,16 @@ method ListarMDFes() class TApiMDFe
 
             ::nuvemfiscal_uuid := mdfe['id']
             ::ambiente := mdfe['ambiente']
-            ::created_at := DateTime_to_mysql(mdfe['created_at'])
+            ::created_at := ConvertUTCdataStampToLocal(mdfe['created_at'])
             ::status := mdfe['status']
-            ::data_emissao := DateTime_to_mysql(mdfe['data_emissao'])
+            ::data_emissao := ConvertUTCdataStampToLocal(mdfe['data_emissao'])
             ::chave := mdfe['chave']
 
             hAutorizacao := mdfe['autorizacao']
 
             ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
-            ::data_evento := DateTime_to_mysql(hAutorizacao['data_evento'])
-            ::data_recebimento := DateTime_to_mysql(hAutorizacao['data_recebimento'])
+            ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
+            ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
 
             if hb_HGetRef(hAutorizacao, 'codigo_status')
                 ::codigo_status := hAutorizacao['codigo_status']

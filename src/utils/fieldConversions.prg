@@ -41,7 +41,6 @@ function number_format(number, decimal)
     endif
 return Val(LTrim(Transform(number, format)))
 
-
 function ConvertUTCdataStampToLocal(cDateTime)
     local datetime := hb_CtoT(DateTime_to_mysql(cDateTime))
     local dtNew := datetime - TimeDelta(0, 3, 0, 0)

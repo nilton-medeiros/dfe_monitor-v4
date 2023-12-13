@@ -497,7 +497,7 @@ method defineBody() class TApiCTe
     // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
     if (::contingencia)
         ide["tpEmis"] := 7      // 7 - Autorização pela SVC-RS
-        ide["dhCont"] := ::data_evento
+        ide["dhCont"] := Left(::data_emissao, 19)
         ide["xJust"] := "SEFAZ SP: " + hb_ntos(::codigo_status) + " - " + ::motivo_status
     endif
 

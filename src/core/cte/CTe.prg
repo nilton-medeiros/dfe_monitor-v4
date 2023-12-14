@@ -538,10 +538,6 @@ method setUpdateEventos(cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_e
                            "cte_ev_data_hora" => cte_ev_data_hora, ;
                            "cte_ev_evento" => cte_ev_evento, ;
                            "cte_ev_detalhe" => "Ambiente: " + ambiente + " |" + cte_ev_detalhe})
-
-    // Debug
-    consoleLog("cte_ev_data_hora: " + cte_ev_data_hora)
-
 return nil
 
 method save() class TCTe

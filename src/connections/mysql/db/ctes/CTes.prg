@@ -478,7 +478,7 @@ method getAereoCub3(id) class TDbCTes
         aereo["cInfManu"] := {"99"}
     else
         // Debug: Após testes, trocar por saveLog() e não passar o s:value
-        consoleLog({"dim:count = ", dim:count, hb_eol(), s:value})
+        saveLog({"dim:count = ", dim:count, hb_eol()})
     endif
 
     dim:Destroy()
@@ -536,9 +536,6 @@ method insertEventos(aEvents) class TDbCTes
         sql:add(hEvent["cte_id"] + ", ")
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_protocolo"]) + "', ")
         sql:add("'" + hEvent["cte_ev_data_hora"] + "', ")
-
-        // Debug
-        consoleLog("cte_ev_data_hora: " + hEvent["cte_ev_data_hora"])
 
         codEvent := hEvent["cte_ev_evento"]
         if (ValType(codEvent) == "N")

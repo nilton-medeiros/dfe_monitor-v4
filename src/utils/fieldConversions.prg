@@ -44,9 +44,9 @@ return Val(LTrim(Transform(number, format)))
 function ConvertUTCdataStampToLocal(cDateTime)
     local datetime := hb_CtoT(DateTime_to_mysql(cDateTime))
     local dtNew := datetime - TimeDelta(0, 3, 0, 0)
+    consoleLog("Debug => Recebido cDateTime: " + cDateTime)
     cDateTime := DateTime_to_mysql(hb_TSToStr(dtNew))
-    // Debug
-    consoleLog("Retornando: " + cDateTime)
+    consoleLog("Debug => Retorno  cDateTime: " + cDateTime)
 return cDateTime
 
 function TimeDelta(days, hours, minutes, seconds)

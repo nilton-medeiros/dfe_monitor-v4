@@ -88,8 +88,6 @@ method new(cte) class TApiCTe
 
     if !Empty(::nuvemfiscal_uuid)
         ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
-    else
-        consoleLog("nuvemfiscal_uuid está vazio!!, ::baseUrlID Vazio")
     endif
 
 return self

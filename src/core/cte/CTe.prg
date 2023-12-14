@@ -372,20 +372,8 @@ method new(cte, hAnexos, clie_emails, emiDocAnt, modalidade) class TCTe
     ::tpImp := ::emitente:tpImp
     ::cUF := ::emitente:cUF
     ::tpAmb := ::emitente:tpAmb
-
-    // Se o registro no DB ainda não tem uma chave UUID, é criado uma
-    if Empty(::referencia_uuid)
-        ::referencia_uuid :=  hb_UPadL(::serie, 3, "0") +;
-                              hb_UPadL(::nCT, 9, "0") +;    // Numero CTe
-                              hb_UPadL(::id, 9, "0") +;     // Id CTe
-                              hb_UPadL(::cCT, 9, "0") +;    // Numero Minuta
-                              hb_UPadL(::emp_id, 6, "0")    // Id Emitente
-        ::setUpdateCte("referencia_uuid", ::referencia_uuid)
-    endif
-
     ::obs_contr := {}
     ::obs_fisco := {}
-
 
     // Adiciona o Emissor a tag ObsCont "Uso Exclusivo do Emissor de CT-e"
     AAdd(::obs_contr, {"xCampo" => "Emissor", "xTexto" => ::xEmi})

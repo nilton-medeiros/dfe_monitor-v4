@@ -15,7 +15,7 @@ procedure cteSubmit(cte)
             // Sefaz SP voltou a fica disponível, sai do módo contingência
             appData:cte_sefaz_offline := false
         elseif (sefaz["codigo_status"] == -1)
-            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:status, apiCTe:mensagem)
+            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:status, apiCTe:mensagem)
             errEmissao(apiCTe, cte)
             return
         else
@@ -25,24 +25,24 @@ procedure cteSubmit(cte)
             sefaz := apiCTe:ConsultarSefaz()
 
             if (sefaz["codigo_status"] == -1)
-                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:status, apiCTe:mensagem)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:status, apiCTe:mensagem)
                 errEmissao(apiCTe, cte)
                 apiCTe:contingencia := false
                 return
             elseif !(sefaz["codigo_status"] == 107)
                 // Sefaz SP OFFLINE e SVC-RS ainda não está disponível!
                 apiCTe:contingencia := false
-                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
-                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP E SEFAZ RS VIRUTAL DE CONTINGENCIA INDISPONIVEIS!")
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, "SEFAZ SP E SEFAZ RS VIRUTAL DE CONTINGENCIA INDISPONIVEIS!")
                 errEmissao(apiCTe, cte)
                 return
             else
                 // Sefaz Virtual RS em Operação
                 // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
                 cte:tpEmis := 7     // SVC-RS
-                cte:dhCont := apiCTe:data_evento
+                cte:dhCont := apiCTe:data_emissao
                 cte:xJust := apiCTe:motivo_status
-                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
             endif
 
         endif
@@ -53,8 +53,8 @@ procedure cteSubmit(cte)
         if apiCTe:contingencia
             cte:setUpdateCte("cte_forma_emissao", 7)
             cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + " | ") + "EMISSAO EM CONTINGENCIA: SVC-RS")
-            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP INDISPONIVEL, EMISSAO EM CONTINGENCIA PELA SVC-RS")
-            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, "SEFAZ SP INDISPONIVEL, EMISSAO EM CONTINGENCIA PELA SVC-RS")
+            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
         endif
         posEmissao(apiCTe)
         return
@@ -63,8 +63,8 @@ procedure cteSubmit(cte)
     // Não emitiu, Sefaz SP está indisponível, verifica se a Sefaz Virtual RS já está disponível
     if appData:cte_sefaz_offline .and. !apiCTe:contingencia
 
-        cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
-        cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "Verificando ambiente de contigência SVC-RS (Sefaz Virtual de Contingencia do RS)")
+        cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
+        cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, "Verificando ambiente de contigência SVC-RS (Sefaz Virtual de Contingencia do RS)")
 
         // Em contingência. Consulta a SVC-RS
         apiCTe:contingencia := true
@@ -75,25 +75,25 @@ procedure cteSubmit(cte)
             // Sefaz Virtual RS em Operação
             // tpEmis: 1 - Normal; 5 - Contingência FSDA; 7 - Autorização pela SVC-RS; 8 - Autorização pela SVC-SP
             cte:tpEmis := 7     // SVC-RS
-            cte:dhCont := apiCTe:data_evento
+            cte:dhCont := apiCTe:data_emissao
             cte:xJust := apiCTe:motivo_status
 
             if apiCTe:Emitir()
                 cte:setUpdateCte("cte_forma_emissao", 7)
                 cte:setUpdateCte("cte_obs_gerais", iif(Empty(cte:xObs), "", cte:xObs + " | ") + "EMISSAO EM CONTINGENCIA: SVC-RS")
-                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP INDISPONIVEL, EMISSAO EM CONTINGENCIA PELA SVC-RS")
-                cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, "SEFAZ SP INDISPONIVEL, EMISSAO EM CONTINGENCIA PELA SVC-RS")
+                cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
                 posEmissao(apiCTe)
                 return
             endif
 
         elseif (sefaz["codigo_status"] == -1)
-            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:status, apiCTe:mensagem)
+            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:status, apiCTe:mensagem)
         else
             // Sefaz SP OFFLINE e SVC-RS ainda não está disponível!
             apiCTe:contingencia := false
-            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, apiCTe:motivo_status)
-            cte:setUpdateEventos(apiCTe:numero_protocolo, DateTime_to_mysql(apiCTe:data_evento), apiCTe:codigo_status, "SEFAZ SP E SEFAZ VIRUTAL DE CONTINGENCIA RS INDISPONIVEIS!")
+            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
+            cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, "SEFAZ SP E SEFAZ VIRUTAL DE CONTINGENCIA RS INDISPONIVEIS!")
         endif
 
     endif

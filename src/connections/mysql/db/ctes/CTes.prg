@@ -537,6 +537,9 @@ method insertEventos(aEvents) class TDbCTes
         sql:add("'" + string_hb_to_mysql(hEvent["cte_ev_protocolo"]) + "', ")
         sql:add("'" + hEvent["cte_ev_data_hora"] + "', ")
 
+        // Debug
+        consoleLog("cte_ev_data_hora: " + hEvent["cte_ev_data_hora"])
+
         codEvent := hEvent["cte_ev_evento"]
         if (ValType(codEvent) == "N")
             codEvent := hb_ntos(codEvent)

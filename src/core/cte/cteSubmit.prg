@@ -43,6 +43,8 @@ procedure cteSubmit(cte)
                 cte:dhCont := apiCTe:data_emissao
                 cte:xJust := apiCTe:motivo_status
                 cte:setUpdateEventos(apiCTe:numero_protocolo, apiCTe:data_evento, apiCTe:codigo_status, apiCTe:motivo_status)
+                // Debug
+                consoleLog("apiCTe:data_evento: " + apiCTe:data_evento)
             endif
 
         endif
@@ -118,6 +120,9 @@ procedure posEmissao(api)
     if !Empty(api:mensagem)
         api:cte:setUpdateEventos(api:numero_protocolo, api:data_recebimento, api:codigo_mensagem, api:mensagem)
     endif
+
+    // Debug
+    consoleLog("apiCTe:data_evento: " + api:data_evento)
 
     if (api:codigo_status == 100)
         cteGetFiles(api)

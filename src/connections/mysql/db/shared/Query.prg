@@ -34,7 +34,7 @@ method new(cSql) class TQuery
             ::db:GoTop()
             msgNotify()
             SetProperty("main", "NotifyIcon", "serverON")
-        elseif (::db:Error() == "Lost connection to MySQL server during query")
+        elseif ("lost connection" $ hmg_lower(::db:Error()))
             if appDataSource:connect()
                 if ::runQuery()
                     ::count := ::db:LastRec()
@@ -106,6 +106,11 @@ method runQuery() class TQuery
     if ::db:NetErr() .and. !::serverBusy()
         if ("DUPLICATE ENTRY" $ hmg_upper(::db:Error()))
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))
+        elseif ("lost connection" $ hmg_lower(::db:Error()))
+            // Esse erro é tratado na linha 37
+            saveLog("Erro: A conexão perdida com a internet")
+            consoleLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + ::db:Error() +;
+                hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery))
         else
             consoleLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + ::db:Error() +;
                     hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery))

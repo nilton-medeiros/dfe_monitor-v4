@@ -397,7 +397,7 @@ return !res['error']
 
 // Request Body
 method defineBody() class TApiCTe
-    local hBody, infCte,ide, toma
+    local hBody, infCte,ide, toma, cod_sit_trib
     local compl, fluxo, entrega, ObsContFisco
     local emite, remet, exped, receb, desti, ender
     local vPrest, Comp, imp, ICMS

@@ -289,7 +289,6 @@ procedure setup_Button_Submit_Certificado_action()
 
 			// Response Schema
 			if certificado:ContentType == "json"
-				consoleLog(certificado:response)
 				jsonResponse := hb_jsonDecode(certificado:response)
 				msgRetorno := "codigo: " + jsonResponse['error']['code'] + hb_eol()
 				msgRetorno += "Mensagem: " + jsonResponse['error']['message']

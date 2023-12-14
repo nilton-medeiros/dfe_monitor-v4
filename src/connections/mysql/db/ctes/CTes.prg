@@ -542,7 +542,7 @@ method insertEventos(aEvents) class TDbCTes
             codEvent := hb_ntos(codEvent)
         elseif !(ValType(codEvent) == "C")
             codEvent := ""
-            consoleLog("Código do Evento não definido para tag cte_ev_evento")
+            saveLog("Código do Evento não definido para tag cte_ev_evento")
         endif
 
         sql:add("'" + codEvent + "', ")

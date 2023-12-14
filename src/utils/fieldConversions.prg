@@ -43,13 +43,13 @@ return Val(LTrim(Transform(number, format)))
 
 function ConvertUTCdataStampToLocal(cDateTime)
     local datetime, dtNew
-    consoleLog("Debug => cDateTime recebido: " + cDateTime)
+
     SET DATE ANSI
     datetime := hb_CtoT(DateTime_to_mysql(cDateTime))
     dtNew := datetime - TimeDelta(0, 3, 0, 0)
     cDateTime := DateTime_to_mysql(hb_TSToStr(dtNew))
-    consoleLog("Debug => cDateTime retornado: " + cDateTime)
     SET DATE BRITISH
+
 return cDateTime
 
 function TimeDelta(days, hours, minutes, seconds)

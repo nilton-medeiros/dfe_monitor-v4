@@ -76,7 +76,9 @@ method new(mdfe) class TApiMDFe
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe"
     endif
 
-    if !Empty(::nuvemfiscal_uuid)
+    if Empty(::nuvemfiscal_uuid)
+        ::baseUrlID := ""
+    else
         ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
     endif
 
@@ -101,9 +103,13 @@ method Emitir() class TApiMDFe
 
     if res['error']
 
+        ::status := "erro"
+        ::mensagem := res["response"]
+
         if (::ContentType == "json")
             hRes := hb_jsonDecode(::response)
             if hb_HGetRef(hRes, "error")
+                hRes := hRes["error"]
                 ::mensagem := hRes["message"]
                 if ("o campo 'referencia' deve ser unico" $ desacentuar(Lower(::mensagem)))
                     if Empty(::nuvemfiscal_uuid)
@@ -114,9 +120,7 @@ method Emitir() class TApiMDFe
                 endif
             else
                 saveLog({"Erro ao emitir MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
-                    "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
-                ::status := "erro"
-                ::mensagem := res["response"]
+                    "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", ::response})
             endif
         endif
 

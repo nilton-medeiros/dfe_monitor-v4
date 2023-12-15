@@ -3,6 +3,7 @@
 
 class TApiMDFe
     data mdfe readonly
+    data emitente readonly
     data token
     data connection
     data connected readonly
@@ -45,6 +46,7 @@ end class
 
 method new(mdfe) class TApiMDFe
     ::mdfe := mdfe
+    ::emitente := mdfe:emitente
     ::connected := false
     ::response := ""
     ::httpStatus := 0
@@ -178,13 +180,12 @@ return !res['error']
 
 method Encerrar() class TApiMDFe
     local res, hRes, apiUrl := ::baseUrlID + "/encerramento"
-    loca emitente := ::mdfe:emitente
 
     if !::connected
         return false
     endif
 
-    ::body := '{"uf":"' + emitente:UF + '", "codigo_municipio":"' + emitente:cMunEnv + '"}'
+    ::body := '{"uf":"' + ::emitente:UF + '", "codigo_municipio":"' + ::emitente:cMunEnv + '"}'
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "POST", apiUrl, ::token, "Encerrar MDFe", ::body, "application/json")
@@ -224,7 +225,7 @@ return !res['error']
 
 method Consultar() class TApiMDFe
     local res, hRes, hAutorizacao
-    local apiUrl := ::baseUrl + "/nao-encerrados?cpf_cnpj=" + ::mdfe:emitente:CNPJ
+    local apiUrl := ::baseUrl + "/nao-encerrados?cpf_cnpj=" + ::emitente:CNPJ
 
     if !::connected
         return false
@@ -393,15 +394,15 @@ method BaixarXMLdoMDFe() class TApiMDFe
 return !res['error']
 
 method defineBody() class TApiMDFe
-    loca emitente := ::mdfe:emitente, ender
+    loca ender
     local infMDFe, ide, emit, infModal, rodo, infANTT, veicTracao, infDoc, infResp, infSeg, seg
     local hBody, contratante, target, prodPred, ambiente
 
     // Tag ide
     ide := {=>}
-    ide["cUF"] := emitente:cUF
+    ide["cUF"] := ::emitente:cUF
     ide["tpAmb"] := ::mdfe:tpAmb
-    ide["tpEmit"] := emitente:tpEmit
+    ide["tpEmit"] := ::emitente:tpEmit
 
     /*
         TAG tpTransp
@@ -431,30 +432,30 @@ method defineBody() class TApiMDFe
 
     // Tag emit
     emit := {=>}
-    emit["CNPJ"] := emitente:CNPJ
+    emit["CNPJ"] := ::emitente:CNPJ
 
-    if !Empty(emitente:IE)
-        emit["IE"] := emitente:IE
+    if !Empty(::emitente:IE)
+        emit["IE"] := ::emitente:IE
     endif
 
-    emit["xNome"] := emitente:xNome
+    emit["xNome"] := ::emitente:xNome
 
-    if !Empty(emitente:xFant)
-        emit["xFant"] := emitente:xFant
+    if !Empty(::emitente:xFant)
+        emit["xFant"] := ::emitente:xFant
     endif
 
     ender := {=>}
-    ender["xLgr"] := emitente:xLgr
-    ender["nro"] := emitente:nro
-    if !Empty(emitente:xCpl)
-        ender["xCpl"] := emitente:xCpl
+    ender["xLgr"] := ::emitente:xLgr
+    ender["nro"] := ::emitente:nro
+    if !Empty(::emitente:xCpl)
+        ender["xCpl"] := ::emitente:xCpl
     endif
-    ender["xBairro"] := emitente:xBairro
-    ender["cMun"] := emitente:cMunEnv
-    ender["xMun"] := emitente:xMunEnv
-    ender["CEP"] := emitente:CEP
-    ender["UF"] := emitente:UF
-    ender["fone"] := emitente:fone
+    ender["xBairro"] := ::emitente:xBairro
+    ender["cMun"] := ::emitente:cMunEnv
+    ender["xMun"] := ::emitente:xMunEnv
+    ender["CEP"] := ::emitente:CEP
+    ender["UF"] := ::emitente:UF
+    ender["fone"] := ::emitente:fone
 
     emit["enderEmit"] := ender
     ender := nil
@@ -463,9 +464,9 @@ method defineBody() class TApiMDFe
     // Versão do layout dos CTes anexos do modal rodo (CTe 4.00), porem a versão de Layout XML do MDFe é independente do CTe
     infModal["versaoModal"] := ::mdfe:versao
 
-    if !Empty(emitente:RNTRC)
+    if !Empty(::emitente:RNTRC)
         infANTT := {=>}
-        infANTT["RNTRC"] := emitente:RNTRC
+        infANTT["RNTRC"] := ::emitente:RNTRC
         // infANTT["infCIOT"] Não usado
         // infANTT["valePed"] Não usado
 
@@ -569,13 +570,13 @@ method defineBody() class TApiMDFe
 
     infResp := {=>}
     infResp["respSeg"] := 1      // 1 - Emitente do MDF-e
-    infResp["CNPJ"] := emitente:CNPJ
+    infResp["CNPJ"] := ::emitente:CNPJ
 
     infSeg := {=>}
-    infSeg["xSeg"] := emitente:seguradora
-    infSeg["CNPJ"] := emitente:CNPJ
+    infSeg["xSeg"] := ::emitente:seguradora
+    infSeg["CNPJ"] := ::emitente:CNPJ
 
-    seg := {{"infResp" => infResp, "infSeg" => infSeg, "nApol" => emitente:apolice, "nAver" => ::mdfe:aVerb}}
+    seg := {{"infResp" => infResp, "infSeg" => infSeg, "nApol" => ::emitente:apolice, "nAver" => ::mdfe:aVerb}}
     infMDFe["seg"] := seg
     infResp := infSeg := seg := nil
 
@@ -585,7 +586,7 @@ method defineBody() class TApiMDFe
     target["xProd"] := ::mdfe:prodPred["xProd"]
     target["cEAN"] := ::mdfe:prodPred["cEAN"]
     target["NCM"] := ::mdfe:prodPred["NCM"]
-    target["infLotacao"] := {"infLocalCarrega" => {"CEP" => emitente:CEP}, "infLocalDescarrega" => {"CEP" => ::mdfe:prodPred["infLocalDescarrega"]}}
+    target["infLotacao"] := {"infLocalCarrega" => {"CEP" => ::emitente:CEP}, "infLocalDescarrega" => {"CEP" => ::mdfe:prodPred["infLocalDescarrega"]}}
 
     infMDFe["prodPred"] := target
     target := nil
@@ -638,7 +639,7 @@ method defineBody() class TApiMDFe
 return nil
 
 method ConsultarSVRS() class TApiMDFe
-    local res, hRes, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::mdfe:emitente:CNPJ
+    local res, hRes, apiUrl := ::baseUrl + "/sefaz/status?cpf_cnpj=" + ::emitente:CNPJ
     local sefaz := {"codigo_status" => -1}
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept

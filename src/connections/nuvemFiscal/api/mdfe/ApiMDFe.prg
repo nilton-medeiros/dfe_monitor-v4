@@ -74,9 +74,11 @@ method new(mdfe) class TApiMDFe
 
     if (::mdfe:tpAmb == 1)
         // API de Produção
+        ::ambiente := "producao"
         ::baseUrl := "https://api.nuvemfiscal.com.br/mdfe"
     else
         // API de Teste
+        ::ambiente := "homologacao"
         ::baseUrl := "https://api.sandbox.nuvemfiscal.com.br/mdfe"
     endif
 
@@ -632,10 +634,8 @@ method defineBody() class TApiMDFe
         }
     endif
 
-    ambiente := iif(::mdfe:tpAmb == 1, "producao", "homologacao")
-
     // Cria o Body Hash Table
-    hBody := {"infMDFe" => infMDFe, "ambiente" => ambiente, "referencia" => ::referencia_uuid}
+    hBody := {"infMDFe" => infMDFe, "ambiente" => ::ambiente, "referencia" => ::referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
 
 return nil

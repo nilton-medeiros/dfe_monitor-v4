@@ -1057,10 +1057,8 @@ method defineBody() class TApiCTe
     // infSolicNFF: Não utilizado
     // infCteSupl: Gerado automaticamente pela nuvem fiscal
 
-    ambiente := iif(::cte:tpAmb == 1, "producao", "homologacao")
-
     // Cria o Body Hash Table
-    hBody := {"infCte" => infCte, "ambiente" => ambiente, "referencia" => ::referencia_uuid}
+    hBody := {"infCte" => infCte, "ambiente" => ::ambiente, "referencia" => ::referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
 
     // Debug

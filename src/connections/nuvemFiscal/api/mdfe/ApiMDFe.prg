@@ -15,7 +15,7 @@ class TApiMDFe
     data referencia_uuid readonly
     data ambiente readonly
     data status readonly
-    data chave_acesso readonly
+    data chave
     data created_at readonly
     data data_emissao readonly
     data data_evento readonly
@@ -57,7 +57,7 @@ method new(mdfe) class TApiMDFe
     ::referencia_uuid := mdfe:referencia_uuid
     ::status := ::mdfe:situacao
     ::data_emissao := ::mdfe:dhEmi
-    ::chave_acesso := ::mdfe:chMDFe
+    ::chave := ::mdfe:chMDFe
     ::codigo_status := 0
     ::motivo_status := ""
     ::numero_protocolo := ::mdfe:nProt
@@ -157,7 +157,7 @@ method Emitir() class TApiMDFe
         ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
         ::status := hRes['status']
         ::data_emissao := ConvertUTCdataStampToLocal(hRes['data_emissao'])
-        ::chave_acesso := hRes['chave']
+        ::chave := hRes['chave']
 
         hAutorizacao := hRes['autorizacao']
 
@@ -254,7 +254,7 @@ method Consultar() class TApiMDFe
         ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
         ::status := hRes['status']
         ::data_emissao := ConvertUTCdataStampToLocal(hRes['data_emissao'])
-        ::chave_acesso := hRes['chave']
+        ::chave := hRes['chave']
         hAutorizacao := hRes['autorizacao']
 
         ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])

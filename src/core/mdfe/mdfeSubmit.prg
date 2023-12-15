@@ -48,7 +48,7 @@ procedure mdfeSubmit(mdfe)
             mdfeGetFiles(apiMDFe)
         endif
 
-    elseif apiMDFe:mdfe_sefaz_offline
+    elseif appData:mdfe_sefaz_offline
         mdfe:setUpdateEventos(apiMDFe:numero_protocolo, apiMDFe:data_evento, "SVRS", "SEFAZ MDFe:RS INDISPONÍVEL, TENTE MAIS TARDE!")
         mdfe:setSituacao("ERRO")
     else

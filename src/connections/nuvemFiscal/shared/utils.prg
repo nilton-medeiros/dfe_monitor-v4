@@ -35,6 +35,7 @@ function getMessageApiError(api, lAsText)
 				next
 			endif
 		else
+			consoleLog({"Nao encontrado a chave 'error' no objeto response, json desconhecido!", hb_eol(), "Response:=>", hb_eol(), response})
 			AAdd(aError, {"code" => "sem código", "message" => "Chaves do json desconhecidas, avisar suporte (ver log do sitema)"})
 		endif
 		if lAsText

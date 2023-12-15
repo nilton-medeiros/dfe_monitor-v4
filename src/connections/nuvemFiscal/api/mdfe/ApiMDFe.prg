@@ -12,6 +12,7 @@ class TApiMDFe
     data httpStatus readonly
     data ContentType readonly
     data nuvemfiscal_uuid
+    data referencia_uuid readonly
     data ambiente readonly
     data status readonly
     data chave_acesso readonly
@@ -53,6 +54,7 @@ method new(mdfe) class TApiMDFe
     ::ContentType := ""
     ::token := appNuvemFiscal:token
     ::nuvemfiscal_uuid := ::mdfe:nuvemfiscal_uuid
+    ::referencia_uuid := mdfe:referencia_uuid
     ::status := ::mdfe:situacao
     ::data_emissao := ::mdfe:dhEmi
     ::chave_acesso := ::mdfe:chMDFe
@@ -633,7 +635,7 @@ method defineBody() class TApiMDFe
     ambiente := iif(::mdfe:tpAmb == 1, "producao", "homologacao")
 
     // Cria o Body Hash Table
-    hBody := {"infMDFe" => infMDFe, "ambiente" => ambiente, "referencia" => ::mdfe:referencia_uuid}
+    hBody := {"infMDFe" => infMDFe, "ambiente" => ambiente, "referencia" => ::referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
 
 return nil

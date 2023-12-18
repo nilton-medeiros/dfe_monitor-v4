@@ -108,9 +108,9 @@ method runQuery() class TQuery
             saveLog("Erro de duplicidade ao " + mode + " " + table + hb_eol() + ansi_to_unicode(::sql))
         elseif ("lost connection" $ hmg_lower(::db:Error()))
             // Esse erro é tratado na linha 37
-            saveLog("Erro: A conexão perdida com a internet")
+            saveLog("Erro: Conexão perdida! Sem internet")
             consoleLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + ::db:Error() +;
-                hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery))
+                hb_eol())
         else
             consoleLog("Erro ao " + mode + iif(Empty(table), " ", " na tabela de " + table) + hb_eol() + ::db:Error() +;
                     hb_eol() + hb_eol() + ansi_to_unicode(::db:cQuery))

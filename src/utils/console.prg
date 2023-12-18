@@ -4,7 +4,7 @@
 procedure consoleLog(text)
    local path := appData:systemPath + 'log\'
    local dateFormat := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
-   local logFile := 'console.log'
+   local logFile := 'console' + hb_ULeft(DToS(Date()),6) + '.log'
    local h, n := 0
    local t, msg := "", processos := ''
 

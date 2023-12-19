@@ -1016,13 +1016,10 @@ method defineBody() class TApiCTe
                         do case
                             case "MINIM" $ tpTar
                                 CL := "M"
-                                exit
                             case "GERAL" $ tpTar
                                 CL := "G"
-                                exit
                             case "ESPECIFIC" $ tpTar
                                 CL := "E"
-                                exit
                             otherwise
                                 CL := "G"
                         endcase

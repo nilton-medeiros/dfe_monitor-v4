@@ -403,7 +403,7 @@ method defineBody() class TApiCTe
     local compl, fluxo, entrega, ObsContFisco
     local emite, remet, exped, receb, desti, ender
     local vPrest, Comp, imp, ICMS
-    local infCteNorm, infCarga, infDoc, docAnexos, infModal, rodo, aereo, tarifa
+    local infCteNorm, infCarga, infDoc, docAnexos, infModal, rodo, aereo, tarifa, tpTar, CL
     local clieEMail, pos, obs, hComp, hDoc, tag, ambiente
     // Doc: https://dev.nuvemfiscal.com.br/docs/api#tag/Cte/operation/EmitirCte
 
@@ -1009,7 +1009,26 @@ method defineBody() class TApiCTe
                     aereo["natCarga"] := ::cte:aereo
 
                     tarifa := ::cte:comp_calc[1]
-                    aereo["tarifa"] := {"CL" => Left(tarifa["CL"],1), ;
+                    tpTar := Upper(desacentuar(tarifa["CL"]))
+                    CL := Left(tpTar, 1)
+
+                    if !(CL $ "MGE")
+                        do case
+                            case "MINIM" $ tpTar
+                                CL := "M"
+                                exit
+                            case "GERAL" $ tpTar
+                                CL := "G"
+                                exit
+                            case "ESPECIFIC" $ tpTar
+                                CL := "E"
+                                exit
+                            otherwise
+                                CL := "G"
+                        endcase
+                    endif
+
+                    aereo["tarifa"] := {"CL" => CL, ;
                                         "cTar" => ::cte:cTar, ;
                                         "vTar" => tarifa["vTar"] ;
                                         }

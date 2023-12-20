@@ -28,7 +28,11 @@ procedure mdfeMonitoring()
                     mdfeConsult(mdfe)
                     exit
                 case "SUBMIT"       // Consultar, pois já existe o id na nuvem fiscal
-                    mdfeConsult(mdfe)
+                    if (mdfe:situacao == "REJEITADO")
+                        mdfeSubmit(mdfe)
+                    else
+                        mdfeConsult(mdfe)
+                    endif
                     exit
                 endswitch
         endif

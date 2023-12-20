@@ -690,7 +690,7 @@ method ConsultarSVRS() class TApiMDFe
 return sefaz
 
 method Sincronizar() class TApiMDFe
-    local res, apiUrl := ::baseUrlID + "/sincronizar"
+    local res, hRes, apiUrl := ::baseUrlID + "/sincronizar"
 
     if !::connected
         ::mdfe:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincroinizar MDFe, API Nuvem Fiscal não conectado")
@@ -710,6 +710,13 @@ method Sincronizar() class TApiMDFe
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
         ::mensagem := res["response"]
+    else
+        hRes := hb_jsonDecode(::response)
+        ::codigo_status := hRes["codigo_status"]
+        ::motivo_status := hRes["motivo_status"]
+        ::data_recebimento := ConvertUTCdataStampToLocal(hRes['data_recebimento'])
+        ::chave := hRes["chave"]
+        res["error"] := (hRes["status"] == "erro")
     endif
 
 return !res['error']

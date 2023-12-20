@@ -1106,7 +1106,7 @@ method ConsultarSefaz() class TApiCTe
 return sefaz
 
 method Sincronizar() class TApiCTe
-    local res, apiUrl := ::baseUrlID + "/sincronizar"
+    local res, hRes, apiUrl := ::baseUrlID + "/sincronizar"
 
     if !::connected
         ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincroinizar CTe, API Nuvem Fiscal não conectado")
@@ -1126,6 +1126,13 @@ method Sincronizar() class TApiCTe
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
         ::mensagem := res["response"]
+    else
+        hRes := hb_jsonDecode(::response)
+        ::codigo_status := hRes["codigo_status"]
+        ::motivo_status := hRes["motivo_status"]
+        ::data_recebimento := ConvertUTCdataStampToLocal(hRes['data_recebimento'])
+        ::chave := hRes["chave"]
+        res["error"] := (hRes["status"] == "erro")
     endif
 
 return !res['error']

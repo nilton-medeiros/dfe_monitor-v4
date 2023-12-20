@@ -13,7 +13,7 @@ procedure mdfeConsult(mdfe)
         if apiMDFe:Consultar()
             // Prepara os campos da tabela mdfes para receber os updates
             mdfe:setSituacao(apiMDFe:status)
-            mdfe:setUpdateMDFe('cMDF', apiMDFe:chave_acesso)
+            mdfe:setUpdateMDFe('cMDF', apiMDFe:chave)
             mdfe:setUpdateMDFe('digest_value', apiMDFe:digest_value)
             mdfe:setUpdateMDFe('nProt', apiMDFe:numero_protocolo)
             mdfe:setUpdateMDFe('nuvemfiscal_uuid', apiMDFe:nuvemfiscal_uuid)

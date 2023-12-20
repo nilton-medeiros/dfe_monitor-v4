@@ -10,7 +10,7 @@ procedure mdfeConsult(mdfe)
     */
 
     if apiMDFe:Sincronizar()
-        if apiMDFe:Consultar()
+        if apiMDFe:ListarMDFe()
             // Prepara os campos da tabela mdfes para receber os updates
             mdfe:setSituacao(apiMDFe:status)
             mdfe:setUpdateMDFe('cMDF', apiMDFe:chave)

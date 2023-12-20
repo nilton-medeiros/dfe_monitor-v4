@@ -35,7 +35,7 @@ class TApiMDFe
     method Emitir()
     method Encerrar()
     method Cancelar()
-    method Consultar()
+    method ListarMDFe()
     method BaixarPDFdoDAMDFE()
     method BaixarXMLdoMDFe()
     method defineBody()
@@ -118,11 +118,7 @@ method Emitir() class TApiMDFe
                 hRes := hRes["error"]
                 ::mensagem := hRes["message"]
                 if ("o campo 'referencia' deve ser unico" $ desacentuar(Lower(::mensagem)))
-                    if Empty(::nuvemfiscal_uuid)
-                        res['error'] := ::ListarMDFes()
-                    else
-                        res['error'] := ::Consultar()
-                    endif
+                    res['error'] := ::ListarMDFes()
                 endif
             else
                 saveLog({"Erro ao emitir MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
@@ -227,49 +223,84 @@ method Encerrar() class TApiMDFe
 
 return !res['error']
 
-method Consultar() class TApiMDFe
-    local res, hRes, hAutorizacao
-    local apiUrl := ::baseUrl + "/nao-encerrados?cpf_cnpj=" + ::emitente:CNPJ
+method ListarMDFe() class TApiMDFe
+    local res, hRes, aRes := {}, mdfe, hAutorizacao
+    local apiUrl := ::baseUrl + "?cpf_cnpj=" + ::emitente:CNPJ
 
     if !::connected
         return false
     endif
 
+    apiUrl += chr(38) + "referencia=" + ::referencia_uuid
+    apiUrl += chr(38) + "ambiente=" + ::ambiente
+
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
-    res := Broadcast(::connection, "GET", apiUrl, ::token, "Consultar MDFe")
+    res := Broadcast(::connection, "GET", apiUrl, ::token, "Listar MDFes por referencia_uuid")
 
     ::httpStatus := res['status']
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao consultar MDFe na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao listar MDFes por referencia_uuid na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
             "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
         ::status := "erro"
         ::mensagem := res["response"]
     else
         hRes := hb_jsonDecode(::response)
-        ::nuvemfiscal_uuid := hRes['id']
-        ::ambiente := hRes['ambiente']
-        ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
-        ::status := hRes['status']
-        ::data_emissao := ConvertUTCdataStampToLocal(hRes['data_emissao'])
-        ::chave := hRes['chave']
-        hAutorizacao := hRes['autorizacao']
-
-        ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
-        ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
-        ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
-
-        if hb_HGetRef(hAutorizacao, 'codigo_status')
-            ::codigo_status := hAutorizacao['codigo_status']
-            ::motivo_status := hAutorizacao['motivo_status']
-        else
-            if hb_HGetRef(hAutorizacao, 'codigo_mensagem')
-                ::codigo_status := hAutorizacao['codigo_mensagem']
-                ::motivo_status := hAutorizacao['mensagem']
-            endif
+        if hb_HGetRef(hRes, "data")
+            aRes := hRes["data"]
         endif
+
+        if Empty(aRes)
+            ::codigo_status := 0
+            ::motivo_status := "MDFe nao encontrado na Consulta por referencia_uuid"
+            res["error"] := true
+        else
+
+            // Por referencia, só retorna um elemento no array
+            mdfe := aRes[1]
+
+            ::nuvemfiscal_uuid := mdfe['id']
+            ::ambiente := mdfe['ambiente']
+            ::created_at := ConvertUTCdataStampToLocal(mdfe['created_at'])
+            ::status := mdfe['status']
+            ::data_emissao := ConvertUTCdataStampToLocal(mdfe['data_emissao'])
+            ::chave := mdfe['chave']
+
+            hAutorizacao := mdfe['autorizacao']
+
+            ::numero_protocolo := hb_HGetDef(hAutorizacao, 'numero_protocolo', hAutorizacao['id'])
+            ::data_evento := ConvertUTCdataStampToLocal(hAutorizacao['data_evento'])
+            ::data_recebimento := ConvertUTCdataStampToLocal(hAutorizacao['data_recebimento'])
+
+            if hb_HGetRef(hAutorizacao, 'codigo_status')
+                ::codigo_status := hAutorizacao['codigo_status']
+                ::motivo_status := hAutorizacao['motivo_status']
+            else
+                if hb_HGetRef(hAutorizacao, 'codigo_mensagem')
+                    ::codigo_status := hAutorizacao['codigo_mensagem']
+                    ::motivo_status := hAutorizacao['mensagem']
+                endif
+            endif
+            if hb_HGetRef(hAutorizacao, "digest_value")
+                ::digest_value := hAutorizacao['digest_value']
+                ::mdfe:setUpdateCte('digest_value', ::digest_value)
+            endif
+            if (::status == "cancelado")
+                ::codigo_status := 135
+                ::motivo_status := "Evento registrado e vinculado ao MDF-e"
+            endif
+
+            ::mdfe:setUpdateCte('cMDF', ::chave)
+            ::mdfe:setUpdateCte('nuvemfiscal_uuid', ::nuvemfiscal_uuid)
+
+        endif
+
+    endif
+
+    if !Empty(::nuvemfiscal_uuid) .and. !(::nuvemfiscal_uuid $ ::baseUrlID)
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
     endif
 
 return !res['error']

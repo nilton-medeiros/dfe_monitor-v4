@@ -91,7 +91,7 @@ method new(mdfe) class TApiMDFe
 return self
 
 method Emitir() class TApiMDFe
-    local res, hRes, sefazOff, sefazStatus
+    local res, hRes, sefazOff, sefazStatus, motivo
 
     if !::connected
         return false
@@ -173,6 +173,21 @@ method Emitir() class TApiMDFe
 
         ::tipo_evento := hAutorizacao['tipo_evento']
         ::digest_value := hAutorizacao['digest_value']
+
+        switch ::codigo_status
+            case 100
+                ::status := "AUTORIZADO"
+                exit
+            case 135
+                ::status := "CANCELADO"
+                exit
+            otherwise
+                motivo := Lower(Left(desacentuar(::motivo_status), 8))
+                if (motivo == "rejeicao")
+                    ::status := "REJEITADO"
+                endif
+                exit
+        endswitch
 
     endif
 

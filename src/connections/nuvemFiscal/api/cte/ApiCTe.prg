@@ -95,8 +95,7 @@ method new(cte) class TApiCTe
 return self
 
 method Emitir() class TApiCTe
-    local res, hRes, hAutorizacao
-    local sefazOff, sefazStatus
+    local res, hRes, hAutorizacao, sefazOff, sefazStatus, motivo
 
     if !::connected
         return false
@@ -183,6 +182,21 @@ method Emitir() class TApiCTe
 
         ::tipo_evento := hAutorizacao['tipo_evento']
         ::digest_value := hAutorizacao['digest_value']
+
+        switch ::codigo_status
+            case 135
+                ::status := "CANCELADO"
+                exit
+            case 100
+                ::status := "AUTORIZADO"
+                exit
+            otherwise
+                motivo := Lower(Left(desacentuar(::motivo_status), 8))
+                if (motivo == "rejeicao")
+                    ::status := "REJEITADO"
+                endif
+                exit
+        endswitch
 
     endif
 

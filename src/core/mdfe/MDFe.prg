@@ -132,7 +132,7 @@ method setUpdateEventos(protocolo, data_hora, evento, detalhe) class TMDFe
                            "data_hora" => data_hora, ;
                            "evento" => evento, ;
                            "motivo" => "Ambiente: " + ambiente, ;
-                           "detalhe" => detalhe + " | Ambiente: " + ambiente + " | DFeMononitor: " + appData:version})
+                           "detalhe" => detalhe + " | DFeMononitor: " + appData:version})
 return nil
 
 method save() class TMDFe

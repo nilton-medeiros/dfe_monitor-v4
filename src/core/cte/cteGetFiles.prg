@@ -5,7 +5,7 @@ function cteGetFiles(apiCTe)
     local upload := {=>}
     local directory, filePDF, fileXML, cancelPDF, cancelXML
     local empresa, anoMes, printPDF, printPath
-    local cte := apiCTe:cte
+    local cte := apiCTe:cte, chave
 
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(cte:emp_id)
@@ -13,10 +13,23 @@ function cteGetFiles(apiCTe)
     // "2019-08-24T14:15:22Z"
     anoMes := Left(getNumbers(cte:dhEmi), 6)
     directory := appData:dfePath + empresa:CNPJ + '\CTe\' + anoMes + '\'
-    filePDF := apiCTe:chave + '-cte.pdf'
-    fileXML := apiCTe:chave + '-cte.xml'
-    cancelPDF := apiCTe:chave + '-cteCancelado.pdf'
-    cancelXML := apiCTe:chave + '-cteCancelado.xml'
+
+    if Empty(apiCTe:chave)
+        if Empty(cte:chCTe)
+            saveLog("Chave do CTe não defindo para gerar arquivo, ver consoleLog")
+            return
+        else
+            apiCTe:chave := cte:chCTe
+            chave := cte:chCTe
+        endif
+    else
+        chave := apiCTe:chave
+    endif
+
+    filePDF := chave + '-cte.pdf'
+    fileXML := chave + '-cte.xml'
+    cancelPDF := chave + '-cteCancelado.pdf'
+    cancelXML := chave + '-cteCancelado.xml'
 
     if hb_DirExists(directory)
         if (Upper(apiCTe:status) == "CANCELADO")

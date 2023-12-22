@@ -5,7 +5,7 @@ function mdfeGetFiles(apiMDFe)
     local lFileExists := false
     local directory, filePDF, fileXML, status := ""
     local empresa, anoMes, printPath, printPDF
-    local mdfe := apiMDFe:mdfe
+    local mdfe := apiMDFe:mdfe, chave
 
     default apiMDFe := TApiMDFe():new(mdfe)
 
@@ -22,8 +22,20 @@ function mdfeGetFiles(apiMDFe)
         status := "-mdfe" + Capitalize(mdfe:situacao)
     endif
 
-    filePDF := mdfe:chMDFe + status + ".pdf"
-    fileXML := mdfe:chMDFe + status + ".xml"
+    if Empty(apiMDFe:chave)
+        if Empty(mdfe:chMDFe)
+            saveLog("Chave do MDFe não defindo para gerar arquivo, ver consoleLog")
+            return
+        else
+            apiMDFe:chave := mdfe:chMDFe
+            chave := mdfe:chMDFe
+        endif
+    else
+        chave := apiMDFe:chave
+    endif
+    
+    filePDF := chave + status + ".pdf"
+    fileXML := chave + status + ".xml"
 
     if hb_DirExists(directory)
         lFileExists := hb_FileExists(directory + filePDF) .and. hb_FileExists(directory + fileXML)

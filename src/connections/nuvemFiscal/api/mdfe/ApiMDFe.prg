@@ -354,7 +354,9 @@ method ListarMDFes() class TApiMDFe
                 ::motivo_status := "Evento registrado e vinculado ao MDF-e"
             endif
 
-            ::mdfe:setUpdateMDFe('cMDF', ::chave)
+            if !Empty(::chave)
+                ::mdfe:setUpdateMDFe('cMDF', ::chave)
+            endif
             ::mdfe:setUpdateMDFe('nuvemfiscal_uuid', ::nuvemfiscal_uuid)
 
         endif
@@ -472,7 +474,10 @@ method Sincronizar() class TApiMDFe
         ::codigo_status := hRes["codigo_status"]
         ::motivo_status := hRes["motivo_status"]
         ::data_recebimento := ConvertUTCdataStampToLocal(hRes['data_recebimento'])
-        ::chave := hRes["chave"]
+
+        if Empty(::chave) .and. !Empty(hRes["chave"])
+            ::chave := hRes["chave"]
+        endif
 
         switch ::codigo_status
             case 135

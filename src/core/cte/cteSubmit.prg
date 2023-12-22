@@ -98,7 +98,9 @@ procedure cteSubmit(cte)
 
     endif
 
-    errEmissao(apiCTe, cte)
+    if Lower(apiCTe:status) == 'erro'
+        errEmissao(apiCTe, cte)
+    endif
 
 return
 

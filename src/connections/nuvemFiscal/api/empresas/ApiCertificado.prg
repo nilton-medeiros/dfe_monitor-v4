@@ -58,12 +58,12 @@ method Consultar() class TApiCertificado
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", ::baseUrl, ::token, "Consultar Certificado")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao consultar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao consultar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']
@@ -85,12 +85,12 @@ method Cadastrar(certificado, password) class TApiCertificado
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "PUT", ::baseUrl, ::token, "Cadastrar Certificado", body, "application/json")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao cadastrar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao cadastrar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(),;
                  "ContentType: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
@@ -103,12 +103,12 @@ method Deletar() class TApiCertificado
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "DELETE", ::baseUrl, ::token, "Deletar Certificado")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao deletar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao deletar certificado na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']

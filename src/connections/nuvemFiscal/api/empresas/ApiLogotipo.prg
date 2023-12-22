@@ -60,12 +60,12 @@ method Baixar() class TApiLogotipo
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", ::baseUrl, ::token, "Baixar Logotipo")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao baixar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao baixar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']
@@ -91,12 +91,12 @@ method Enviar(imgLogotipo, cExt) class TApiLogotipo
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "PUT", ::baseUrl, ::token, "Enviar Logotipo", imgLogotipo, content_type)
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao enviar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao enviar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(),;
                  "ContentType: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
@@ -109,12 +109,12 @@ method Deletar() class TApiLogotipo
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "DELETE", ::baseUrl, ::token, "Deletar Logotipo")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao deletar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
+        saveLog({"Erro ao deletar logotipo na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(), "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
 return !res['error']

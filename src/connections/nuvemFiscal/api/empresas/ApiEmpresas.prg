@@ -67,12 +67,12 @@ method Cadastrar() class TApiEmpresas
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "POST", ::baseUrl, ::token, "Cadastrar Empresa", ::body, "application/json")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao cadastrar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao cadastrar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(),;
                  "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     else
         ::putSetupCTe()
@@ -91,12 +91,12 @@ method Consultar() class TApiEmpresas
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", ::baseUrlCnpj, ::token, "Consultar Empresa")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao consultar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao consultar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(),;
                  "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 
@@ -116,12 +116,12 @@ method Alterar() class TApiEmpresas
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "PUT", ::baseUrlCnpj, ::token, "Alterar Empresa", ::body, "application/json")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao alterar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao alterar empresa na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(),;
                  "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     else
         ::putSetupCTe()
@@ -171,12 +171,12 @@ method putSetupCTe() class TApiEmpresas
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "PUT", apiUrl, ::token, "Alterar configurações de CT-e", ::body, "application/json")
 
-    ::httpStatus := res['status']
+    ::httpStatus := res["http_status"]
     ::ContentType := res['ContentType']
     ::response := res['response']
 
     if res['error']
-        saveLog({"Erro ao alterar configuração de CT-e na api Nuvem Fiscal", hb_eol(), "Http Status: ", res['status'], hb_eol(),;
+        saveLog({"Erro ao alterar configuração de CT-e na api Nuvem Fiscal", hb_eol(), "Http Status: ", res["http_status"], hb_eol(),;
                  "Content-Type: ", res['ContentType'], hb_eol(), "Response: ", res['response']})
     endif
 

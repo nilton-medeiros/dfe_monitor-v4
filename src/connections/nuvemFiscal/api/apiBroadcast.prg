@@ -7,7 +7,7 @@
 */
 function Broadcast(connection, httpMethod, apiUrl, token, operation, body, content_type, accept)
     local oError
-    local response := {"error" => false, "status" => 0, "ContentType" => "", "response" => "", "sefazOff" => {=>}}
+    local response := {"error" => false, "http_status" => 0, "ContentType" => "", "response" => "", "sefazOff" => {=>}}
     local sefazOFF
 
     try
@@ -96,9 +96,9 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
         endif
     else
 
-        response["status"] := connection:Status
+        response["http_status"] := connection:Status
 
-        if (response["status"] > 199) .and. (response["status"] < 300)
+        if (response["http_status"] > 199) .and. (response["http_status"] < 300)
 
             // Entre 200 e 299
             if !Empty(connection:ResponseBody)
@@ -106,7 +106,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
                 response["ContentType"] := "json"
             endif
 
-        else    // elseif (response["status"] > 399) .and. (response["status"] < 600)
+        else    // elseif (response["http_status"] > 399) .and. (response["http_status"] < 600)
 
             if ("json" $ connection:getResponseHeader("Content-Type"))
 
@@ -125,9 +125,9 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
                             response["sefazOff"]["id"] := sefazOFF["id"]
                             response["sefazOff"]["codigo_status"] := sefazOFF["codigo_status"]
                             response["sefazOff"]["motivo_status"] := sefazOFF["motivo_status"]
-                        elseif response["status"] == 500 .and. ("internal server error" $ Lower(sefazOFF["motivo_status"]))
+                        elseif response["http_status"] == 500 .and. ("internal server error" $ Lower(sefazOFF["motivo_status"]))
                             consoleLog({"Debug: " + operation + ;
-                                " | HTTP Status: ", response["status"], hb_eol(), ;
+                                " | HTTP Status: ", response["http_status"], hb_eol(), ;
                                 "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
                                 "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), ;
                                 "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
@@ -160,7 +160,7 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
 
         // Debug: Remover esta linha e a debaixo após testes
         consoleLog({"Debug: " + operation + ;
-            " | HTTP Status: ", response["status"], hb_eol(), ;
+            " | HTTP Status: ", response["http_status"], hb_eol(), ;
             "URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
             "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), ;
             "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;

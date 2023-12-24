@@ -74,11 +74,19 @@ function Broadcast(connection, httpMethod, apiUrl, token, operation, body, conte
 
     catch oError
         if (oError:genCode == 0)
-            // consoleLog({"Erro de conexão com o site", hb_eol(), hb_eol(), hb_eol()})
+            consoleLog({"Debug: " + operation + " | URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
+                "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), ;
+                "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
+                "Body: ", iif(body == nil, "NULL", iif("image" $ content_type, "[ ARQUIVO BINARIO DA IMAGEM ]", body)), hb_eol(), ;
+                "Erro desconhecido de conexão com o site", hb_eol(), hb_eol()})
             saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), hb_eol(), hb_eol()})
             response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation
         else
-            // consoleLog({"Erro de conexão com API Nuvem Fiscal", hb_eol(), "Error: ", oError:description, hb_eol(), hb_eol()})
+            consoleLog({"Debug: " + operation + " | URL API (", httpMethod + "): ", apiUrl, hb_eol(), ;
+                "content_type: ", iif(content_type == nil, "NULL", content_type), hb_eol(), ;
+                "accept: ", iif(accept == nil, "NULL", accept), hb_eol(), ;
+                "Body: ", iif(body == nil, "NULL", iif("image" $ content_type, "[ ARQUIVO BINARIO DA IMAGEM ]", body)), hb_eol(), ;
+                "Erro de conexão com API Nuvem Fiscal", hb_eol(), "Error: ", oError:description, hb_eol(), hb_eol()})
             saveLog({"Erro de conexão com API Nuvem Fiscal em " + operation, hb_eol(), "Error: ", oError:description, hb_eol()})
             response["response"] := "Erro de conesão com a API Nuvem Fiscal em " + operation + " | " + oError:description
         endif

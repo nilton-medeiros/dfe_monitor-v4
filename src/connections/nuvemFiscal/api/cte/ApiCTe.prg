@@ -1195,7 +1195,7 @@ method defineBody() class TApiCTe
 
                     aereo["tarifa"] := {"CL" => CL, ;
                                         "cTar" => ::cte:cTar, ;
-                                        "vTar" => tarifa["vTar"] ;
+                                        "vTar" => "$$" + LTrim(Transform(tarifa["vTar"], "9999999999.99")) + "$$"  ;
                                         }
                     infModal["aereo"] := aereo
                 endif
@@ -1244,6 +1244,8 @@ method defineBody() class TApiCTe
     // Cria o Body Hash Table
     hBody := {"infCte" => infCte, "ambiente" => ::ambiente, "referencia" => ::referencia_uuid}
     ::body := hb_jsonEncode(hBody, 4)
+    ::body := StrTran(::body, '"$$')
+    ::body := StrTran(::body, '$$"')
 
     // Debug
     // hb_MemoWrit("tmp\CTe" + hb_ntos(::cte:nCT) + ".json", ::body)

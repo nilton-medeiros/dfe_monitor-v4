@@ -537,7 +537,7 @@ method setUpdateEventos(cte_ev_protocolo, cte_ev_data_hora, cte_ev_evento, cte_e
                            "cte_ev_protocolo" => cte_ev_protocolo, ;
                            "cte_ev_data_hora" => cte_ev_data_hora, ;
                            "cte_ev_evento" => cte_ev_evento, ;
-                           "cte_ev_detalhe" => cte_ev_detalhe + " | Ambiente: " + ambiente + " | DFeMononitor: " + appData:version})
+                           "cte_ev_detalhe" => cte_ev_detalhe + " | Ambiente: " + ambiente + " | DFeMonitor: " + appData:version})
 return nil
 
 method save() class TCTe

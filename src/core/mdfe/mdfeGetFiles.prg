@@ -1,13 +1,11 @@
 #include "hmg.ch"
 
 function mdfeGetFiles(apiMDFe)
-    local upload := {=>}
     local lFileExists := false
+    local upload := {=>}
     local directory, filePDF, fileXML, status := ""
-    local empresa, anoMes, printPath, printPDF
+    local empresa, anoMes, printPDF, printPath
     local mdfe := apiMDFe:mdfe, chave
-
-    default apiMDFe := TApiMDFe():new(mdfe)
 
     // As vars que começam com "app" são de nível global (Public) definidas no main.prg
     empresa := appEmpresas:getEmpresa(mdfe:emp_id)
@@ -33,7 +31,7 @@ function mdfeGetFiles(apiMDFe)
     else
         chave := apiMDFe:chave
     endif
-    
+
     filePDF := chave + status + ".pdf"
     fileXML := chave + status + ".xml"
 

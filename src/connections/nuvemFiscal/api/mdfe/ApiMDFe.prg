@@ -90,7 +90,7 @@ method new(mdfe) class TApiMDFe
 return self
 
 method Emitir() class TApiMDFe
-    local res, hRes, sefazOff, sefazStatus, motivo
+    local res, hRes, hAutorizacao, sefazOff, sefazStatus, motivo
 
     if !::connected
         return false
@@ -148,6 +148,7 @@ method Emitir() class TApiMDFe
 
         hRes := hb_jsonDecode(::response)
         ::nuvemfiscal_uuid := hRes['id']
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
         ::ambiente := hRes['ambiente']
         ::created_at := ConvertUTCdataStampToLocal(hRes['created_at'])
         ::status := hRes['status']
@@ -187,6 +188,10 @@ method Emitir() class TApiMDFe
                 endif
         endswitch
 
+    endif
+
+    if !Empty(::nuvemfiscal_uuid) .and. !(::nuvemfiscal_uuid $ ::baseUrlID)
+        ::baseUrlID := ::baseUrl + "/" + ::nuvemfiscal_uuid
     endif
 
 return !res['error']
@@ -370,28 +375,24 @@ method ListarMDFes() class TApiMDFe
 return !res['error']
 
 method BaixarPDFdoDAMDFE() class TApiMDFe
-    local res, hRes, apiUrl := ::baseUrlID
+    local res, apiUrl := ::baseUrlID
 
     if !::connected
+        ::mdfe:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível baixar PDF, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
         return false
     endif
 
-    switch Lower(::mdfe:situacao)
-        case "autorizado"
-            apiUrl += "/pdf"
-            exit
-        case "cancelado"
-            apiUrl += "/cancelamento/pdf"
-            exit
-        case "encerrado"
-            apiUrl += "/encerramento/pdf"
-            exit
-        case "erro"
-            apiUrl += "/pdf"
-            exit
-    endswitch
+    if (Lower(::status) == "cancelado")
+        apiUrl += "/cancelamento/pdf"
+    elseif (Lower(::status) ==  "encerrado")
+        apiUrl += "/encerramento/pdf"
+    else
+        apiUrl += "/pdf"
+    endif
 
     apiUrl += "?logotipo=true"
+
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar PDF de DAMDFE " + ::mdfe:situacao, nil, nil, "*/*")
 
@@ -411,23 +412,21 @@ method BaixarPDFdoDAMDFE() class TApiMDFe
 return !res['error']
 
 method BaixarXMLdoMDFe() class TApiMDFe
-    local res, hRes, apiUrl := ::baseUrlID
+    local res, apiUrl := ::baseUrlID
 
     if !::connected
+        ::mdfe:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível baixar XML, API Nuvem Fiscal não conectado")
+        saveLog("API Nuvem Fiscal não conectado")
         return false
     endif
 
-    switch Lower(::mdfe:situacao)
-        case "autorizado"
-            apiUrl += "/xml"
-            exit
-        case "cancelado"
-            apiUrl += "/cancelamento/xml"
-            exit
-        case "encerrado"
-            apiUrl += "/encerramento/xml"
-            exit
-    endswitch
+    if (Lower(::status) == "cancelado")
+       apiUrl += "/cancelamento/xml"
+    elseif (Lower(::status) == "encerrado")
+       apiUrl += "/encerramento/xml"
+    else
+        apiUrl += "/xml"
+    endif
 
     // Broadcast Parameters: connection, httpMethod, apiUrl, token, operation, body, content_type, accept
     res := Broadcast(::connection, "GET", apiUrl, ::token, "Baixar XML do MDFe " + ::mdfe:situacao, nil, nil, "*/*")
@@ -448,7 +447,7 @@ method BaixarXMLdoMDFe() class TApiMDFe
 return !res['error']
 
 method Sincronizar() class TApiMDFe
-    local res, hRes, apiUrl := ::baseUrlID + "/sincronizar"
+    local res, hRes, motivo, apiUrl := ::baseUrlID + "/sincronizar"
 
     if !::connected
         ::mdfe:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível sincroinizar MDFe, API Nuvem Fiscal não conectado")

@@ -38,8 +38,12 @@ procedure consoleLog(text)
    else
       msg := text
    endif
+
+   if !Empty(ProcName(3))
+      processos := ProcName(3) + '(' + hb_ntos(ProcLine(3)) + ')->'
+   endif
    if !Empty(ProcName(2))
-      processos := ProcName(2) + '(' + hb_ntos(ProcLine(2)) + ')->'
+      processos += ProcName(2) + '(' + hb_ntos(ProcLine(2)) + ')->'
    endif
 
    processos += ProcName(1) + '(' + hb_ntos(ProcLine(1)) + ')'

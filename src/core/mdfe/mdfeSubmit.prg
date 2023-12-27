@@ -2,7 +2,7 @@
 
 procedure mdfeSubmit(mdfe)
     local svrs, apiMDFe := TApiMDFe():new(mdfe)
-    local startTimer, targetFile, anoEmes, directory, aError, error
+    local aError, error
 
     // Refatorado, na versão CTe 4.00 e MDFe 3.00 a transmissão é sincrono, já é retornado a autorização ou rejeição
 

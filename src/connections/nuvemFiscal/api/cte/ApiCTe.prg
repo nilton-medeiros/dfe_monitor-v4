@@ -184,11 +184,11 @@ method Emitir() class TApiCTe
         ::digest_value := hAutorizacao['digest_value']
 
         switch ::codigo_status
-            case 135
-                ::status := "CANCELADO"
-                exit
             case 100
                 ::status := "AUTORIZADO"
+                exit
+            case 135
+                ::status := "CANCELADO"
                 exit
             otherwise
                 motivo := Lower(Left(desacentuar(::motivo_status), 8))
@@ -306,7 +306,7 @@ method BaixarPDFdoDACTE() class TApiCTe
     local res, apiUrl := ::baseUrlID + "/pdf?logotipo=true"
 
     if !::connected
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF, API Nuvem Fiscal não conectado")
+        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível baixar PDF, API Nuvem Fiscal não conectado")
         saveLog("API Nuvem Fiscal não conectado")
         return false
     endif
@@ -333,7 +333,7 @@ method BaixarPDFdoCancelamento() class TApiCTe
     local res, apiUrl := ::baseUrlID + "/cancelamento/pdf?logotipo=true"
 
     if !::connected
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar PDF do Cancelamento, API Nuvem Fiscal não conectado")
+        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível baixar PDF do Cancelamento, API Nuvem Fiscal não conectado")
         saveLog("API Nuvem Fiscal não conectado")
         return false
     endif
@@ -360,7 +360,7 @@ method BaixarXMLdoCTe() class TApiCTe
     local res, apiUrl := ::baseUrlID + "/xml"
 
     if !::connected
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML, API Nuvem Fiscal não conectado")
+        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível baixar XML, API Nuvem Fiscal não conectado")
         saveLog("API Nuvem Fiscal não conectado")
         return false
     endif
@@ -387,7 +387,7 @@ method BaixarXMLdoCancelamento() class TApiCTe
     local res, apiUrl := ::baseUrlID + "/cancelamento/xml"
 
     if !::connected
-        ::cte:setUpdateEventos(apiCTe:numero_protocolo, date_as_DateTime(Date(), false, false), apiCTe:codigo_status, "Não é possível baixar XML do Cancelamento, API Nuvem Fiscal não conectado")
+        ::cte:setUpdateEventos(::numero_protocolo, date_as_DateTime(Date(), false, false), ::codigo_status, "Não é possível baixar XML do Cancelamento, API Nuvem Fiscal não conectado")
         saveLog("API Nuvem Fiscal não conectado")
         return false
     endif
